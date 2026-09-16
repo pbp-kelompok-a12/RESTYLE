@@ -1,17 +1,13 @@
 ## Kelompok 12-A
 
 ### Anggota
-- SALWA HAFIZA AQILA 2506624392
-
-- HASYA AZZAHRA RANGKUTI 2506617512
-
-- SALSABILLA HASAN 2506548660
-
-- AULIA NUR SHIVA 2506619316
-
-- FADLY ATIEF NAUVAL 2506624940
-
-
+| Nama | NPM |
+|---|---|
+|Salwa Hafiza Aqila|2506624392|
+|Hasya Azzahra Rangkuti|2506617512|
+|Salsabilla Hasan|2506548660|
+|Aulia Nur Shiva|2506619316|
+|Fadly Atief Nauval|2506624940|
 
 ### Deskripsi Aplikasi
 RE:STYLE :  Sustainable Digital Wardrobe Platform
@@ -30,13 +26,14 @@ Aplikasi ini memberikan manfaat nyata bagi masyarakat dengan mendorong penggunaa
 
 
 ### Deskripsi Modul dan Pembagian Kerja
-- Aulia Nur Shiva bertanggung jawab atas Module 1 – Digital Closet (Wardrobe Management), yaitu fitur inti untuk mengelola pakaian pengguna. Pengguna dapat menambah, melihat, mengubah, dan menghapus data pakaian, seperti nama, kategori, warna, style, material, dan foto. Modul ini juga menyediakan filter berdasarkan warna, kategori, dan style. 
-- Salwa Hafiza Aqila bertanggung jawab atas Module 2 – Mix & Match Outfit Builder, yang memungkinkan pengguna membuat kombinasi outfit dari pakaian yang tersedia, seperti atasan, bawahan, sepatu, dan aksesori. Outfit yang telah dibuat dapat disimpan dan dikelola melalui fitur CRUD, yaitu membuat, melihat, mengubah kombinasi, dan menghapus outfit. 
-- Fadly Atief Nauval bertanggung jawab atas Module 3 – Weekly Outfit Planner serta Weather Outfit Recommendation, yaitu fitur untuk merencanakan outfit berdasarkan kalender mingguan. Pengguna dapat menentukan pakaian yang akan digunakan setiap hari. Sistem juga akan mengecek status pakaian, seperti Available, Laundry, atau Worn, sehingga pakaian yang sedang dicuci tidak dapat dipilih. 
-- Hasya Azzahra Rangkuti bertanggung jawab atas Module 4 – Conscious Shopping Reminder serta Login/Logout dan autentikasi. Modul ini membantu pengguna mengurangi pembelian pakaian secara impulsif dengan memberikan pengingat apabila pengguna sudah memiliki barang yang serupa. Selain itu, terdapat fitur wishlist untuk menambah, mengedit, menghapus, dan meninjau kembali barang yang ingin dibeli, serta sistem login, logout, dan autentikasi pengguna. 
-- Salsabilla Hasan bertanggung jawab atas Module 5 – Fashion Community, yaitu forum bagi pengguna untuk berbagi dan berdiskusi mengenai fashion. Pengguna dapat membuat post, mengunggah foto, memberikan komentar, serta memberikan rating pada outfit pengguna lain. Modul ini juga menerapkan fitur CRUD untuk mengelola post, comment, dan rating.
 
-
+| Modul | Penanggung Jawab | Deskripsi | Create | Read | Update | Delete |
+|---|---|---|---|---|---|---|
+| **Modul 1: Digital Closet (Wardrobe Management)** | Aulia Nur Shiva | Fitur inti untuk mengelola data pakaian pengguna, lengkap dengan filter berdasarkan warna, kategori, dan style. Kategori pakaian diisi/dipilih manual oleh pengguna (bukan deteksi otomatis via AI). | Menambah data pakaian baru (nama, kategori, warna, style, material, foto, status ketersediaan). Kategori dipilih manual dari dropdown | Melihat daftar pakaian, detail satu pakaian, serta memfilter berdasarkan warna/kategori | Mengubah data pakaian yang sudah ada (termasuk mengubah status: siap pakai/sedang dicuci) | Menghapus data pakaian dari koleksi |
+| **Modul 2: Mix & Match Outfit Builder** | Salwa Hafiza Aqila | Fitur untuk merangkai kombinasi outfit dari pakaian yang ada di Digital Closet (atasan, bawahan, sepatu, aksesori). | Membuat kombinasi outfit baru dari pakaian yang tersedia | Melihat daftar outfit yang sudah dibuat beserta detail kombinasinya | Mengubah/mengganti item dalam suatu kombinasi outfit | Menghapus outfit yang sudah disimpan |
+| **Modul 3: Weekly Outfit Planner & Weather Recommendation** | Fadly Atief Nauval | Fitur untuk merencanakan pemakaian outfit per hari dalam kalender mingguan, terintegrasi Open-Meteo API untuk rekomendasi sesuai cuaca. Sistem otomatis mengecualikan pakaian berstatus "Laundry" dari pilihan. | Menambahkan jadwal outfit untuk hari/tanggal tertentu | Melihat jadwal mingguan serta rekomendasi outfit berdasarkan data cuaca real-time | Mengubah outfit yang dijadwalkan pada hari tertentu | Menghapus/membatalkan jadwal outfit pada hari tertentu |
+| **Modul 4: Conscious Shopping Reminder & Autentikasi** | Hasya Azzahra Rangkuti | Fitur wishlist untuk mencegah pembelian impulsif, dilengkapi sistem login/logout/autentikasi pengguna. Saat item wishlist ditambahkan, sistem menampilkan pakaian di Digital Closet dengan kategori & warna yang sama sebagai pengingat. | Menambah item wishlist (nama, kategori, warna, foto/link); registrasi akun baru | Melihat daftar wishlist beserta pengingat kemiripan dari Digital Closet; login pengguna | Mengubah data item wishlist | Menghapus item wishlist; logout pengguna |
+| **Modul 5: Fashion Community & Admin Panel** | Salsabilla Hasan | Forum diskusi antarpengguna untuk berbagi inspirasi styling, mix & match, dan ide pakaian sehari-hari. Modul ini juga mencakup Admin Panel: fitur moderasi yang memungkinkan Admin melihat dan menghapus post/komentar yang melanggar. | Membuat post baru (dengan foto), menambahkan komentar, memberikan rating pada outfit pengguna lain | Melihat daftar post, detail post beserta komentar dan rating; Admin dapat melihat seluruh post/komentar untuk keperluan moderasi | Mengubah post atau komentar milik sendiri | Menghapus post, komentar, atau rating milik sendiri; Admin dapat menghapus post/komentar pengguna lain yang melanggar |
 
 ### ⁠Sumber/dokumentasi Public API yang dipakai
 Open-Meteo API
