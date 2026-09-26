@@ -49,7 +49,6 @@
 
 body{
     background-color: var(--color-yellow-82);
-    padding: 32px;
     font-family: var(--font-family-font-1);
 }
 
@@ -63,6 +62,7 @@ body{
     font-family: var(--font-family-font-1);
     font-size: 13px;
     font-weight: 700;
+    margin-top: 32px;
     letter-spacing: 1.04px;
     width: 90%;
     background-color: rgba(255, 255, 255, 0.6);
@@ -114,7 +114,36 @@ body{
     background-color: var(--color-azure-57);
 }
 
+.wardrobe-status-btn{
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--color-violet-23);
+    border-radius: var(--corner-radius-10);
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    padding: 12px 0;
+    justify-content: center;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 700;
+}
 
+/* status pill */
+.status-pill{
+    width: 12px;
+    height: 12px;
+    border-radius: var(--corner-radius-999);
+    border: 1px solid var(--color-violet-23);
+}
+
+.ready{
+    background-color: var(--color-azure-78);
+}
+
+.in-the-wash{
+    background-color: var(--color-yellow-82);
+}
 /* Section styling untuk per-segmen */
 .hero{
     flex-direction: row;
@@ -224,3 +253,67 @@ body{
     line-height: 1;
     display: inline-block;
 }
+
+.bunga{
+    height: 16px;
+}
+
+.digital-closet-landing{
+    background-color: var(--color-grey-97);
+    flex-direction: column;
+    color: var(--color-violet-42);
+    text-align: center;
+    padding: 80px 0;
+    gap: 32px;
+}
+.digital-closet-landing h2{
+    font-family: var(--font-family-font-3);
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--color-violet-23);
+}
+
+.digital-closet-landing p{
+    font-weight: 400;
+    font-size: 16px;
+    
+}
+.digital-closet-cont{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.digital-closet-card{
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    text-align: left;
+}
+
+.digital-closet-card h2{
+    font-size: 18px;
+    font-weight: 400;
+}
+.digital-closet-card p{
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.digital-closet-text{
+    margin: 16px 0px;
+}
+.digital-closet-img{
+    background: white;
+    border-radius: var(--corner-radius-24);
+    border: 2px solid var(--color-orange-87);
+    padding: 24px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+.digital-closet-img img{
+    width: clamp(140px, 18vw, 240px);
+    aspect-ratio: 3.5/4;
+    object-fit: cover;
+}
+
+
