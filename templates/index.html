@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+    <title>RE:STYLE | Makes Your Outfit Always On Top</title>
+{% endblock meta %}
+
+{% block content %}
+
+<main>
+    <section class="section-container hero">
+            <img src="/static/img/hero_img.webp" sizes="(max-width: 600px) 480px, 1024px" alt="...">
+        <div class="hero-content">
+            <div class="main-hero-content">
+                <h4 class="sub-title hero-text">A DIGITAL WARDROBE FOR STUDENTS</h4>
+                <h1 class="title hero-text">A full closet, but nothing to <span class="highlighted-title">wear?</span></h1>
+                <p class="bio hero-text">RE:STYLE helps you organize your closet, mix and match what you already own, and think twice before buying more.</p>
+                <a href="#" class="hero-text hero-btn">
+                    <button class="primary-btn hero-btn">
+                        <p>ORGANIZE YOUR CLOSET</p>
+                        <i class="fa-solid fa-arrow-right i-hero"></i>
+                    </button>
+                </a>
+                <img src="/static/img/hero_dots.webp" alt="..." class="hero-dots">
+            </div>
+        </div>
+    </section>
+    <section class="section-container features-marquee">
+        <div class="marquee3k" data-speed="0.25" data-pausable="true">
+            <div class="marquee-item">
+                <h1>DIGITAL CLOSET</h1>
+                <i class="fa-solid fa-fan"></i>
+                <h1>MIX & MATCH</h1>
+                <i class="fa-solid fa-fan"></i>
+                <h1>WEEKLY PLANNER</h1>
+                <i class="fa-solid fa-fan"></i>
+                <h1>CONSCIOUS SHOPPING</h1>
+                <i class="fa-solid fa-fan"></i>
+                <h1>FASHION COMMUNITY</h1>
+                <i class="fa-solid fa-fan"></i>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+{% endblock %}
