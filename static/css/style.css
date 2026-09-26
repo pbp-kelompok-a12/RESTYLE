@@ -56,6 +56,7 @@ body{
 .section-container{
     width: 100%;
     display: flex;
+    border: var(--container-border);
 }
 
 .site-header{
@@ -239,6 +240,7 @@ body{
 
 .hero-text{
     z-index: 1;
+    position: relative;
 }
 
 .i-hero{
@@ -279,7 +281,7 @@ body{
 
     .site-header{
         width: calc(100% - 32px);
-        padding: 10px 20px;
+        padding: 20px 20px;
     }
 
     .site-header nav{
@@ -319,7 +321,6 @@ body{
 
     .site-header.nav-open{
         border-radius: var(--corner-radius-24);
-        background-color: var(--color-grey-97);
     }  
 
     .site-header.nav-open .nav-act{
@@ -364,26 +365,7 @@ body{
     }
 }
 
-@media (max-width: 480px) {
-    .site-header{
-        padding: 8px 16px;
-    }
 
-    .nav-act:last-of-type .primary-btn{
-        width: 100%;
-        text-align: center;
-        justify-content: center;
-        display: flex;
-    }
-
-    .title{
-        font-size: 28px;
-    }
-
-    .sub-title{
-        font-size: 11px;
-    }
-}
 .bunga{
     height: 16px;
 }
@@ -446,4 +428,23 @@ body{
     object-fit: cover;
 }
 
+@media (max-width: 480px) {
+    .site-header{
+        padding: 16px 16px;
+    }
 
+    .nav-act:last-of-type .primary-btn{
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+        display: flex;
+    }
+
+    .title{
+        font-size: 28px;
+    }
+
+    .sub-title{
+        font-size: 11px;
+    }
+}
