@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marquee3000@1.0.6/marquee3k.min.js"></script>
+
+    {% block meta %} {% endblock meta %}
+</head>
+
+<body>
+    <header class="site-header">
+        <nav>
+            <div class="nav-act">
+                <a href="#" class="">FEATURES</a>
+                <a href="#">HOW IT WORKS</a>
+                <a href="#">STORIES</a>
+            </div>
+            <a href="#" class="brand"><img src="/static/img/brand.webp" alt=""></a>
+            <div class="nav-act">
+                <a href="#">COMMUNITY</a>
+                <a href="#">SIGN IN</a>
+                <a href="#">
+                    <button class="primary-btn">TRY IT NOW</button>
+                </a>
+            </div>
+        </nav>
+    </header>
+    {% block content %} {% endblock content %}
+    
+
+    
+</body>
+<script src="/static/js/script.js"></script>
+</html>

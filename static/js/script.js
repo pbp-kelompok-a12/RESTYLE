@@ -1,0 +1,1 @@
+Marquee3k.init();
