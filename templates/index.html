@@ -12,8 +12,10 @@
         <div class="hero-content">
             <div class="main-hero-content">
                 <h4 class="sub-title hero-text">A DIGITAL WARDROBE FOR STUDENTS</h4>
-                <h1 class="title hero-text">A full closet, but nothing to <span class="highlighted-title">wear?</span></h1>
-                <p class="bio hero-text">RE:STYLE helps you organize your closet, mix and match what you already own, and think twice before buying more.</p>
+                <div>
+                    <h1 class="title hero-text">A full closet, but nothing to <span class="highlighted-title">wear?</span></h1>
+                    <p class="bio hero-text">RE:STYLE helps you organize your closet, mix and match what you already own, and think twice before buying more.</p>
+                </div>
                 <a href="#" class="hero-text hero-btn">
                     <button class="primary-btn hero-btn">
                         <p>ORGANIZE YOUR CLOSET</p>
@@ -28,16 +30,44 @@
         <div class="marquee3k" data-speed="0.25" data-pausable="true">
             <div class="marquee-item">
                 <h1>DIGITAL CLOSET</h1>
-                <i class="fa-solid fa-fan"></i>
+                <img src="/static/img/bunga.webp" alt="" class="bunga">
                 <h1>MIX & MATCH</h1>
-                <i class="fa-solid fa-fan"></i>
+                <img src="/static/img/bunga.webp" alt="" class="bunga">
                 <h1>WEEKLY PLANNER</h1>
-                <i class="fa-solid fa-fan"></i>
+                <img src="/static/img/bunga.webp" alt="" class="bunga">
                 <h1>CONSCIOUS SHOPPING</h1>
-                <i class="fa-solid fa-fan"></i>
+                <img src="/static/img/bunga.webp" alt="" class="bunga">
                 <h1>FASHION COMMUNITY</h1>
-                <i class="fa-solid fa-fan"></i>
+                <img src="/static/img/bunga.webp" alt="" class="bunga">
             </div>
+        </div>
+    </section>
+    <section class="section-container digital-closet-landing">
+        <div>
+            <h2>Meet your digital closet</h2>
+            <p>Everything you own is neatly logged in one place. Here's what your Digital Closet might look like.</p>
+        </div>
+        <div class="digital-closet-cont">
+            {% for digital_closet in dummy_features %}
+            <div class="digital-closet-card">
+                <div class="digital-closet-img">
+                    <img src="{{ digital_closet.image}}" alt="">
+                </div>
+                <div class="digital-closet-text">
+                    <h2>{{ digital_closet.title }}</h2>
+                    <p>{{ digital_closet.desc }}</p>
+                </div>
+                <button class="wardrobe-status-btn">
+                    {% if digital_closet.status == "ready" %}
+                        <span class="status-pill ready"></span>
+                        Ready to wear
+                    {% else %}
+                        <span class="status-pill in-the-wash"></span>
+                        In the wash
+                    {% endif %}
+                </button>
+            </div>
+            {% endfor %}
         </div>
     </section>
 
