@@ -399,12 +399,17 @@ body{
     text-align: center;
     padding: 80px 0;
     gap: 32px;
+    position: relative;
 }
-.digital-closet-landing h2{
+.landing-dc-title{
     font-family: var(--font-family-font-3);
     font-size: 34px;
     font-weight: 700;
-    color: var(--color-azure-martinique);
+    color: var(--color-azure-polo-blue);
+    -webkit-text-stroke: 4px var(--color-azure-san-marino);
+    paint-order: stroke fill;
+    letter-spacing: 2px;
+    margin-bottom: 24px;
 }
 
 .digital-closet-landing p{
@@ -416,12 +421,31 @@ body{
     display: flex;
     flex-direction: row;
     justify-content: center;
+    position: relative;
 }
 .digital-closet-card{
     display: flex;
     flex-direction: column;
     padding: 24px;
     text-align: left;
+    position: relative;
+}
+
+.hanger{
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    width: 64px;
+}
+
+.besi-hanger{
+    position: absolute;
+    width: 90%;
+    top: 0%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .digital-closet-card h2{
