@@ -8,22 +8,23 @@
 
 :root {
   /* color */
-  --color-azure-42: #3f6699;
+  --color-azure-san-marino: #3f6699;
   --color-azure-57: #698db8;
-  --color-azure-70: #8fb0d4;
-  --color-azure-78: #a9d4e7;
-  --color-grey-97: #fdf9f2;
-  --color-grey-97-0: #fdf9f200;
-  --color-orange-69: #e0ab7f;
-  --color-orange-87: #e8e0d2;
-  --color-orange-88: #fae0c6;
-  --color-violet-23: #3a2b48;
-  --color-violet-23-0: #3a2b4800;
-  --color-violet-23-6: #3a2b480f;
-  --color-violet-42: #6b5f78;
+  --color-azure-polo-blue: #8fb0d4;
+  --color-azure-st-blue: #a9d4e7;
+  --color-orange-linen: #fdf9f2;
+  --color-orange-linen-0: #fdf9f200;
+  --color-orange-tumbleweed: #e0ab7f;
+  --color-orange-pearl-brush: #e8e0d2;
+  --color-orange-dairy-cream: #fae0c6;
+  --color-azure-martinique: #3a2b48;
+  --color-azure-martinique-0: #3a2b4800;
+  --color-azure-martinique-6: #3a2b480f;
+  --color-azure-dolphin: #6b5f78;
   --color-white-84: #ffffffd6;
   --color-white-solid: #ffffff;
-  --color-yellow-82: #f9eaa9;
+  --color-yellow-peach-yellow: #f9eaa9;
+  --color-green-eco-leaf: #9CC24B;
 
   /* number */
   --corner-radius-6: 0.375rem;
@@ -41,14 +42,14 @@
   --font-family-font-3: Poppins;
 
   /* border */
-  --container-border: 1px solid var(--color-violet-23);
+  --container-border: 1px solid var(--color-azure-martinique);
 
   /* box shadow */
   --drop-shadow: 0px 5px 14px 0px rgba(0,0,0,0.1);
 }
 
 body{
-    background-color: var(--color-yellow-82);
+    background-color: var(--color-yellow-peach-yellow);
     font-family: var(--font-family-font-1);
 }
 
@@ -107,7 +108,7 @@ body{
     background: none;
     border: none;
     font-size: 18px;
-    color: var(--color-violet-23);
+    color: var(--color-azure-martinique);
     cursor: pointer;
     padding: 4px 8px;
     line-height: 1;
@@ -117,7 +118,7 @@ body{
 
 .primary-btn{
     padding: 12px 16px;
-    background-color: var(--color-azure-42);
+    background-color: var(--color-azure-san-marino);
     color: white;
     border-radius: var(--corner-radius-999);
     transition: .2s ease-out;
@@ -130,7 +131,7 @@ body{
 .wardrobe-status-btn{
     width: 100%;
     background: transparent;
-    border: 1px solid var(--color-violet-23);
+    border: 1px solid var(--color-azure-martinique);
     border-radius: var(--corner-radius-10);
     display: flex;
     flex-direction: row;
@@ -147,15 +148,15 @@ body{
     width: 12px;
     height: 12px;
     border-radius: var(--corner-radius-999);
-    border: 1px solid var(--color-violet-23);
+    border: 1px solid var(--color-azure-martinique);
 }
 
 .ready{
-    background-color: var(--color-azure-78);
+    background-color: var(--color-azure-st-blue);
 }
 
 .in-the-wash{
-    background-color: var(--color-yellow-82);
+    background-color: var(--color-yellow-peach-yellow);
 }
 
 /* Font style */
@@ -166,7 +167,7 @@ body{
 /* Section styling untuk per-segmen */
 .hero{
     flex-direction: row;
-    background-color: var(--color-grey-97);
+    background-color: var(--color-orange-linen);
     border: var(--container-border);
     gap: 64px;
     padding-top: 160px;
@@ -214,7 +215,7 @@ body{
 }
 
 .hero-btn svg{
-    color: var(--color-yellow-82);
+    color: var(--color-yellow-peach-yellow);
     font-weight: 700;
 }
 
@@ -223,15 +224,15 @@ body{
     font-size: 60px;
     font-weight: 700;
     letter-spacing: -0.6px;
-    color: var(--color-violet-23);
+    color: var(--color-azure-martinique);
 }
 
 .highlighted-title{
-    color: var(--color-azure-42);
+    color: var(--color-azure-san-marino);
 }
 
 .bio{
-    color: var(--color-violet-23);
+    color: var(--color-azure-martinique);
     font-size: 16px;
     font-weight: 400;
 }
@@ -266,11 +267,11 @@ body{
 
 .i-hero{
     font-size: 16px;
-    color: var(--color-yellow-82);
+    color: var(--color-yellow-peach-yellow);
 }
 
 .features-marquee{
-    background-color: var(--color-yellow-82);
+    background-color: var(--color-yellow-peach-yellow);
     border: var(--container-border);
 }
 
@@ -392,9 +393,9 @@ body{
 }
 
 .digital-closet-landing{
-    background-color: var(--color-grey-97);
+    background-color: var(--color-orange-linen);
     flex-direction: column;
-    color: var(--color-violet-42);
+    color: var(--color-azure-dolphin);
     text-align: center;
     padding: 80px 0;
     gap: 32px;
@@ -403,7 +404,7 @@ body{
     font-family: var(--font-family-font-3);
     font-size: 34px;
     font-weight: 700;
-    color: var(--color-violet-23);
+    color: var(--color-azure-martinique);
 }
 
 .digital-closet-landing p{
@@ -438,7 +439,7 @@ body{
 .digital-closet-img{
     background: white;
     border-radius: var(--corner-radius-24);
-    border: 2px solid var(--color-orange-87);
+    border: 2px solid var(--color-orange-pearl-brush);
     padding: 24px;
     box-sizing: border-box;
     flex-shrink: 0;
