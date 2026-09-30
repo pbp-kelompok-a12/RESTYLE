@@ -57,6 +57,7 @@ body{
     width: 100%;
     display: flex;
     border: var(--container-border);
+    padding: 0 80px;
 }
 
 .site-header{
@@ -156,24 +157,35 @@ body{
 .in-the-wash{
     background-color: var(--color-yellow-82);
 }
+
+/* Font style */
+.italic-text{
+    font-style: italic;
+}
+
 /* Section styling untuk per-segmen */
 .hero{
     flex-direction: row;
-    background-color: var(--color-azure-78);
+    background-color: var(--color-grey-97);
     border: var(--container-border);
-    gap: 0;
-}
+    gap: 64px;
+    padding-top: 160px;
+    padding-bottom: 64px;
+    position: relative;
+    }
 
 .hero-img, .hero-content{
     width: 100%;
     display: flex;
     align-items: center;
     text-align: center;
+    position: relative;
 }
 
-.hero > img{
-    width: 50%;
+.hero-bunglon{
+    width: 80%;
     object-fit: cover;
+    z-index: 1;
 }
 
 .hero-content{
@@ -188,6 +200,7 @@ body{
     display: flex;
     gap: 16px;
     flex-direction: column;
+    text-align: right;
 }
 
 .hero-btn{
@@ -196,7 +209,7 @@ body{
     gap: 12px;
     font-size: 12px;
     font-weight: 700;
-    justify-content: center;
+    justify-content: right;
     letter-spacing: 1.12px;
 }
 
@@ -228,14 +241,22 @@ body{
     font-weight: 700;
 }
 
-.hero-dots{
-    width: 90%;
-    max-width: 800px;
+.hero-star{
+    width: 100%;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 0;
+}
+
+.bubble-hero{
+    width: 20vw;
+    position: absolute;
+    top: 0%;
+    left: 100%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
 }
 
 .hero-text{
