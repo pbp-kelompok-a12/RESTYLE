@@ -48,12 +48,14 @@
     </section>
     <section class="section-container digital-closet-landing">
         <div>
-            <h2>Meet your digital closet</h2>
+            <h2 class="landing-dc-title">Meet your digital closet</h2>
             <p>Everything you own is neatly logged in one place. Here's what your Digital Closet might look like.</p>
         </div>
         <div class="digital-closet-cont">
+            <img src="/static/img/besi-hanger.png" alt="" class="besi-hanger">
             {% for digital_closet in dummy_features %}
             <div class="digital-closet-card">
+                <img src="/static/img/hanger.png" alt="" class="hanger">
                 <div class="digital-closet-img">
                     <img src="{{ digital_closet.image}}" alt="">
                 </div>
