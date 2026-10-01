@@ -299,10 +299,10 @@ body{
 .style-more {
     justify-content: center;
     align-items: center;
-    min-height: 720px;
+    min-height: 410px;
     background:
         linear-gradient(rgba(58,43,72,.2), rgba(58,43,72,.2)),
-        url('../img/tumpukan-baju.jpg') center 60% / cover no-repeat;
+        url('../img/feature-transition-pic.png') center 60% / cover no-repeat;
 }
 
 .style-more__card {
