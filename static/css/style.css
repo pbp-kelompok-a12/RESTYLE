@@ -296,6 +296,49 @@ body{
     display: inline-block;
 }
 
+.style-more {
+    justify-content: center;
+    align-items: center;
+    min-height: 720px;
+    background:
+        linear-gradient(rgba(58,43,72,.2), rgba(58,43,72,.2)),
+        url('../img/tumpukan-baju.jpg') center 60% / cover no-repeat;
+}
+
+.style-more__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    height: auto;             
+    max-width: 480px;
+    padding: 32px 48px;
+    text-align: center;
+    background-color: var(--color-orange-linen);
+    border: var(--container-border);
+    border-radius: var(--corner-radius-24);
+}
+
+.style-more__title{
+    margin: 0;
+    font-family: var(--font-family-font-3);
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-azure-martinique);
+}
+
+.style-more__bio{
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--color-azure-dolphin);
+}
+
+.style-more__card .primary-btn{
+    flex-shrink: 0;            
+}
+
 @media (max-width: 768px) {
     body{
         padding: 16px;
