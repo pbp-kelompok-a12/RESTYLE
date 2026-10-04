@@ -1,19 +1,98 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block meta %}
     <title>Community | RE:STYLE</title>
+    <link rel="stylesheet" href="{% static 'css/community.css' %}">
 {% endblock meta %}
 
 {% block content %}
-<main style="padding: 140px 40px 40px;">
-    <h1>Fashion Community</h1>
+<main class="cm-page">
 
-    {% for post in posts %}
-    <article style="margin-top: 24px;">
-        <p><strong>@{{ post.username }}</strong> · {{ post.time }}</p>
-        <p>{{ post.content }}</p>
-        <p>{{ post.likes }} likes · {{ post.replies }} replies</p>
-    </article>
-    {% endfor %}
+    {# ===== Banner atas ===== #}
+    <section class="cm-hero">
+        <div class="cm-hero-text">
+            <span class="cm-badge">FASHION COMMUNITY</span>
+            <h1>Share <em class="cm-accent">outfit ideas</em>,<br>not shopping <em>pressure</em>.</h1>
+            <p>Discover styling inspiration, mix and match ideas, and everyday outfit tips from fellow students using clothes you already own.</p>
+            <div class="cm-hero-actions">
+                <a href="#composer" class="cm-btn cm-btn-primary"><i class="fa-solid fa-plus"></i> New post</a>
+                <a href="#" class="cm-btn cm-btn-outline">My saved ideas</a>
+            </div>
+        </div>
+        <img class="cm-hero-img" src="{% static 'img/community/chameleon.png' %}"
+             alt="A chameleon saying: share a look, ask a question, or help a friend restyle what they already own.">
+    </section>
+
+    {# ===== Tiga kolom: menu kiri, feed tengah, info kanan ===== #}
+    <div class="cm-layout">
+
+        {% include 'community/_sidebar.html' with active='all' %}
+
+        <section class="cm-feed">
+            <div class="cm-tabs">
+                <a href="#" class="cm-tab is-active">For you</a>
+                <a href="#" class="cm-tab">Following</a>
+            </div>
+
+            {# Kotak tulis post. Baru tampilan; mulai berfungsi di langkah 4. #}
+            <div class="cm-card cm-composer" id="composer">
+                <div class="cm-composer-top">
+                    <span class="cm-avatar">{{ user.username|first|upper|default:"?" }}</span>
+                    <input type="text" placeholder="What are you wearing today?" aria-label="Write a post">
+                </div>
+                <div class="cm-composer-actions">
+                    <button type="button" class="cm-chip"><i class="fa-regular fa-image"></i> Photo</button>
+                    <button type="button" class="cm-chip"><i class="fa-solid fa-shirt"></i> Tag closet items</button>
+                    <button type="button" class="cm-btn cm-btn-primary cm-btn-small" disabled>Post</button>
+                </div>
+            </div>
+
+            {% for post in posts %}
+                {% include 'community/_post_card.html' %}
+            {% empty %}
+                <p class="cm-empty">No posts yet. Be the first to share a look.</p>
+            {% endfor %}
+        </section>
+
+        <aside class="cm-aside">
+            <div class="cm-card cm-card-soft">
+                <div class="cm-aside-head">
+                    <h2>Popular this week</h2>
+                    <span>by likes</span>
+                </div>
+                <ol class="cm-popular">
+                    {% for item in popular_posts %}
+                    <li>
+                        <span class="cm-popular-rank">{{ forloop.counter }}</span>
+                        <div>
+                            <a href="#">{{ item.title }}</a>
+                            <p><i class="fa-regular fa-heart"></i> {{ item.likes }}</p>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ol>
+            </div>
+
+            <div class="cm-card cm-card-soft">
+                <div class="cm-aside-head">
+                    <h2>Stylists to follow</h2>
+                </div>
+                <ul class="cm-stylists">
+                    {% for person in stylists %}
+                    <li>
+                        <span class="cm-avatar cm-avatar-small">{{ person.username|first|upper }}</span>
+                        <div>
+                            <a href="#">@{{ person.username }}</a>
+                            <p>{{ person.bio }}</p>
+                        </div>
+                        <button type="button" class="cm-btn cm-btn-outline cm-btn-tiny">Follow</button>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </aside>
+
+    </div>
 </main>
 {% endblock content %}

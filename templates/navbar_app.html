@@ -1,0 +1,21 @@
+{# Navbar untuk user yang sudah login. Dipakai semua modul (closet, mix & match, planner, community). #}
+<header class="app-nav">
+    <nav class="app-nav-links" aria-label="Main menu">
+        <a href="#">CLOSET</a>
+        <a href="#">MIX &amp; MATCH</a>
+        <a href="#">PLANNER</a>
+        <a href="{% url 'community:show_community' %}"
+           class="{% if request.resolver_match.app_name == 'community' %}is-active{% endif %}">COMMUNITY</a>
+    </nav>
+
+    <div class="app-nav-tools">
+        <form class="app-nav-search" role="search" action="#" method="get">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="search" name="q" placeholder="Search posts, tags, or people" aria-label="Search">
+        </form>
+        <button class="app-nav-bell" type="button" aria-label="Notifications">
+            <i class="fa-regular fa-bell"></i>
+        </button>
+        <a href="#" class="app-nav-avatar" aria-label="Your profile">{{ user.username|first|upper }}</a>
+    </div>
+</header>
