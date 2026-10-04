@@ -1,17 +1,18 @@
-{# Satu kartu post. Butuh variabel "post". #}
+{# satu kartu post. butuh variabel "post". #}
 <article class="cm-card cm-post">
-    <span class="cm-avatar">{{ post.username|first|upper }}</span>
+    <span class="cm-avatar">{{ post.author.username|first|upper }}</span>
 
     <div class="cm-post-main">
         <header class="cm-post-head">
-            <a href="#" class="cm-username">@{{ post.username }}</a>
-            <span class="cm-time">{{ post.time }}</span>
+            <a href="#" class="cm-username">@{{ post.author.username }}</a>
+            <span class="cm-time">{{ post.time_ago }}</span>
         </header>
 
         <div class="cm-post-body">{{ post.content|linebreaks }}</div>
 
+        {# Bagian tag dari closet disambungkan nanti, setelah model pakaian dari Modul 1 ada. #}
         {% if post.tagged_items %}
-        <p class="cm-tagged-label">Tagged from @{{ post.username }}'s closet</p>
+        <p class="cm-tagged-label">Tagged from @{{ post.author.username }}'s closet</p>
         <div class="cm-tagged">
             {% for item in post.tagged_items %}
             <figure class="cm-tagged-item">
@@ -23,25 +24,21 @@
         {% endif %}
 
         <div class="cm-actions">
-            <button type="button"><i class="fa-regular fa-heart"></i> {{ post.likes }}</button>
-            <button type="button"><i class="fa-regular fa-comment"></i> {{ post.reply_count }} replies</button>
+            <button type="button"><i class="fa-regular fa-heart"></i> {{ post.likes.count }}</button>
+            <button type="button"><i class="fa-regular fa-comment"></i> {{ post.comments.count }} repl{{ post.comments.count|pluralize:"y,ies" }}</button>
             <button type="button"><i class="fa-regular fa-bookmark"></i> Save</button>
         </div>
 
-        {% if post.comments %}
+        {% if post.top_level_comments %}
         <section class="cm-comments">
             <div class="cm-comments-head">
-                <span>{{ post.reply_count }} replies</span>
+                <span>{{ post.comments.count }} repl{{ post.comments.count|pluralize:"y,ies" }}</span>
                 <span>Oldest first</span>
             </div>
 
-            {% for comment in post.comments %}
+            {% for comment in post.top_level_comments %}
                 {% include 'community/_comment.html' %}
             {% endfor %}
-
-            {% if post.more_replies %}
-            <a href="#" class="cm-more">View {{ post.more_replies }} more replies</a>
-            {% endif %}
 
             <div class="cm-reply-form">
                 <span class="cm-avatar">{{ user.username|first|upper|default:"?" }}</span>

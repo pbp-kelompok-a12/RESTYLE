@@ -66,13 +66,15 @@
                     <li>
                         <span class="cm-popular-rank">{{ forloop.counter }}</span>
                         <div>
-                            <a href="#">{{ item.title }}</a>
-                            <p><i class="fa-regular fa-heart"></i> {{ item.likes }}</p>
+                            <a href="#">{{ item.content|truncatechars:45 }}</a>
+                            <p><i class="fa-regular fa-heart"></i> {{ item.like_count }}</p>
                         </div>
                     </li>
+                    {% empty %}
+                    <li>No popular posts yet.</li>
                     {% endfor %}
                 </ol>
-            </div>
+                </div>
 
             <div class="cm-card cm-card-soft">
                 <div class="cm-aside-head">
