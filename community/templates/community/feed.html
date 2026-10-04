@@ -4,6 +4,7 @@
 {% block meta %}
     <title>Community | RE:STYLE</title>
     <link rel="stylesheet" href="{% static 'css/community.css' %}">
+    <script src="{% static 'js/community.js' %}" defer></script>
 {% endblock meta %}
 
 {% block content %}
@@ -35,18 +36,34 @@
                 <a href="#" class="cm-tab">Following</a>
             </div>
 
-            {# Kotak tulis post. Baru tampilan; mulai berfungsi di langkah 4. #}
-            <div class="cm-card cm-composer" id="composer">
+            {% if messages %}
+            <div class="cm-messages">
+                {% for message in messages %}
+                <p class="cm-message cm-message-{{ message.tags }}">{{ message }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {# Kotak tulis post #}
+            <form class="cm-card cm-composer" id="composer" method="post"
+                  action="{% url 'community:create_post' %}" enctype="multipart/form-data">
+                {% csrf_token %}
                 <div class="cm-composer-top">
                     <span class="cm-avatar">{{ user.username|first|upper|default:"?" }}</span>
-                    <input type="text" placeholder="What are you wearing today?" aria-label="Write a post">
+                    <textarea name="content" rows="1" maxlength="1000" required
+                              placeholder="What are you wearing today?" aria-label="Write a post"></textarea>
                 </div>
+
+                <div class="cm-photo-previews" id="photo-previews" hidden></div>
+                <p class="cm-composer-hint" id="photo-hint" hidden></p>
+
                 <div class="cm-composer-actions">
-                    <button type="button" class="cm-chip"><i class="fa-regular fa-image"></i> Photo</button>
-                    <button type="button" class="cm-chip"><i class="fa-solid fa-shirt"></i> Tag closet items</button>
-                    <button type="button" class="cm-btn cm-btn-primary cm-btn-small" disabled>Post</button>
+                    <input type="file" name="photos" id="photo-input" accept="image/png, image/jpeg" multiple hidden>
+                    <button type="button" class="cm-chip" id="photo-button"><i class="fa-regular fa-image"></i> Photo</button>
+                    <button type="button" class="cm-chip" disabled title="Coming soon"><i class="fa-solid fa-shirt"></i> Tag closet items</button>
+                    <button type="submit" class="cm-btn cm-btn-primary cm-btn-small" id="post-button">Post</button>
                 </div>
-            </div>
+            </form>
 
             {% for post in posts %}
                 {% include 'community/_post_card.html' %}

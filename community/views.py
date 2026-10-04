@@ -1,10 +1,23 @@
 from datetime import timedelta
 
+from django import forms
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.db.models import Count
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.utils import timezone
+from django.views.decorators.http import require_POST
 
-from community.models import Post
+from community.forms import PostForm
+from community.models import Post, PostImage
+
+# sementara login lewat halaman admin dulu, ntar ganti kalau halaman login modul 4 udah ada
+LOGIN_URL = "/admin/login/"
+
+MAX_PHOTOS = 3
+MAX_PHOTO_SIZE = 5 * 1024 * 1024  # 5 MB
+ALLOWED_PHOTO_TYPES = ["image/jpeg", "image/png"]
 
 # masih data contoh. ntar diganti data asli kalo fitur follow udah dibuat.
 DUMMY_STYLISTS = [
@@ -14,7 +27,7 @@ DUMMY_STYLISTS = [
     {"username": "sakhiwears", "bio": "Fashion girlie"},
 ]
 
-
+@login_required(login_url=LOGIN_URL)
 def show_community(request):
     # semua post, yang terbaru di atas.
     posts = Post.objects.select_related("author")
@@ -33,3 +46,45 @@ def show_community(request):
         "stylists": DUMMY_STYLISTS,
     }
     return render(request, "community/feed.html", context)
+
+def check_photos(photos):
+    """return pesan error kalau ada foto yang bermasalah, atau None kalau aman"""
+    if len(photos) > MAX_PHOTOS:
+        return f"You can add up to {MAX_PHOTOS} photos per post."
+
+    for photo in photos:
+        if photo.size > MAX_PHOTO_SIZE:
+            return "Each photo must be 5 MB or smaller."
+        try:
+            forms.ImageField().clean(photo)  # memastikan file ini benar-benar gambar
+        except ValidationError:
+            return "Photos must be JPG or PNG images."
+        if photo.content_type not in ALLOWED_PHOTO_TYPES:
+            return "Photos must be JPG or PNG images."
+
+    return None
+
+@login_required(login_url=LOGIN_URL)
+@require_POST
+def create_post(request):
+    form = PostForm(request.POST)
+    photos = request.FILES.getlist("photos")
+
+    if not form.is_valid():
+        messages.error(request, "Write something before posting (up to 1000 characters).")
+        return redirect("community:show_community")
+
+    photo_error = check_photos(photos)
+    if photo_error:
+        messages.error(request, photo_error)
+        return redirect("community:show_community")
+
+    post = form.save(commit=False)  # belum disimpan, karena authornya belum diisi
+    post.author = request.user
+    post.save()
+
+    for photo in photos:
+        PostImage.objects.create(post=post, image=photo)
+
+    messages.success(request, "Your post is live.")
+    return redirect("community:show_community")

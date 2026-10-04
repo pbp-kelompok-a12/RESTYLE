@@ -10,6 +10,14 @@
 
         <div class="cm-post-body">{{ post.content|linebreaks }}</div>
 
+        {% if post.images.all %}
+        <div class="cm-photos">
+            {% for photo in post.images.all %}
+            <img src="{{ photo.image.url }}" alt="Photo from @{{ post.author.username }}'s post">
+            {% endfor %}
+        </div>
+        {% endif %}
+
         {# Bagian tag dari closet disambungkan nanti, setelah model pakaian dari Modul 1 ada. #}
         {% if post.tagged_items %}
         <p class="cm-tagged-label">Tagged from @{{ post.author.username }}'s closet</p>

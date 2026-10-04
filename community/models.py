@@ -93,3 +93,14 @@ class Comment(models.Model):
     def is_author(self):
         # true kalau yang komen tuh yang bikin post.
         return self.author_id == self.post.author_id
+    
+class PostImage(models.Model):
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name="images",
+    )
+    image = models.ImageField(upload_to="community/posts/")
+
+    def __str__(self):
+        return f"Photo for post {self.post_id}"

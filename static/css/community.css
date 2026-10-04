@@ -722,3 +722,122 @@ body{
         padding: 0;
     }
 }
+
+
+/* tulis post dan foto */
+
+.cm-page [hidden]{
+    display: none;
+}
+
+.cm-page :where(textarea){
+    font: inherit;
+    color: inherit;
+}
+
+.cm-messages{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cm-message{
+    padding: 10px 14px;
+    border: 1px solid var(--color-azure-martinique);
+    border-radius: var(--corner-radius-12);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.cm-message-success{
+    background-color: var(--color-azure-st-blue);
+}
+
+.cm-message-error{
+    background-color: var(--color-orange-dairy-cream);
+}
+
+.cm-composer-top{
+    align-items: flex-start;
+}
+
+.cm-composer-top textarea{
+    flex: 1;
+    min-width: 0;
+    min-height: 36px;
+    max-height: 240px;
+    padding: 6px 0;
+    border: none;
+    outline: none;
+    resize: none;
+    background: transparent;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.cm-composer-top textarea::placeholder{
+    color: var(--color-azure-dolphin);
+}
+
+.cm-photo-previews{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 4px 0 10px 46px;
+}
+
+.cm-photo-preview{
+    position: relative;
+    width: 120px;
+    height: 120px;
+}
+
+.cm-photo-preview img{
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 1px solid var(--color-orange-pearl-brush);
+    border-radius: var(--corner-radius-12);
+}
+
+.cm-photo-preview button{
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    background-color: var(--color-azure-martinique);
+    border-radius: var(--corner-radius-999);
+    color: var(--color-white-solid);
+    font-size: 12px;
+}
+
+.cm-composer-hint{
+    margin: 0 0 8px 46px;
+    font-size: 12px;
+    color: var(--color-azure-dolphin);
+}
+
+.cm-chip:disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cm-photos{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.cm-photos img{
+    display: block;
+    height: 220px;
+    max-width: 100%;
+    object-fit: cover;
+    border: 1px solid var(--color-orange-pearl-brush);
+    border-radius: var(--corner-radius-12);
+}

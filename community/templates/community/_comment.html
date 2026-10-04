@@ -1,24 +1,24 @@
 {# Satu komentar. Butuh variabel "comment". Balasan memakai file ini lagi. #}
 <div class="cm-comment {% if comment.is_author %}is-author{% endif %}">
-    <span class="cm-avatar cm-avatar-small">{{ comment.username|first|upper }}</span>
+    <span class="cm-avatar cm-avatar-small">{{ comment.author.username|first|upper }}</span>
 
     <div class="cm-comment-main">
         <header class="cm-comment-head">
-            <a href="#" class="cm-username">@{{ comment.username }}</a>
+            <a href="#" class="cm-username">@{{ comment.author.username }}</a>
             {% if comment.is_author %}<span class="cm-author-badge">Author</span>{% endif %}
-            <span class="cm-time">{{ comment.time }}</span>
+            <span class="cm-time">{{ comment.time_ago }}</span>
         </header>
 
         <p class="cm-bubble">{{ comment.content }}</p>
 
         <div class="cm-actions cm-actions-small">
-            <button type="button"><i class="fa-regular fa-heart"></i> {{ comment.likes }}</button>
+            <button type="button"><i class="fa-regular fa-heart"></i> {{ comment.likes.count }}</button>
             <button type="button">Reply</button>
         </div>
 
-        {% if comment.replies %}
+        {% if comment.replies.all %}
         <div class="cm-replies">
-            {% for reply in comment.replies %}
+            {% for reply in comment.replies.all %}
                 {% include 'community/_comment.html' with comment=reply %}
             {% endfor %}
         </div>
