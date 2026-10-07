@@ -79,3 +79,42 @@ if (composer) {
 
     updatePostButton();
 }
+
+
+// comment: buka-tutup daftar komentar dan kotak balasan.
+
+function setCommentsOpen(post, isOpen) {
+    post.querySelector(".cm-comments").hidden = !isOpen;
+    post.querySelector(".cm-toggle-comments").setAttribute("aria-expanded", String(isOpen));
+}
+
+// button "replies" di tiap post membuka atau menutup commentnya
+document.querySelectorAll(".cm-post").forEach((post) => {
+    post.querySelector(".cm-toggle-comments").addEventListener("click", () => {
+        const isOpenNow = !post.querySelector(".cm-comments").hidden;
+        setCommentsOpen(post, !isOpenNow);
+    });
+});
+
+
+// button "Reply" di bawah comment nampilin kotak balasan kecil
+document.querySelectorAll(".cm-toggle-reply").forEach((button) => {
+    const form = button.closest(".cm-comment-main").querySelector(".cm-reply-inline");
+
+    button.addEventListener("click", () => {
+        form.hidden = !form.hidden;
+        if (!form.hidden) {
+            form.querySelector('input[name="content"]').focus();
+        }
+    });
+});
+
+
+// setelah ngirim comment, alamat halaman berakhiran #post-12
+// komentar post itu langsung dibuka supaya komentar barunya terlihat
+if (location.hash.startsWith("#post-")) {
+    const post = document.getElementById(location.hash.slice(1));
+    if (post) {
+        setCommentsOpen(post, true);
+    }
+}

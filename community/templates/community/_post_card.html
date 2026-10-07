@@ -1,5 +1,5 @@
-{# satu kartu post. butuh variabel "post". #}
-<article class="cm-card cm-post">
+{# Satu kartu post. Butuh variabel "post". #}
+<article class="cm-card cm-post" id="post-{{ post.id }}">
     <span class="cm-avatar">{{ post.author.username|first|upper }}</span>
 
     <div class="cm-post-main">
@@ -18,27 +18,18 @@
         </div>
         {% endif %}
 
-        {# Bagian tag dari closet disambungkan nanti, setelah model pakaian dari Modul 1 ada. #}
-        {% if post.tagged_items %}
-        <p class="cm-tagged-label">Tagged from @{{ post.author.username }}'s closet</p>
-        <div class="cm-tagged">
-            {% for item in post.tagged_items %}
-            <figure class="cm-tagged-item">
-                <img src="{{ item.image }}" alt="">
-                <figcaption>{{ item.name }}</figcaption>
-            </figure>
-            {% endfor %}
-        </div>
-        {% endif %}
+        {# tag dari closet ditambahkan di sini nanti, setelah model pakaian dari modul 1 ada #}
 
         <div class="cm-actions">
             <button type="button"><i class="fa-regular fa-heart"></i> {{ post.likes.count }}</button>
-            <button type="button"><i class="fa-regular fa-comment"></i> {{ post.comments.count }} repl{{ post.comments.count|pluralize:"y,ies" }}</button>
+            <button type="button" class="cm-toggle-comments" aria-expanded="false">
+                <i class="fa-regular fa-comment"></i> {{ post.comments.count }} repl{{ post.comments.count|pluralize:"y,ies" }}
+            </button>
             <button type="button"><i class="fa-regular fa-bookmark"></i> Save</button>
         </div>
 
-        {% if post.top_level_comments %}
-        <section class="cm-comments">
+        <section class="cm-comments" hidden>
+            {% if post.top_level_comments %}
             <div class="cm-comments-head">
                 <span>{{ post.comments.count }} repl{{ post.comments.count|pluralize:"y,ies" }}</span>
                 <span>Oldest first</span>
@@ -47,13 +38,15 @@
             {% for comment in post.top_level_comments %}
                 {% include 'community/_comment.html' %}
             {% endfor %}
+            {% endif %}
 
-            <div class="cm-reply-form">
+            <form class="cm-reply-form" method="post" action="{% url 'community:create_comment' post.id %}">
+                {% csrf_token %}
                 <span class="cm-avatar">{{ user.username|first|upper|default:"?" }}</span>
-                <input type="text" placeholder="Write a reply..." aria-label="Write a reply">
-                <button type="button" class="cm-btn cm-btn-dark">Reply</button>
-            </div>
+                <input type="text" name="content" maxlength="500" required
+                       placeholder="Write a reply..." aria-label="Write a reply">
+                <button type="submit" class="cm-btn cm-btn-dark">Reply</button>
+            </form>
         </section>
-        {% endif %}
     </div>
 </article>

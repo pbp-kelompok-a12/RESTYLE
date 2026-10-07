@@ -841,3 +841,20 @@ body{
     border: 1px solid var(--color-orange-pearl-brush);
     border-radius: var(--corner-radius-12);
 }
+
+
+/*  comment n balasan  */
+
+.cm-post{
+    scroll-margin-top: 110px;
+}
+
+.cm-toggle-comments[aria-expanded="true"]{
+    color: var(--color-azure-san-marino);
+    font-weight: 700;
+}
+
+.cm-reply-inline{
+    margin-top: 8px;
+    max-width: 480px;
+}

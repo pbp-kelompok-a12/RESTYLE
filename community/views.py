@@ -5,12 +5,13 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.db.models import Count
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
-from community.forms import PostForm
-from community.models import Post, PostImage
+from community.forms import CommentForm, PostForm
+from community.models import Comment, Post, PostImage
 
 # sementara login lewat halaman admin dulu, ntar ganti kalau halaman login modul 4 udah ada
 LOGIN_URL = "/admin/login/"
@@ -88,3 +89,30 @@ def create_post(request):
 
     messages.success(request, "Your post is live.")
     return redirect("community:show_community")
+
+
+
+@login_required(login_url=LOGIN_URL)
+@require_POST
+def create_comment(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    form = CommentForm(request.POST)
+
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.post = post
+        comment.author = request.user
+
+        parent_id = request.POST.get("parent", "")
+        if parent_id.isdigit():
+            parent = get_object_or_404(Comment, id=parent_id, post=post)
+            # balasan untuk sebuah balasan ditempelkan ke komentar utamanya,
+            # supaya balasan cuma menjorok satu tingkat
+            comment.parent = parent.parent or parent
+
+        comment.save()
+    else:
+        messages.error(request, "Write a reply before sending (up to 500 characters).")
+
+    # balik ke feed, langsung ke post yang dikomentari
+    return redirect(reverse("community:show_community") + f"#post-{post.id}")
