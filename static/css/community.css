@@ -13,6 +13,9 @@ body{
     line-height: 1.5;
     color: var(--color-azure-martinique);
     padding-top: 120px;
+    gap: 32px;
+    display: flex;
+    flex-direction: column;
 }
 
 .cm-page :where(h1, h2, h3, p, ul, ol, figure, hr){

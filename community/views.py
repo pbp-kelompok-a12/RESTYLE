@@ -251,16 +251,22 @@ def show_user_profile(request, username):
         followed=profile_user,
     ).exists()
 
+    context = {
+        "profile_user": profile_user,
+        "posts": posts,
+        "following_count": profile_user.following_links.count(),
+        "followers_count": profile_user.follower_links.count(),
+        "is_following": is_following,
+    }
+    if profile_user == request.user:
+        from main.models import UserProfile
+
+        context["profile"] = UserProfile.objects.get_or_create(user=request.user)[0]
+
     return render(
         request,
         "community/profile.html",
-        {
-            "profile_user": profile_user,
-            "posts": posts,
-            "following_count": profile_user.following_links.count(),
-            "followers_count": profile_user.follower_links.count(),
-            "is_following": is_following,
-        },
+        context,
     )
 
 @login_required(login_url=LOGIN_URL)

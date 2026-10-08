@@ -17,6 +17,9 @@
                 <span class="cm-badge">COMMUNITY MEMBER</span>
                 <h1>@{{ profile_user.username }}</h1>
                 <p>Member since {{ profile_user.date_joined|date:"M Y" }}</p>
+                {% if profile_user == user %}
+                <p>{{ profile_user.email|default:"No email registered" }}</p>
+                {% endif %}
             </div>
             {% if profile_user != user %}
             <button type="button"
@@ -24,6 +27,9 @@
                     data-url="{% url 'community:toggle_follow' profile_user.username %}">
                 <span class="cm-follow-label">{% if is_following %}Following{% else %}Follow{% endif %}</span>
             </button>
+            {% else %}
+            {% url 'main:logout' as logout_url %}
+            {% include 'components/button.html' with href=logout_url btn_class="danger" label="Log Out" %}
             {% endif %}
         </div>
 
@@ -35,7 +41,20 @@
         </div>
     </section>
 
-    <section class="section-container community-profile-posts">
+    {% if profile_user == user %}
+    <section class="section-container profile-persona-section">
+        <div class="profile-persona-badge-row">
+            <span class="profile-persona-badge">Your Style Persona</span>
+        </div>
+        <h2 class="profile-persona-title">{{ profile.style_persona|default:"The Conscious Minimalist" }}</h2>
+        <p class="profile-persona-description">
+            You prioritize versatility and functionality in your wardrobe. By maximizing mix-and-match combinations, you actively reduce textile waste and make mindful fashion choices.
+        </p>
+        <a href="{% url 'main:style_quiz' %}" class="profile-quiz-link">Retake Style Quiz</a>
+    </section>
+    {% endif %}
+
+    <section class="section-container community-profile-posts" id="posts">
         <div class="community-profile-section-heading">
             <h2>Posts</h2>
             <a href="{% url 'community:show_community' %}" class="cm-btn cm-btn-outline cm-btn-small">
