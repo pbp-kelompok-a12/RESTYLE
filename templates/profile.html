@@ -5,54 +5,56 @@
 {% endblock meta %}
 
 {% block content %}
-<div class="min-h-screen pt-28 pb-12 bg-[#FDF9F2] px-4 font-body text-[#3A2B48]">
-  <div class="max-w-4xl mx-auto space-y-6">
+<main class="profile-page">
+  <div class="profile-content">
     
-    <div class="bg-white rounded-3xl p-6 md:p-8 border-2 border-[#3A2B48] shadow-[6px_6px_0px_0px_#3A2B48] flex flex-col md:flex-row items-center justify-between gap-6">
-      <div class="flex items-center gap-5">
-        <div class="w-20 h-20 rounded-full bg-[#9CC24B] border-2 border-[#3A2B48] flex items-center justify-center text-[#3A2B48] font-bold text-3xl shadow-sm">
-          {{ user.username|first|upper }}
-        </div>
-        <div>
-          <h1 class="font-bold text-2xl md:text-3xl text-[#3A2B48]">
-            {{ user.username }}
-          </h1>
-          <p class="text-sm text-gray-600">{{ user.email|default:"No email registered" }}</p>
-          <span class="inline-block mt-2 px-3 py-1 bg-[#F9EAA9] text-[#3A2B48] text-xs font-bold rounded-full border border-[#3A2B48]">
-            Conscious Member
-          </span>
-          <div class="profile-follow-stats mt-3">
-            {% url 'community:show_following' user.username as following_url %}
-            {% url 'community:show_followers' user.username as followers_url %}
-            {% include 'components/button.html' with href=following_url btn_class="tertiary" extra_class="profile-stat-btn" stat_button=True value=user.following_links.count label="Following" %}
-            {% include 'components/button.html' with href=followers_url btn_class="tertiary" extra_class="profile-stat-btn" stat_button=True value=user.follower_links.count label="Followers" %}
+    <section class="section-container profile-card-section">
+      <div class="profile-header">
+        <div class="profile-user-info">
+          <div class="profile-user-avatar">
+            {{ user.username|first|upper }}
+          </div>
+          <div class="profile-user-details">
+            <h1 class="profile-user-name">
+              {{ user.username }}
+            </h1>
+            <p class="profile-user-email">{{ user.email|default:"No email registered" }}</p>
+            <span class="profile-member-badge">
+              Conscious Member
+            </span>
+            <div class="profile-stat-buttons">
+              {% url 'community:show_following' user.username as following_url %}
+              {% url 'community:show_followers' user.username as followers_url %}
+              {% include 'components/button.html' with href=following_url btn_class="tertiary" extra_class="profile-stat-button" stat_button=True value=user.following_links.count label="Following" %}
+              {% include 'components/button.html' with href=followers_url btn_class="tertiary" extra_class="profile-stat-button" stat_button=True value=user.follower_links.count label="Followers" %}
+            </div>
           </div>
         </div>
+
+        <a href="{% url 'main:logout' %}" class="profile-logout-button">
+          Log Out
+        </a>
       </div>
+    </section>
 
-      <a href="{% url 'main:logout' %}" class="px-6 py-2.5 bg-red-100 text-red-700 hover:bg-red-200 border border-red-300 font-bold text-sm rounded-xl transition">
-        Log Out
-      </a>
-    </div>
-
-    <div class="bg-[#FAE0C6] rounded-3xl p-6 md:p-8 border-2 border-[#3A2B48] shadow-[6px_6px_0px_0px_#3A2B48]">
-      <div class="flex items-center gap-2 mb-2">
-        <span class="text-xs font-bold uppercase text-[#3A2B48] bg-[#9CC24B] px-3 py-1 rounded-full border border-[#3A2B48]">
+    <section class="section-container profile-persona-section">
+      <div class="profile-persona-badge-row">
+        <span class="profile-persona-badge">
           Your Style Persona
         </span>
       </div>
-      <h2 class="font-bold text-2xl text-[#3A2B48] mb-2">
+      <h2 class="profile-persona-title">
         {{ profile.style_persona|default:"The Conscious Minimalist" }}
       </h2>
-      <p class="text-sm text-[#3A2B48] leading-relaxed mb-4">
+      <p class="profile-persona-description">
         You prioritize versatility and functionality in your wardrobe. By maximizing mix-and-match combinations, you actively reduce textile waste and make mindful fashion choices.
       </p>
 
-      <a href="{% url 'main:style_quiz' %}" class="inline-block text-xs font-bold text-[#3F6699] underline hover:text-[#3A2B48]">
+      <a href="{% url 'main:style_quiz' %}" class="profile-quiz-link">
         Retake Style Quiz
       </a>
-    </div>
+    </section>
 
   </div>
-</div>
+</main>
 {% endblock %}

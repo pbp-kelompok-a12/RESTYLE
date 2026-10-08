@@ -9,20 +9,20 @@
 
 {% block content %}
 <main class="cm-page">
-    <section class="cm-follow-page">
+    <section class="section-container community-follow-list-section">
         <form hidden>{% csrf_token %}</form>
-        <header class="cm-follow-page-heading">
-            <a href="{% url 'community:show_user_profile' profile_user.username %}" class="cm-follow-back">
+        <header class="community-follow-list-heading">
+            <a href="{% url 'community:show_user_profile' profile_user.username %}" class="community-profile-back-link">
                 <i class="fa-solid fa-arrow-left"></i> @{{ profile_user.username }}
             </a>
             <h1>{{ title }}</h1>
             <p>People {{ title|lower }} by @{{ profile_user.username }}</p>
         </header>
 
-        <ul class="cm-follow-list">
+        <ul class="community-follow-list">
             {% for person in people %}
-            <li>
-                <a class="cm-follow-person" href="{% url 'community:show_user_profile' person.username %}">
+            <li class="community-follow-list-item">
+                <a class="community-follow-person" href="{% url 'community:show_user_profile' person.username %}">
                     <span class="cm-avatar">{{ person.username|first|upper }}</span>
                     <span>
                         <strong>@{{ person.username }}</strong>
@@ -38,7 +38,7 @@
                 {% endif %}
             </li>
             {% empty %}
-            <li class="cm-follow-empty">
+            <li class="community-follow-empty">
                 <h2>No {{ title|lower }} yet</h2>
                 <p>This list will show up here when @{{ profile_user.username }} has {{ title|lower }}.</p>
             </li>

@@ -9,11 +9,11 @@
 
 {% block content %}
 <main class="cm-page">
-    <section class="cm-card cm-profile-card">
+    <section class="section-container cm-card community-profile-card">
         {% csrf_token %}
-        <div class="cm-profile-heading">
-            <span class="cm-avatar cm-profile-avatar">{{ profile_user.username|first|upper }}</span>
-            <div class="cm-profile-identity">
+        <div class="community-profile-header">
+            <span class="cm-avatar community-profile-avatar">{{ profile_user.username|first|upper }}</span>
+            <div class="community-profile-identity">
                 <span class="cm-badge">COMMUNITY MEMBER</span>
                 <h1>@{{ profile_user.username }}</h1>
                 <p>Member since {{ profile_user.date_joined|date:"M Y" }}</p>
@@ -27,16 +27,16 @@
             {% endif %}
         </div>
 
-        <div class="profile-follow-stats cm-profile-stats">
+        <div class="profile-stat-buttons community-profile-stat-buttons">
             {% url 'community:show_following' profile_user.username as following_url %}
             {% url 'community:show_followers' profile_user.username as followers_url %}
-            {% include 'components/button.html' with href=following_url btn_class="tertiary" extra_class="profile-stat-btn" stat_button=True value=following_count label="Following" %}
-            {% include 'components/button.html' with href=followers_url btn_class="tertiary" extra_class="profile-stat-btn" stat_button=True value=followers_count value_data_attr="followers-count" label="Followers" %}
+            {% include 'components/button.html' with href=following_url btn_class="tertiary" extra_class="profile-stat-button" stat_button=True value=following_count label="Following" %}
+            {% include 'components/button.html' with href=followers_url btn_class="tertiary" extra_class="profile-stat-button" stat_button=True value=followers_count value_data_attr="followers-count" label="Followers" %}
         </div>
     </section>
 
-    <section class="cm-profile-posts">
-        <div class="cm-profile-section-heading">
+    <section class="section-container community-profile-posts">
+        <div class="community-profile-section-heading">
             <h2>Posts</h2>
             <a href="{% url 'community:show_community' %}" class="cm-btn cm-btn-outline cm-btn-small">
                 Back to community

@@ -127,12 +127,12 @@ body{
     background-color: var(--color-azure-martinique-6);
 }
 
-.profile-follow-stats{
+.profile-stat-buttons{
     display: flex;
     gap: 8px;
 }
 
-.profile-stat-btn{
+.profile-stat-button{
     min-width: 96px;
     display: flex;
     flex-direction: column;
@@ -145,15 +145,372 @@ body{
     text-align: center;
 }
 
-.profile-stat-btn strong{
+.profile-stat-button strong{
     font-size: 20px;
     line-height: 1.2;
 }
 
-.profile-stat-btn span{
+.profile-stat-button span{
     color: var(--color-azure-dolphin);
     font-size: 12px;
     font-weight: 600;
+}
+
+.profile-page{
+    min-height: 100vh;
+    padding: 112px 16px 48px;
+    background-color: var(--color-orange-linen);
+    color: var(--color-azure-martinique);
+    font-family: var(--font-family-font-1);
+}
+
+.profile-content{
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: min(100%, 896px);
+    margin: 0 auto;
+}
+
+.profile-card-section.section-container{
+    width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin: 0;
+    padding: 24px;
+    background-color: var(--color-white-solid);
+    border: 2px solid var(--color-azure-martinique);
+    border-radius: var(--corner-radius-24);
+    box-shadow: 6px 6px 0 var(--color-azure-martinique);
+}
+
+.profile-header,
+.profile-user-info{
+    display: flex;
+    align-items: center;
+}
+
+.profile-header{
+    flex: 1;
+    gap: 20px;
+}
+
+.profile-user-info{
+    gap: 20px;
+}
+
+.profile-user-avatar{
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--color-azure-martinique);
+    border-radius: 50%;
+    background-color: var(--color-green-eco-leaf);
+    color: var(--color-azure-martinique);
+    box-shadow: var(--drop-shadow);
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.profile-user-details{
+    min-width: 0;
+}
+
+.profile-user-name{
+    color: var(--color-azure-martinique);
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.profile-user-email{
+    color: #4b5563;
+    font-size: 14px;
+}
+
+.profile-member-badge{
+    display: inline-block;
+    margin-top: 8px;
+    padding: 4px 12px;
+    border: 1px solid var(--color-azure-martinique);
+    border-radius: var(--corner-radius-999);
+    background-color: var(--color-yellow-peach-yellow);
+    color: var(--color-azure-martinique);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.profile-stat-buttons{
+    margin-top: 12px;
+}
+
+.profile-logout-button{
+    padding: 10px 24px;
+    border: 1px solid #fca5a5;
+    border-radius: var(--corner-radius-12);
+    background-color: #fee2e2;
+    color: #b91c1c;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.2s ease-out;
+}
+
+.profile-logout-button:hover{
+    background-color: #fecaca;
+}
+
+.profile-persona-section.section-container{
+    display: block;
+    padding: 24px;
+    border: 2px solid var(--color-azure-martinique);
+    border-radius: var(--corner-radius-24);
+    background-color: var(--color-orange-dairy-cream);
+    box-shadow: 6px 6px 0 var(--color-azure-martinique);
+}
+
+.profile-persona-badge-row{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.profile-persona-badge{
+    padding: 4px 12px;
+    border: 1px solid var(--color-azure-martinique);
+    border-radius: var(--corner-radius-999);
+    background-color: var(--color-green-eco-leaf);
+    color: var(--color-azure-martinique);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.profile-persona-title{
+    margin-bottom: 8px;
+    color: var(--color-azure-martinique);
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.profile-persona-description{
+    margin-bottom: 16px;
+    color: var(--color-azure-martinique);
+    font-size: 14px;
+    line-height: 1.625;
+}
+
+.profile-quiz-link{
+    display: inline-block;
+    color: var(--color-azure-san-marino);
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.profile-quiz-link:hover{
+    color: var(--color-azure-martinique);
+}
+
+.community-profile-card.section-container{
+    width: auto;
+    display: block;
+    margin: 12px 0 24px;
+    padding: 28px;
+    border-color: var(--color-azure-san-marino);
+    box-shadow: 5px 5px 0 var(--color-azure-st-blue);
+}
+
+.cm-follow.is-active{
+    background-color: var(--color-azure-martinique);
+    color: var(--color-white-solid);
+}
+
+.community-profile-header{
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.cm-page .community-profile-avatar{
+    width: 64px;
+    height: 64px;
+    font-size: 24px;
+}
+
+.community-profile-identity{
+    flex: 1;
+    min-width: 0;
+}
+
+.community-profile-identity h1{
+    margin-top: 8px;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.community-profile-identity p,
+.community-follow-list-heading p{
+    color: var(--color-azure-dolphin);
+    font-size: 12px;
+}
+
+.community-profile-stat-buttons{
+    margin: 24px 0 0 82px;
+}
+
+.community-profile-posts.section-container{
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0;
+    border: 0;
+}
+
+.community-profile-section-heading{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.community-profile-section-heading h2,
+.community-follow-list-heading h1{
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.community-follow-list-section.section-container{
+    width: min(680px, 100%);
+    display: block;
+    margin: 12px auto 0;
+    padding: 0;
+    border: 0;
+}
+
+.community-follow-list-heading{
+    margin-bottom: 18px;
+}
+
+.community-profile-back-link{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    color: var(--color-azure-san-marino);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.community-profile-back-link:hover{
+    text-decoration: underline;
+}
+
+.community-follow-list{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    list-style: none;
+}
+
+.community-follow-list-item{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    background-color: var(--color-white-solid);
+    border: 1px solid var(--color-azure-polo-blue);
+    border-radius: var(--corner-radius-16);
+}
+
+.community-follow-person{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    color: inherit;
+    text-decoration: none;
+}
+
+.community-follow-person > span:last-child{
+    display: flex;
+    flex-direction: column;
+}
+
+.community-follow-person strong{
+    font-size: 13px;
+}
+
+.community-follow-person small{
+    color: var(--color-azure-dolphin);
+    font-size: 11px;
+}
+
+.community-follow-empty{
+    padding: 36px 20px;
+    background-color: var(--color-white-solid);
+    border: 1px solid var(--color-orange-pearl-brush);
+    border-radius: var(--corner-radius-16);
+    text-align: center;
+}
+
+.community-follow-empty h2{
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.community-follow-empty p{
+    margin-top: 6px;
+    color: var(--color-azure-dolphin);
+    font-size: 12px;
+}
+
+@media (max-width: 768px){
+    .profile-card-section.section-container{
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .profile-header{
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .profile-logout-button{
+        align-self: center;
+    }
+
+    .community-profile-card.section-container{
+        padding: 20px;
+    }
+
+    .community-profile-header{
+        flex-wrap: wrap;
+    }
+
+    .community-profile-header > .cm-follow{
+        width: 100%;
+    }
+
+    .community-profile-stat-buttons{
+        margin-left: 0;
+    }
+}
+
+@media (min-width: 768px){
+    .profile-user-name{
+        font-size: 30px;
+    }
+
+    .profile-persona-section.section-container{
+        padding: 32px;
+    }
 }
 
 .disabled-btn{
