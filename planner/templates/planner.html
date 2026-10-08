@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+    <title>Planner | RE:STYLE</title>
+    <link rel="stylesheet" href="{% static 'css/planner.css' %}">
+{% endblock meta %}
+
+{% block content %}
+    <main>
+        <section class="section-container planner-top">
+            <div class="planner-title">
+                <h2>Plan your <span class="highlight">outfit!</span></h2>
+            </div>
+
+            <form method="get" class="week-picker">
+                <a class="week-nav" href="?week={{ prev_week }}" aria-label="Previous week">&#8249;</a>
+                <div class="week-select-wrap">
+                    <select name="week" class="week-select" onchange="this.form.submit()">
+                        {% for opt in week_options %}
+                            <option value="{{ opt.value }}" {% if opt.selected %}selected{% endif %}>{{ opt.label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <a class="week-nav" href="?week={{ next_week }}" aria-label="Next week">&#8250;</a>
+                <noscript><button type="submit" class="week-go">Go</button></noscript>
+            </form>
+
+            <div class="week-grid">
+                {% for item in days %}
+                    <div class="day-col {% if item.is_today %}is-today{% endif %}">
+                        <div class="day-pill">
+                            {{ item.date|date:"l" }}
+                            <span class="day-date">{{ item.date|date:"j M" }}</span>
+                        </div>
+                        <button type="button" class="outfit-slot">
+                            <svg viewBox="0 0 48 48" class="plus-icon" aria-hidden="true">
+                                <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="4"/>
+                                <path d="M24 13v22M13 24h22" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                            </svg>
+                            <span>Pick your outfit</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+{% endblock content %}
