@@ -4,19 +4,29 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
 from types import SimpleNamespace
+from .models import UserProfile
 
-# Create your views here.
 def show_landing_page(request):
     dummy_features = [
-        SimpleNamespace(title="Wrap Skirt", desc="Bottom · Blue · Worn 4 times", image = "/static/img/skirt.png", status="ready"),
-        SimpleNamespace(title="Floral Midi Dress", desc="Dress · Cream · Worn 2 times", image = "/static/img/midi_dress.png", status="not_ready"),
-        SimpleNamespace(title="Wrap Jeans", desc="Bottom · Denim · Worn 6 times", image = "/static/img/wrap_jeans.png", status="ready"),
-        SimpleNamespace(title="Layered Sweater", desc="Top · Navy · Worn 1 time", image = "/static/img/layered_sweater.png", status="ready"),
+        SimpleNamespace(title="Wrap Skirt", desc="Bottom · Blue · Worn 4 times", image="/static/img/skirt.png", status="ready"),
+        SimpleNamespace(title="Floral Midi Dress", desc="Dress · Cream · Worn 2 times", image="/static/img/midi_dress.png", status="not_ready"),
+        SimpleNamespace(title="Wrap Jeans", desc="Bottom · Denim · Worn 6 times", image="/static/img/wrap_jeans.png", status="ready"),
+        SimpleNamespace(title="Layered Sweater", desc="Top · Navy · Worn 1 time", image="/static/img/layered_sweater.png", status="ready"),
     ]
     context = {
-        "dummy_features":dummy_features
+        "dummy_features": dummy_features
     }
     return render(request, 'index.html', context)
+
+def style_quiz(request):
+    if request.method == "POST":
+        request.session['quiz_data'] = {
+            'preferred_style': request.POST.get('q1'),
+            'conscious_priority': request.POST.get('q2'),
+            'wardrobe_goal': request.POST.get('q3')
+        }
+        return redirect('main:register')
+    return render(request, 'style_quiz.html')
 
 def register(request):
     form = UserCreationForm()
@@ -24,8 +34,21 @@ def register(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Akun berhasil dibuat! Silakan login.')
+            user = form.save()
+            
+            # jika user baru aja ngisi kuis, simpan data ke UserProfile
+            quiz_data = request.session.get('quiz_data', {})
+            UserProfile.objects.create(
+                user=user,
+                preferred_style=quiz_data.get('preferred_style', ''),
+                conscious_shopping_priority=quiz_data.get('conscious_priority', ''),
+                wardrobe_goal=quiz_data.get('wardrobe_goal', ''),
+                style_persona=quiz_data.get('preferred_style', 'The Conscious Minimalist')
+            )
+            if 'quiz_data' in request.session:
+                del request.session['quiz_data']
+
+            messages.success(request, 'Account created successfully! Please log in.')
             return redirect('main:login')
 
     context = {'form': form}
@@ -37,9 +60,9 @@ def login_user(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('main:show_landing_page')  # <-- UBAH KE show_landing_page
+            return redirect('main:profile') # redirect ke profile setelah login
         else:
-            messages.error(request, 'Username atau password salah!')
+            messages.error(request, 'Invalid username or password!')
     else:
         form = AuthenticationForm()
 
@@ -48,13 +71,14 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
-    messages.success(request, 'Kamu berhasil logout.')
+    messages.success(request, 'You have been successfully logged out.')
     return redirect('main:login')
 
 @login_required(login_url='/login')
-def show_main(request):
+def profile_view(request):
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
     context = {
-        'username': request.user.username,
-        # Nanti di sini ditaruh data wishlist / pengingat conscious shopping
+        'user': request.user,
+        'profile': profile,
     }
-    return render(request, 'main.html', context)
+    return render(request, 'profile.html', context)
