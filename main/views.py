@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
 from types import SimpleNamespace
 
 # Create your views here.
@@ -13,3 +15,16 @@ def show_landing_page(request):
         "dummy_features":dummy_features
     }
     return render(request, 'index.html', context)
+
+def register(request):
+    form = UserCreationForm()
+
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Akun berhasil dibuat! Silakan login.')
+            return redirect('main:login')
+
+    context = {'form': form}
+    return render(request, 'register.html', context)
