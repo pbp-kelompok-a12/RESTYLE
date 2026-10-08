@@ -11,7 +11,7 @@
     </nav>
 
     <div class="app-nav-tools">
-        <form class="app-nav-search" role="search" action="#" method="get">
+        <form class="app-nav-search {% if request.resolver_match.app_name == 'community' %}is-active{% endif %}" role="search" action="#" method="get">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="search" name="q" placeholder="Search posts, tags, or people" aria-label="Search">
         </form>

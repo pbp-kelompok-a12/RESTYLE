@@ -44,6 +44,10 @@
     color: var(--color-azure-san-marino);
 }
 
+.is-active{
+    display: flex!important;
+}
+
 .app-nav-tools{
     display: flex;
     align-items: center;
@@ -53,7 +57,7 @@
 }
 
 .app-nav-search{
-    display: flex;
+    display: none;
     align-items: center;
     gap: 12px;
     flex: 1;
