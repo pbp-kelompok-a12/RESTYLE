@@ -3,6 +3,9 @@
 {% if user.is_authenticated %}
 <header class="app-nav">
     <nav class="app-nav-links" aria-label="Main menu">
+        <a href="{% url 'main:show_landing_page' %}">
+            <img src="/static/img/brand.webp" alt="RE:STYLE logo" class="brand-nav">
+        </a>
         <a href="#" class="nav-links">CLOSET</a>
         <a href="#" class="nav-links">MIX &amp; MATCH</a>
         <a href="{% url 'planner:show_planner' %}" class="nav-links {% if request.resolver_match.app_name == 'planner' %}is-active{% endif %}">PLANNER</a>
@@ -26,6 +29,9 @@
 
 <header class="app-nav">
     <nav class="app-nav-links" aria-label="Main menu">
+        <a href="{% url 'main:show_landing_page' %}">
+            <img src="/static/img/brand.webp" alt="RE:STYLE logo" class="brand-nav">
+        </a>
         <a href="#" class="nav-links">FEATURES</a>
         <a href="#" class="nav-links">HOW IT WORKS</a>
         <a href="#" class="nav-links">STORIES</a>
