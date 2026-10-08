@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+<title>Conscious Style Quiz - RE:STYLE</title>
+{% endblock meta %}
+
+{% block content %}
+<div class="min-h-screen pt-28 pb-12 bg-[#FDF9F2] flex items-center justify-center px-4 font-body text-[#3A2B48]">
+  <div class="max-w-2xl w-full bg-white rounded-3xl p-8 border-2 border-[#3A2B48] shadow-[8px_8px_0px_0px_#3A2B48]">
+    
+    <div class="text-center mb-8">
+      <span class="inline-block px-4 py-1 rounded-full bg-[#F9EAA9] text-[#3A2B48] font-bold text-xs uppercase mb-2">
+        Conscious Style Quiz
+      </span>
+      <h1 class="font-bold text-3xl md:text-4xl text-[#3A2B48]">
+        Find Your Style Persona
+      </h1>
+      <p class="text-sm text-gray-600 mt-2">
+        Answer these 3 quick questions to help us tailor your wardrobe and conscious shopping recommendations.
+      </p>
+    </div>
+
+    <form method="POST" class="space-y-6">
+      {% csrf_token %}
+
+      <!-- Question 1 -->
+      <div class="bg-[#FDF9F2] p-5 rounded-2xl border border-[#E8E0D2]">
+        <h3 class="font-bold text-base text-[#3A2B48] mb-3">
+          1. Which style aesthetic best describes your daily preference?
+        </h3>
+        <div class="space-y-2">
+          <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-[#E8E0D2] cursor-pointer hover:border-[#3F6699] transition">
+            <input type="radio" name="q1" value="Minimalist & Neutral" class="accent-[#3F6699]" required>
+            <span class="text-sm font-medium">Minimalist & Neutral Tones (Capsule Wardrobe)</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-[#E8E0D2] cursor-pointer hover:border-[#3F6699] transition">
+            <input type="radio" name="q1" value="Casual Streetwear" class="accent-[#3F6699]">
+            <span class="text-sm font-medium">Casual Streetwear (Denim, Oversized, Sneakers)</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-[#E8E0D2] cursor-pointer hover:border-[#3F6699] transition">
+            <input type="radio" name="q1" value="Structured & Preppy" class="accent-[#3F6699]">
+            <span class="text-sm font-medium">Structured & Preppy (Blazers, Shirts, Tailored)</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 2 (Conscious Shopping) -->
+      <div class="bg-[#FDF9F2] p-5 rounded-2xl border border-[#E8E0D2]">
+        <h3 class="font-bold text-base text-[#3A2B48] mb-3">
+          2. When considering a new clothing purchase, your primary priority is:
+        </h3>
+        <div class="space-y-2">
+          <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-[#E8E0D2] cursor-pointer hover:border-[#3F6699] transition">
+            <input type="radio" name="q2" value="Versatility" class="accent-[#3F6699]" required>
+            <span class="text-sm font-medium">Versatility: Must pair with at least 3 existing items</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-[#E8E0D2] cursor-pointer hover:border-[#3F6699] transition">
+            <input type="radio" name="q2" value="Durability" class="accent-[#3F6699]">
+            <span class="text-sm font-medium">Durability: High-quality, sustainable materials & timeless design</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-[#E8E0D2] cursor-pointer hover:border-[#3F6699] transition">
+            <input type="radio" name="q2" value="Necessity" class="accent-[#3F6699]">
+            <span class="text-sm font-medium">Necessity: Replacing essential items only when worn out</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 3 -->
+      <div class="bg-[#FDF9F2] p-5 rounded-2xl border border-[#E8E0D2]">
+        <h3 class="font-bold text-base text-[#3A2B48] mb-3">
+          3. What is your main wardrobe management goal?
+        </h3>
+        <div class="space-y-2">
+          <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-[#E8E0D2] cursor-pointer hover:border-[#3F6699] transition">
+            <input type="radio" name="q3" value="Maximize Existing Clothes" class="accent-[#3F6699]" required>
+            <span class="text-sm font-medium">Maximize current wardrobe use & curb impulse buying</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-[#E8E0D2] cursor-pointer hover:border-[#3F6699] transition">
+            <input type="radio" name="q3" value="Effortless Daily Planning" class="accent-[#3F6699]">
+            <span class="text-sm font-medium">Plan daily outfits effortlessly without decision fatigue</span>
+          </label>
+        </div>
+      </div>
+
+      <button type="submit" class="w-full py-3.5 bg-[#3F6699] hover:bg-[#3A2B48] text-white font-bold text-sm rounded-xl transition duration-200 shadow-md">
+        Save Persona & Create Account
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}
