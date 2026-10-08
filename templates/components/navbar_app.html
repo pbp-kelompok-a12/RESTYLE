@@ -1,4 +1,6 @@
 {# Navbar untuk user yang sudah login. Dipakai semua modul (closet, mix & match, planner, community). #}
+
+{% if user.is_authenticated %}
 <header class="app-nav">
     <nav class="app-nav-links" aria-label="Main menu">
         <a href="#">CLOSET</a>
@@ -19,3 +21,23 @@
         <a href="#" class="app-nav-avatar" aria-label="Your profile">{{ user.username|first|upper }}</a>
     </div>
 </header>
+
+{% else %}
+
+<header class="app-nav">
+    <nav class="app-nav-links" aria-label="Main menu">
+        <a href="#">FEATURES</a>
+        <a href="#">HOW IT WORKS</a>
+        <a href="#">STORIES</a>
+        <a href="{% url 'community:show_community' %}"
+           class="{% if request.resolver_match.app_name == 'community' %}is-active{% endif %}">COMMUNITY</a>
+    </nav>
+
+    <div class="app-nav-tools">
+        <a href="#">
+            {% include 'components/button.html' with btn_class="secondary" label="Try It Now!" extra_class="padding-gede"%}
+        </a>
+    </div>
+</header>
+
+{% endif %}

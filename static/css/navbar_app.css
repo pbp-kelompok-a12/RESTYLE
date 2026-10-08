@@ -1,7 +1,7 @@
 /* navbar setelah login (templates/navbar_app.html) */
 
 .app-nav{
-    width: min(1224px, calc(100% - 48px));
+    width: 95%;
     margin: 24px auto 0;
     padding: 12px 40px;
     display: flex;
@@ -11,9 +11,10 @@
     background-color: var(--color-azure-san-marino);
     border-radius: var(--corner-radius-999);
     font-family: var(--font-family-font-1);
-    position: sticky;
-    top: 16px;
+    position: fixed;
     z-index: 999;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .app-nav-links{
