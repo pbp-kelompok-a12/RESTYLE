@@ -1,0 +1,41 @@
+{% load static %}
+
+<footer class="site-footer">
+    <div class="footer-main">
+        <div class="footer-brand">
+            <img src="{% static '/img/brand.webp' %}" alt="RE:STYLE" class="footer-logo">
+            <p class="footer-tagline">A digital closet for more mindful style.</p>
+        </div>
+
+        <nav class="footer-col" aria-label="Features">
+            <h3 class="footer-heading">Features</h3>
+            <ul>
+                <li><a href="#">Digital Closet</a></li>
+                <li><a href="#">Mix &amp; Match</a></li>
+                <li><a href="{% url 'planner:show_planner' %}">Weekly Planner</a></li>
+            </ul>
+        </nav>
+
+        <nav class="footer-col" aria-label="About">
+            <h3 class="footer-heading">About</h3>
+            <ul>
+                <li><a href="#">Our story</a></li>
+                <li><a href="#">How it works</a></li>
+                <li><a href="#">Community</a></li>
+            </ul>
+        </nav>
+
+        <div class="footer-col">
+            <h3 class="footer-heading">Contact</h3>
+            <ul>
+                <li><a href="mailto:email@restyle.id">email@restyle.id</a></li>
+                <li><a href="#">@re.style</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <span>&copy; 2026 RE:STYLE</span>
+        <span>Made thoughtfully, worn endlessly.</span>
+    </div>
+</footer>
