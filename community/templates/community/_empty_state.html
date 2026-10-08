@@ -1,0 +1,10 @@
+{# Tampilan saat belum ada isi. Butuh "title" dan "text". "button_url" dan "button_label" boleh tidak diisi. #}
+{% load static %}
+<div class="cm-empty">
+    <img src="{% static 'img/bunglon_hires.png' %}" alt="">
+    <h2>{{ title }}</h2>
+    <p>{{ text }}</p>
+    {% if button_url %}
+    <a href="{{ button_url }}" class="cm-btn cm-btn-primary">{{ button_label }}</a>
+    {% endif %}
+</div>

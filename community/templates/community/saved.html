@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+    <title>Saved | RE:STYLE</title>
+    <link rel="stylesheet" href="{% static 'css/community.css' %}">
+    <script src="{% static 'js/community.js' %}" defer></script>
+{% endblock meta %}
+
+{% block content %}
+<main class="cm-page">
+    <div class="cm-layout cm-layout-wide">
+
+        {% include 'community/_sidebar.html' with active='saved' %}
+
+        <section class="cm-feed">
+            <div class="cm-tabs">
+                <span class="cm-tab is-active">Bookmarks</span>
+            </div>
+
+            {% for post in posts %}
+                {% include 'community/_post_card.html' %}
+            {% empty %}
+                {% url 'community:show_community' as feed_link %}
+                {% include 'community/_empty_state.html' with title="Nothing saved yet" text="Tap Save on a post to keep it here for later." button_url=feed_link button_label="Browse the community" %}            
+            {% endfor %}
+        </section>
+
+    </div>
+</main>
+{% endblock content %}

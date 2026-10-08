@@ -18,7 +18,7 @@
             <p>Discover styling inspiration, mix and match ideas, and everyday outfit tips from fellow students using clothes you already own.</p>
             <div class="cm-hero-actions">
                 <a href="#composer" class="cm-btn cm-btn-primary"><i class="fa-solid fa-plus"></i> New post</a>
-                <a href="#" class="cm-btn cm-btn-outline">My saved ideas</a>
+                <a href="{% url 'community:show_saved' %}" class="cm-btn cm-btn-outline">My saved ideas</a>
             </div>
         </div>
         <img class="cm-hero-img" src="{% static 'img/community/chameleon.png' %}"
@@ -32,8 +32,10 @@
 
         <section class="cm-feed">
             <div class="cm-tabs">
-                <a href="#" class="cm-tab is-active">For you</a>
-                <a href="#" class="cm-tab">Following</a>
+                <a href="{% url 'community:show_community' %}"
+                   class="cm-tab {% if tab != 'following' %}is-active{% endif %}">For you</a>
+                <a href="{% url 'community:show_community' %}?tab=following"
+                   class="cm-tab {% if tab == 'following' %}is-active{% endif %}">Following</a>            
             </div>
 
             {% if messages %}
@@ -68,7 +70,11 @@
             {% for post in posts %}
                 {% include 'community/_post_card.html' %}
             {% empty %}
-                <p class="cm-empty">No posts yet. Be the first to share a look.</p>
+                {% if tab == 'following' %}
+                    {% include 'community/_empty_state.html' with title="Nothing here yet" text="Follow a few stylists to see their posts in this tab." %}
+                {% else %}
+                    {% include 'community/_empty_state.html' with title="No posts yet" text="Be the first to share a look with the community." %}
+                {% endif %}            
             {% endfor %}
         </section>
 
@@ -91,7 +97,7 @@
                     <li>No popular posts yet.</li>
                     {% endfor %}
                 </ol>
-                </div>
+            </div>
 
             <div class="cm-card cm-card-soft">
                 <div class="cm-aside-head">
@@ -103,15 +109,42 @@
                         <span class="cm-avatar cm-avatar-small">{{ person.username|first|upper }}</span>
                         <div>
                             <a href="#">@{{ person.username }}</a>
-                            <p>{{ person.bio }}</p>
+                            <p>{{ person.post_count }} post{{ person.post_count|pluralize }}</p>
                         </div>
-                        <button type="button" class="cm-btn cm-btn-outline cm-btn-tiny">Follow</button>
+                        <button type="button" class="cm-btn cm-btn-outline cm-btn-tiny cm-follow"
+                                data-url="{% url 'community:toggle_follow' person.username %}">
+                            <span class="cm-follow-label">Follow</span>
+                        </button>
+                    </li>
+                    {% empty %}
+                    <li>You're following everyone here.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            {% if following_people %}
+            <div class="cm-card cm-card-soft">
+                <div class="cm-aside-head">
+                    <h2>Following</h2>
+                </div>
+                <ul class="cm-stylists">
+                    {% for person in following_people %}
+                    <li>
+                        <span class="cm-avatar cm-avatar-small">{{ person.username|first|upper }}</span>
+                        <div>
+                            <a href="#">@{{ person.username }}</a>
+                        </div>
+                        <button type="button" class="cm-btn cm-btn-outline cm-btn-tiny cm-follow is-active"
+                                data-url="{% url 'community:toggle_follow' person.username %}" title="Click to unfollow">
+                            <span class="cm-follow-label">Following</span>
+                        </button>
                     </li>
                     {% endfor %}
                 </ul>
             </div>
+            {% endif %}
         </aside>
-
+        
     </div>
 </main>
 {% endblock content %}

@@ -104,3 +104,24 @@ class PostImage(models.Model):
 
     def __str__(self):
         return f"Photo for post {self.post_id}"
+
+class Follow(models.Model):
+    follower = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="following_links",
+    )
+    followed = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="follower_links",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["follower", "followed"], name="unique_follow"),
+        ]
+
+    def __str__(self):
+        return f"@{self.follower.username} follows @{self.followed.username}"

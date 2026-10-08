@@ -1,14 +1,44 @@
-{# satu kartu post. butuh variabel "post". #}
-<article class="cm-card cm-post">
+{# Satu kartu post. Butuh variabel "post". #}
+<article class="cm-card cm-post" id="post-{{ post.id }}">
     <span class="cm-avatar">{{ post.author.username|first|upper }}</span>
 
     <div class="cm-post-main">
         <header class="cm-post-head">
             <a href="#" class="cm-username">@{{ post.author.username }}</a>
             <span class="cm-time">{{ post.time_ago }}</span>
+
+            {% if post.author == user or user.is_staff %}
+            <div class="cm-menu">
+                <button type="button" class="cm-menu-button" aria-label="More options" aria-expanded="false">
+                    <i class="fa-solid fa-ellipsis"></i>
+                </button>
+                <div class="cm-menu-list" hidden>
+                    {% if post.author == user %}
+                    <button type="button" class="cm-toggle-edit"><i class="fa-regular fa-pen-to-square"></i> Edit</button>
+                    {% endif %}
+                    <form method="post" action="{% url 'community:delete_post' post.id %}"
+                          data-confirm="Delete this post? This can't be undone.">
+                        {% csrf_token %}
+                        <button type="submit" class="cm-menu-danger"><i class="fa-regular fa-trash-can"></i> Delete</button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}        
         </header>
 
-        <div class="cm-post-body">{{ post.content|linebreaks }}</div>
+        <div class="cm-post-body cm-editable">{{ post.content|linebreaks }}</div>
+
+        {% if post.author == user %}
+        <form class="cm-edit-form" method="post" action="{% url 'community:edit_post' post.id %}" hidden>
+            {% csrf_token %}
+            <textarea name="content" rows="3" maxlength="1000" required
+                      aria-label="Edit your post">{{ post.content }}</textarea>
+            <div class="cm-edit-actions">
+                <button type="button" class="cm-btn cm-btn-outline cm-btn-small cm-cancel-edit">Cancel</button>
+                <button type="submit" class="cm-btn cm-btn-primary cm-btn-small">Save</button>
+            </div>
+        </form>
+        {% endif %}
 
         {% if post.images.all %}
         <div class="cm-photos">
@@ -18,27 +48,25 @@
         </div>
         {% endif %}
 
-        {# Bagian tag dari closet disambungkan nanti, setelah model pakaian dari Modul 1 ada. #}
-        {% if post.tagged_items %}
-        <p class="cm-tagged-label">Tagged from @{{ post.author.username }}'s closet</p>
-        <div class="cm-tagged">
-            {% for item in post.tagged_items %}
-            <figure class="cm-tagged-item">
-                <img src="{{ item.image }}" alt="">
-                <figcaption>{{ item.name }}</figcaption>
-            </figure>
-            {% endfor %}
-        </div>
-        {% endif %}
+        {# Tag dari closet ditambahkan di sini nanti, setelah model pakaian dari Modul 1 ada. #}
 
         <div class="cm-actions">
-            <button type="button"><i class="fa-regular fa-heart"></i> {{ post.likes.count }}</button>
-            <button type="button"><i class="fa-regular fa-comment"></i> {{ post.comments.count }} repl{{ post.comments.count|pluralize:"y,ies" }}</button>
-            <button type="button"><i class="fa-regular fa-bookmark"></i> Save</button>
+            <button type="button" class="cm-react {% if user in post.likes.all %}is-active{% endif %}"
+                    data-url="{% url 'community:toggle_post_like' post.id %}" aria-label="Like this post">
+                <i class="fa-regular fa-heart"></i> <span class="cm-count">{{ post.likes.count }}</span>
+            </button>
+            <button type="button" class="cm-toggle-comments" aria-expanded="false">
+                <i class="fa-regular fa-comment"></i> {{ post.comments.count }} repl{{ post.comments.count|pluralize:"y,ies" }}
+            </button>
+            <button type="button" class="cm-react cm-save {% if user in post.saved_by.all %}is-active{% endif %}"
+                    data-url="{% url 'community:toggle_post_save' post.id %}">
+                <i class="fa-regular fa-bookmark"></i>
+                <span class="cm-save-label">{% if user in post.saved_by.all %}Saved{% else %}Save{% endif %}</span>
+            </button>
         </div>
 
-        {% if post.top_level_comments %}
-        <section class="cm-comments">
+        <section class="cm-comments" hidden>
+            {% if post.top_level_comments %}
             <div class="cm-comments-head">
                 <span>{{ post.comments.count }} repl{{ post.comments.count|pluralize:"y,ies" }}</span>
                 <span>Oldest first</span>
@@ -47,13 +75,15 @@
             {% for comment in post.top_level_comments %}
                 {% include 'community/_comment.html' %}
             {% endfor %}
+            {% endif %}
 
-            <div class="cm-reply-form">
+            <form class="cm-reply-form" method="post" action="{% url 'community:create_comment' post.id %}">
+                {% csrf_token %}
                 <span class="cm-avatar">{{ user.username|first|upper|default:"?" }}</span>
-                <input type="text" placeholder="Write a reply..." aria-label="Write a reply">
-                <button type="button" class="cm-btn cm-btn-dark">Reply</button>
-            </div>
+                <input type="text" name="content" maxlength="500" required
+                       placeholder="Write a reply..." aria-label="Write a reply">
+                <button type="submit" class="cm-btn cm-btn-dark">Reply</button>
+            </form>
         </section>
-        {% endif %}
     </div>
 </article>

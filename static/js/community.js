@@ -79,3 +79,170 @@ if (composer) {
 
     updatePostButton();
 }
+
+
+// comment: buka-tutup daftar komentar dan kotak balasan.
+
+function setCommentsOpen(post, isOpen) {
+    post.querySelector(".cm-comments").hidden = !isOpen;
+    post.querySelector(".cm-toggle-comments").setAttribute("aria-expanded", String(isOpen));
+}
+
+// button "replies" di tiap post membuka atau menutup commentnya
+document.querySelectorAll(".cm-post").forEach((post) => {
+    post.querySelector(".cm-toggle-comments").addEventListener("click", () => {
+        const isOpenNow = !post.querySelector(".cm-comments").hidden;
+        setCommentsOpen(post, !isOpenNow);
+    });
+});
+
+
+// button "Reply" di bawah comment nampilin kotak balasan kecil
+document.querySelectorAll(".cm-toggle-reply").forEach((button) => {
+    const form = button.closest(".cm-comment-main").querySelector(".cm-reply-inline");
+
+    button.addEventListener("click", () => {
+        form.hidden = !form.hidden;
+        if (!form.hidden) {
+            form.querySelector('input[name="content"]').focus();
+        }
+    });
+});
+
+
+// setelah ngirim comment, alamat halaman berakhiran #post-12
+// komentar post itu langsung dibuka supaya komentar barunya terlihat
+if (location.hash.startsWith("#post-")) {
+    const post = document.getElementById(location.hash.slice(1));
+    if (post) {
+        setCommentsOpen(post, true);
+    }
+}
+
+// edit: tombol "Edit" menukar tulisan dengan kotak edit, "Cancel" mengembalikannya
+document.querySelectorAll(".cm-toggle-edit").forEach((button) => {
+    const box = button.closest(".cm-post-main, .cm-comment-main");
+    const view = box.querySelector(".cm-editable");
+    const form = box.querySelector(".cm-edit-form");
+
+    function setEditing(isEditing) {
+        form.hidden = !isEditing;
+        view.hidden = isEditing;
+        if (isEditing) {
+            form.querySelector("textarea").focus();
+        }
+    }
+
+    button.addEventListener("click", () => setEditing(form.hidden));
+    form.querySelector(".cm-cancel-edit").addEventListener("click", () => setEditing(false));
+});
+
+
+// Hapus: tanya dulu sebelum benar-benar menghapus
+document.querySelectorAll("form[data-confirm]").forEach((form) => {
+    form.addEventListener("submit", (event) => {
+        if (!confirm(form.dataset.confirm)) {
+            event.preventDefault();
+        }
+    });
+});
+
+
+// Menu titik tiga: buka-tutup, dan tutup otomatis saat klik di luar atau tekan Escape.
+function closeAllMenus() {
+    document.querySelectorAll(".cm-menu-list").forEach((list) => {
+        list.hidden = true;
+    });
+    document.querySelectorAll(".cm-menu-button").forEach((button) => {
+        button.setAttribute("aria-expanded", "false");
+    });
+}
+
+document.querySelectorAll(".cm-menu").forEach((menu) => {
+    const button = menu.querySelector(".cm-menu-button");
+    const list = menu.querySelector(".cm-menu-list");
+
+    button.addEventListener("click", (event) => {
+        event.stopPropagation(); // supaya klik ini ga dianggap "klik di luar"
+        const willOpen = list.hidden;
+        closeAllMenus();
+        list.hidden = !willOpen;
+        button.setAttribute("aria-expanded", String(willOpen));
+    });
+});
+
+document.addEventListener("click", closeAllMenus);
+
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+        closeAllMenus();
+    }
+});
+
+// Like dan Save: kirim ke server tanpa memuat ulang halaman, lalu perbarui tombolnya.
+document.querySelectorAll(".cm-react").forEach((button) => {
+    button.addEventListener("click", async () => {
+        const token = button.closest(".cm-post").querySelector("input[name=csrfmiddlewaretoken]").value;
+
+        try {
+            const response = await fetch(button.dataset.url, {
+                method: "POST",
+                headers: { "X-CSRFToken": token },
+            });
+            const result = await response.json();
+
+            button.classList.toggle("is-active", result.active);
+
+            const count = button.querySelector(".cm-count");
+            if (count) {
+                count.textContent = result.count;
+            }
+
+            const saveLabel = button.querySelector(".cm-save-label");
+            if (saveLabel) {
+                saveLabel.textContent = result.active ? "Saved" : "Save";
+            }
+        } catch (error) {
+            alert("Something went wrong. Please refresh the page and try again.");
+        }
+    });
+});
+
+// Tombol "New post" dan "Post": gulir ke kotak tulis post dan langsung siap mengetik.
+function focusComposer() {
+    const box = document.querySelector("#composer");
+    if (!box) {
+        return false; // halaman ini tidak punya kotak tulis post
+    }
+    box.scrollIntoView({ behavior: "smooth", block: "center" });
+    box.querySelector("textarea").focus({ preventScroll: true });
+    return true;
+}
+
+document.querySelectorAll('a[href$="#composer"]').forEach((link) => {
+    link.addEventListener("click", (event) => {
+        if (focusComposer()) {
+            event.preventDefault();
+        }
+    });
+});
+
+// Follow: kirim ke server tanpa memuat ulang halaman, lalu ubah tombolnya.
+document.querySelectorAll(".cm-follow").forEach((button) => {
+    button.addEventListener("click", async () => {
+        const token = document.querySelector("input[name=csrfmiddlewaretoken]").value;
+
+        try {
+            const response = await fetch(button.dataset.url, {
+                method: "POST",
+                headers: { "X-CSRFToken": token },
+            });
+            const result = await response.json();
+
+            button.classList.toggle("is-active", result.active);
+            button.querySelector(".cm-follow-label").textContent = result.active ? "Following" : "Follow";
+        } catch (error) {
+            alert("Something went wrong. Please refresh the page and try again.");
+        }
+    });
+});
