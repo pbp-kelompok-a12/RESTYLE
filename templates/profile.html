@@ -21,24 +21,18 @@
           <span class="inline-block mt-2 px-3 py-1 bg-[#F9EAA9] text-[#3A2B48] text-xs font-bold rounded-full border border-[#3A2B48]">
             Conscious Member
           </span>
+          <div class="profile-follow-stats mt-3">
+            {% url 'community:show_following' user.username as following_url %}
+            {% url 'community:show_followers' user.username as followers_url %}
+            {% include 'components/button.html' with href=following_url btn_class="tertiary" extra_class="profile-stat-btn" stat_button=True value=user.following_links.count label="Following" %}
+            {% include 'components/button.html' with href=followers_url btn_class="tertiary" extra_class="profile-stat-btn" stat_button=True value=user.follower_links.count label="Followers" %}
+          </div>
         </div>
       </div>
 
-      <div class="flex flex-col items-center gap-4">
-        <div class="flex gap-5 text-center">
-          <a href="{% url 'community:show_following' user.username %}" class="hover:underline">
-            <strong class="block text-xl">{{ user.following_links.count }}</strong>
-            <span class="text-xs text-gray-600">Following</span>
-          </a>
-          <a href="{% url 'community:show_followers' user.username %}" class="hover:underline">
-            <strong class="block text-xl">{{ user.follower_links.count }}</strong>
-            <span class="text-xs text-gray-600">Followers</span>
-          </a>
-        </div>
-        <a href="{% url 'main:logout' %}" class="px-6 py-2.5 bg-red-100 text-red-700 hover:bg-red-200 border border-red-300 font-bold text-sm rounded-xl transition">
-          Log Out
-        </a>
-      </div>
+      <a href="{% url 'main:logout' %}" class="px-6 py-2.5 bg-red-100 text-red-700 hover:bg-red-200 border border-red-300 font-bold text-sm rounded-xl transition">
+        Log Out
+      </a>
     </div>
 
     <div class="bg-[#FAE0C6] rounded-3xl p-6 md:p-8 border-2 border-[#3A2B48] shadow-[6px_6px_0px_0px_#3A2B48]">

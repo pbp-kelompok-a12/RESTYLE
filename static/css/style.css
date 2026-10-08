@@ -117,6 +117,45 @@ body{
     background-color: rgb(255, 245, 203);
 }
 
+.tertiary-btn{
+    background-color: transparent;
+    color: var(--color-azure-martinique);
+    font-weight: 700;
+}
+
+.tertiary-btn:hover{
+    background-color: var(--color-azure-martinique-6);
+}
+
+.profile-follow-stats{
+    display: flex;
+    gap: 8px;
+}
+
+.profile-stat-btn{
+    min-width: 96px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 10px 14px;
+    border-radius: var(--corner-radius-12);
+    text-decoration: none;
+    text-align: center;
+}
+
+.profile-stat-btn strong{
+    font-size: 20px;
+    line-height: 1.2;
+}
+
+.profile-stat-btn span{
+    color: var(--color-azure-dolphin);
+    font-size: 12px;
+    font-weight: 600;
+}
+
 .disabled-btn{
     opacity: 50%;
     cursor: not-allowed;

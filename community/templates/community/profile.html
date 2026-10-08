@@ -27,15 +27,11 @@
             {% endif %}
         </div>
 
-        <div class="cm-profile-stats">
-            <a href="{% url 'community:show_following' profile_user.username %}">
-                <strong>{{ following_count }}</strong>
-                <span>Following</span>
-            </a>
-            <a href="{% url 'community:show_followers' profile_user.username %}">
-                <strong data-followers-count>{{ followers_count }}</strong>
-                <span>Followers</span>
-            </a>
+        <div class="profile-follow-stats cm-profile-stats">
+            {% url 'community:show_following' profile_user.username as following_url %}
+            {% url 'community:show_followers' profile_user.username as followers_url %}
+            {% include 'components/button.html' with href=following_url btn_class="tertiary" extra_class="profile-stat-btn" stat_button=True value=following_count label="Following" %}
+            {% include 'components/button.html' with href=followers_url btn_class="tertiary" extra_class="profile-stat-btn" stat_button=True value=followers_count value_data_attr="followers-count" label="Followers" %}
         </div>
     </section>
 

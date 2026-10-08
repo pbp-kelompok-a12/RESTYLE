@@ -1,4 +1,13 @@
-{% if icon %}
+{% if href %}
+<a href="{{ href }}" class="btn {{ btn_class|default:'primary' }}-btn {{ extra_class }}">
+    {% if stat_button %}
+    <strong {% if value_data_attr %}data-{{ value_data_attr }}{% endif %}>{{ value }}</strong>
+    <span>{{ label|default:'Klik Disini' }}</span>
+    {% else %}
+    {{ label|default:'Klik Disini' }}
+    {% endif %}
+</a>
+{% elif icon %}
 <button class="btn {{ btn_class|default:'primary' }}-btn {{ extra_class }}" type="{{ btn_type|default:'button' }}">
     <span>{{ label|default:'Klik Disini' }}</span>
     <i class="{{ icon }}"></i>

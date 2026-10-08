@@ -1122,28 +1122,12 @@ body{
 
 .cm-profile-stats{
     display: flex;
-    gap: 28px;
+    gap: 8px;
     margin: 24px 0 0 82px;
 }
 
-.cm-profile-stats a{
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-}
-
-.cm-profile-stats a:hover,
 .cm-follow-back:hover{
     text-decoration: underline;
-}
-
-.cm-profile-stats strong{
-    font-size: 16px;
-}
-
-.cm-profile-stats span{
-    color: var(--color-azure-dolphin);
-    font-size: 12px;
 }
 
 .cm-profile-posts{
