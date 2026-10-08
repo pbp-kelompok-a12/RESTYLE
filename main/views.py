@@ -76,9 +76,4 @@ def logout_user(request):
 
 @login_required(login_url='/login')
 def profile_view(request):
-    profile, created = UserProfile.objects.get_or_create(user=request.user)
-    context = {
-        'user': request.user,
-        'profile': profile,
-    }
-    return render(request, 'profile.html', context)
+    return redirect('community:show_user_profile', username=request.user.username)

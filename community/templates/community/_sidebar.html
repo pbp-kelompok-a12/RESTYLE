@@ -4,7 +4,7 @@
         <i class="fa-solid fa-house"></i> All posts
     </a>
     <hr>
-    <a href="#" class="cm-side-link {% if active == 'mine' %}is-active{% endif %}">
+    <a href="{% url 'community:show_user_profile' user.username %}#posts" class="cm-side-link {% if active == 'mine' %}is-active{% endif %}">
         <i class="fa-regular fa-message"></i> My posts
     </a>
     <a href="{% url 'community:show_saved' %}" class="cm-side-link {% if active == 'saved' %}is-active{% endif %}">

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+    <title>@{{ profile_user.username }} | RE:STYLE</title>
+    <link rel="stylesheet" href="{% static 'css/community.css' %}">
+    <script src="{% static 'js/community.js' %}" defer></script>
+{% endblock meta %}
+
+{% block content %}
+<main class="cm-page">
+    <section class="section-container cm-card community-profile-card">
+        {% csrf_token %}
+        <div class="community-profile-header">
+            <span class="cm-avatar community-profile-avatar">{{ profile_user.username|first|upper }}</span>
+            <div class="community-profile-identity">
+                <span class="cm-badge">COMMUNITY MEMBER</span>
+                <h1>@{{ profile_user.username }}</h1>
+                <p>Member since {{ profile_user.date_joined|date:"M Y" }}</p>
+                {% if profile_user == user %}
+                <p>{{ profile_user.email|default:"No email registered" }}</p>
+                {% endif %}
+            </div>
+            {% if profile_user != user %}
+            <button type="button"
+                    class="cm-btn cm-btn-outline cm-follow {% if is_following %}is-active{% endif %}"
+                    data-url="{% url 'community:toggle_follow' profile_user.username %}">
+                <span class="cm-follow-label">{% if is_following %}Following{% else %}Follow{% endif %}</span>
+            </button>
+            {% else %}
+            {% url 'main:logout' as logout_url %}
+            {% include 'components/button.html' with href=logout_url btn_class="danger" label="Log Out" %}
+            {% endif %}
+        </div>
+
+        <div class="profile-stat-buttons community-profile-stat-buttons">
+            {% url 'community:show_following' profile_user.username as following_url %}
+            {% url 'community:show_followers' profile_user.username as followers_url %}
+            {% include 'components/button.html' with href=following_url btn_class="tertiary" extra_class="profile-stat-button" stat_button=True value=following_count label="Following" %}
+            {% include 'components/button.html' with href=followers_url btn_class="tertiary" extra_class="profile-stat-button" stat_button=True value=followers_count value_data_attr="followers-count" label="Followers" %}
+        </div>
+    </section>
+
+    {% if profile_user == user %}
+    <section class="section-container profile-persona-section">
+        <div class="profile-persona-badge-row">
+            <span class="profile-persona-badge">Your Style Persona</span>
+        </div>
+        <h2 class="profile-persona-title">{{ profile.style_persona|default:"The Conscious Minimalist" }}</h2>
+        <p class="profile-persona-description">
+            You prioritize versatility and functionality in your wardrobe. By maximizing mix-and-match combinations, you actively reduce textile waste and make mindful fashion choices.
+        </p>
+        <a href="{% url 'main:style_quiz' %}" class="profile-quiz-link">Retake Style Quiz</a>
+    </section>
+    {% endif %}
+
+    <section class="section-container community-profile-posts" id="posts">
+        <div class="community-profile-section-heading">
+            <h2>Posts</h2>
+            <a href="{% url 'community:show_community' %}" class="cm-btn cm-btn-outline cm-btn-small">
+                Back to community
+            </a>
+        </div>
+        {% for post in posts %}
+            {% include 'community/_post_card.html' %}
+        {% empty %}
+            <div class="cm-empty">
+                <h2>No posts yet</h2>
+                <p>@{{ profile_user.username }} hasn't shared anything with the community yet.</p>
+            </div>
+        {% endfor %}
+    </section>
+</main>
+{% endblock content %}

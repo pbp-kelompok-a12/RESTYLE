@@ -239,8 +239,14 @@ document.querySelectorAll(".cm-follow").forEach((button) => {
             });
             const result = await response.json();
 
+            const wasFollowing = button.classList.contains("is-active");
             button.classList.toggle("is-active", result.active);
             button.querySelector(".cm-follow-label").textContent = result.active ? "Following" : "Follow";
+            const followersCount = document.querySelector("[data-followers-count]");
+            if (followersCount && wasFollowing !== result.active) {
+                const count = Number(followersCount.textContent);
+                followersCount.textContent = String(count + (result.active ? 1 : -1));
+            }
         } catch (error) {
             alert("Something went wrong. Please refresh the page and try again.");
         }
