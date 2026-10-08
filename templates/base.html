@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -20,11 +20,16 @@
     <header class="site-header">
         <nav>
             <div class="nav-act">
-                <a href="#" class="">FEATURES</a>
+                <a href="#">FEATURES</a>
                 <a href="#">HOW IT WORKS</a>
                 <a href="#">STORIES</a>
             </div>
-            <a href="#" class="brand"><img src="/static/img/brand.webp" alt=""></a>
+            
+            <a href="/" class="font-poppins font-extrabold text-2xl tracking-wide flex items-center">
+                <span class="text-[#9CC24B] mr-1">RE:</span>
+                <span class="bg-[#FAE0C6] text-[#3A2B48] px-2 py-0.5 leading-none">STYLE</span>
+            </a>
+
             <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false">
                 <i class="fa-solid fa-bars"></i>
             </button>
@@ -47,9 +52,7 @@
     </header>
 
     {% block content %} {% endblock content %}
-    
 
-    
 </body>
 <script src="/static/js/script.js"></script>
 </html>

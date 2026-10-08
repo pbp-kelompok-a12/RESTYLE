@@ -37,7 +37,7 @@ def login_user(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('main:show_main')  # Halaman utama/dashboard setelah login
+            return redirect('main:show_landing_page')  # <-- UBAH KE show_landing_page
         else:
             messages.error(request, 'Username atau password salah!')
     else:
