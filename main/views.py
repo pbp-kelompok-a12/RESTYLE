@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from types import SimpleNamespace
@@ -28,3 +29,18 @@ def register(request):
 
     context = {'form': form}
     return render(request, 'register.html', context)
+
+def login_user(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('main:show_main')  # Halaman utama/dashboard setelah login
+        else:
+            messages.error(request, 'Username atau password salah!')
+    else:
+        form = AuthenticationForm()
+
+    context = {'form': form}
+    return render(request, 'login.html', context)
