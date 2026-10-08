@@ -1,0 +1,94 @@
+.site-footer {
+    width: 100%;
+    font-family: var(--font-family-font-1), sans-serif;
+}
+
+/* ---------- main row ---------- */
+.footer-main {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: var(--color-yellow-peach-yellow);
+}
+
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    padding: 48px 32px;
+    background: var(--color-azure-san-marino);
+}
+
+.footer-logo {
+    height: 44px;
+    width: auto;
+    align-self: flex-start;
+}
+
+.footer-tagline {
+    margin: 0;
+    font-size: 15px;
+    color: var(--color-white-solid);
+}
+
+.footer-col {
+    padding: 48px 36px;
+    border-left: var(--container-border);
+}
+
+.footer-heading {
+    margin: 0 0 16px;
+    font-family: var(--font-family-font-3), sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-azure-dolphin);
+}
+
+.footer-col ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-col a {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-azure-martinique);
+    text-decoration: none;
+    transition: opacity 0.15s;
+}
+
+.footer-col a:hover {
+    opacity: 0.65;
+}
+
+/* ---------- bottom bar ---------- */
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 32px;
+    background: var(--color-azure-martinique);
+    color: var(--color-white-solid);
+    font-size: 12px;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px) {
+    .footer-main { grid-template-columns: repeat(2, 1fr); }
+    .footer-brand { grid-column: 1 / -1; }
+    .footer-col:nth-child(2) { border-left: none; }
+    .footer-col { border-top: var(--container-border); }
+}
+
+@media (max-width: 560px) {
+    .footer-main { grid-template-columns: 1fr; }
+    .footer-col { border-left: none; padding: 32px; }
+    .footer-bottom { flex-direction: column; align-items: flex-start; }
+}

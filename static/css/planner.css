@@ -1,0 +1,177 @@
+/* override section-container khusus planner */
+.planner-top {
+    flex-direction: column;
+    gap: 24px;
+    padding-top: 160px;
+    padding-bottom: 80px;
+    background: var(--color-orange-linen);
+}
+
+.planner-title h2 {
+    font-family: var(--font-family-font-3), sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--color-azure-san-marino);
+    margin: 0;
+}
+
+.planner-title .highlight {
+    background: var(--color-azure-san-marino);
+    color: var(--color-yellow-peach-yellow);
+    padding: 0 6px;
+}
+
+/* ---------- week picker ---------- */
+.week-picker {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: fit-content;
+}
+
+.week-select-wrap {
+    position: relative;
+}
+
+.week-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: var(--color-azure-san-marino);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    color: var(--color-white-solid);
+    font-family: var(--font-family-font-3), sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 10px 40px 10px 18px;
+    border: none;
+    border-radius: var(--corner-radius-999);
+    cursor: pointer;
+}
+
+.week-select option {
+    background: var(--color-white-solid);
+    color: var(--color-azure-san-marino);
+}
+
+.week-nav {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-yellow-peach-yellow);
+    color: var(--color-azure-san-marino);
+    font-size: 24px;
+    line-height: 1;
+    text-decoration: none;
+    transition: transform 0.15s;
+}
+
+.week-nav:hover {
+    transform: scale(1.1);
+}
+
+.week-go {
+    background: var(--color-yellow-peach-yellow);
+    color: var(--color-azure-san-marino);
+    border: none;
+    border-radius: var(--corner-radius-999);
+    padding: 8px 16px;
+    font-weight: 600;
+}
+
+/* ---------- week grid ---------- */
+.week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+    width: 100%;
+}
+
+.day-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+}
+
+.day-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--color-azure-san-marino);
+    color: var(--color-white-solid);
+    font-family: var(--font-family-font-2), sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 8px 12px;
+    border-radius: var(--corner-radius-999);
+}
+
+.day-date {
+    font-size: 11px;
+    font-weight: 500;
+    opacity: 0.8;
+}
+
+.is-today .day-pill {
+    background: var(--color-yellow-peach-yellow);
+    color: var(--color-azure-san-marino);
+    outline: 2px solid var(--color-azure-san-marino);
+    font-weight: 800;
+}
+
+/* ---------- outfit slot (placeholder) ---------- */
+.outfit-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    aspect-ratio: 0.76;
+    background: var(--color-white-solid);
+    border: 2px dashed var(--color-azure-57);
+    border-radius: var(--corner-radius-24);
+    color: var(--color-azure-san-marino);
+    font-family: var(--font-family-font-1), sans-serif;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.15s, background 0.15s;
+}
+
+/* opacity 50% hanya untuk icon + teks, border tetap solid */
+.outfit-slot .plus-icon,
+.outfit-slot span {
+    opacity: 0.5;
+    transition: opacity 0.15s;
+}
+
+.outfit-slot:hover .plus-icon,
+.outfit-slot:hover span {
+    opacity: 1;
+}
+
+.outfit-slot:hover {
+    background: var(--color-azure-san-marino);
+    color: var(--color-orange-linen)!important;
+    transform: translateY(-3px);
+}
+
+.plus-icon {
+    width: 68px;
+    height: 68px;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 1100px) {
+    .week-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 700px) {
+    .planner-top { padding-left: 20px; padding-right: 20px; }
+    .planner-title h2 { font-size: 32px; }
+    .week-grid { grid-template-columns: repeat(2, 1fr); }
+}
