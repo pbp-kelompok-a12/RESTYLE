@@ -5,87 +5,135 @@
 {% endblock meta %}
 
 {% block content %}
-<div class="min-h-screen pt-28 pb-12 bg-[#FDF9F2] flex items-center justify-center px-4 font-body text-[#3A2B48]">
-  <div class="max-w-2xl w-full bg-white rounded-3xl p-8 border-2 border-[#3A2B48] shadow-[8px_8px_0px_0px_#3A2B48]">
-    
-    <div class="text-center mb-8">
-      <span class="inline-block px-4 py-1 rounded-full bg-[#F9EAA9] text-[#3A2B48] font-bold text-xs uppercase mb-2">
-        Conscious Style Quiz
-      </span>
-      <h1 class="font-bold text-3xl md:text-4xl text-[#3A2B48]">
-        Find Your Style Persona
-      </h1>
-      <p class="text-sm text-gray-600 mt-2">
-        Answer these 3 quick questions to help us tailor your wardrobe and conscious shopping recommendations.
-      </p>
+<div class="min-h-screen pt-28 pb-16 flex justify-center items-center bg-[#FDF9F2] px-4">
+    <div class="max-w-2xl w-full bg-white p-8 md:p-10 rounded-3xl shadow-[8px_8px_0px_0px_#3A2B48] border-2 border-[#3A2B48]">
+        
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-extrabold text-[#3A2B48] mb-2">Why are you here?</h1>
+            <p class="text-sm text-gray-600">Select your goals so we can customize your RE:STYLE experience.</p>
+        </div>
+
+        <form method="POST" action="" id="quizForm" class="space-y-8">
+            {% csrf_token %}
+
+            <!-- Question 1: Whering Style Goal Question -->
+            <div>
+                <label class="block text-base font-bold text-[#3A2B48] mb-3">
+                    1. What is your main reason for joining RE:STYLE?
+                </label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
+                        <span class="text-sm font-semibold text-[#3A2B48]">Organize my wardrobe</span>
+                        <input type="radio" name="wardrobe_goal" value="Organize" class="hidden" required>
+                    </label>
+
+                    <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
+                        <span class="text-sm font-semibold text-[#3A2B48]">Discover new outfit ideas</span>
+                        <input type="radio" name="wardrobe_goal" value="Outfits" class="hidden">
+                    </label>
+
+                    <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
+                        <span class="text-sm font-semibold text-[#3A2B48]">Buy less, shop smarter</span>
+                        <input type="radio" name="wardrobe_goal" value="SmartShop" class="hidden">
+                    </label>
+
+                    <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
+                        <span class="text-sm font-semibold text-[#3A2B48]">Refine my personal style</span>
+                        <input type="radio" name="wardrobe_goal" value="RefineStyle" class="hidden">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 2: Style Persona -->
+            <div>
+                <label class="block text-base font-bold text-[#3A2B48] mb-3">
+                    2. How would you describe your everyday look?
+                </label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
+                        <span class="text-sm font-semibold text-[#3A2B48]">Minimal & Timeless</span>
+                        <input type="radio" name="style_persona" value="Minimal" class="hidden" required>
+                    </label>
+
+                    <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
+                        <span class="text-sm font-semibold text-[#3A2B48]">Casual & Comfy</span>
+                        <input type="radio" name="style_persona" value="Casual" class="hidden">
+                    </label>
+
+                    <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
+                        <span class="text-sm font-semibold text-[#3A2B48]">Thrifted & Vintage</span>
+                        <input type="radio" name="style_persona" value="Vintage" class="hidden">
+                    </label>
+
+                    <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
+                        <span class="text-sm font-semibold text-[#3A2B48]">Trendy & Bold</span>
+                        <input type="radio" name="style_persona" value="Bold" class="hidden">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 3: Conscious Shopping Priority -->
+            <div>
+                <label class="block text-base font-bold text-[#3A2B48] mb-3">
+                    3. What matters most when you buy new items?
+                </label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
+                        <span class="text-sm font-semibold text-[#3A2B48]">Long-lasting quality</span>
+                        <input type="radio" name="conscious_priority" value="Quality" class="hidden" required>
+                    </label>
+
+                    <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
+                        <span class="text-sm font-semibold text-[#3A2B48]">Easy to mix & match</span>
+                        <input type="radio" name="conscious_priority" value="Versatility" class="hidden">
+                    </label>
+
+                    <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
+                        <span class="text-sm font-semibold text-[#3A2B48]">Eco-friendly materials</span>
+                        <input type="radio" name="conscious_priority" value="Eco" class="hidden">
+                    </label>
+
+                    <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
+                        <span class="text-sm font-semibold text-[#3A2B48]">Ethical & fair trade</span>
+                        <input type="radio" name="conscious_priority" value="Ethical" class="hidden">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Action Button -->
+            <div class="pt-4">
+                <button type="submit" class="w-full py-4 bg-[#3F6699] hover:bg-[#3A2B48] text-white font-bold rounded-2xl transition shadow-md text-base">
+                    Continue to Account Registration
+                </button>
+            </div>
+        </form>
     </div>
-
-    <form method="POST" class="space-y-6">
-      {% csrf_token %}
-
-      <!-- Question 1 -->
-      <div class="bg-[#FDF9F2] p-5 rounded-2xl border border-[#E8E0D2]">
-        <h3 class="font-bold text-base text-[#3A2B48] mb-3">
-          1. Which style aesthetic best describes your daily preference?
-        </h3>
-        <div class="space-y-2">
-          <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-[#E8E0D2] cursor-pointer hover:border-[#3F6699] transition">
-            <input type="radio" name="q1" value="Minimalist & Neutral" class="accent-[#3F6699]" required>
-            <span class="text-sm font-medium">Minimalist & Neutral Tones (Capsule Wardrobe)</span>
-          </label>
-          <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-[#E8E0D2] cursor-pointer hover:border-[#3F6699] transition">
-            <input type="radio" name="q1" value="Casual Streetwear" class="accent-[#3F6699]">
-            <span class="text-sm font-medium">Casual Streetwear (Denim, Oversized, Sneakers)</span>
-          </label>
-          <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-[#E8E0D2] cursor-pointer hover:border-[#3F6699] transition">
-            <input type="radio" name="q1" value="Structured & Preppy" class="accent-[#3F6699]">
-            <span class="text-sm font-medium">Structured & Preppy (Blazers, Shirts, Tailored)</span>
-          </label>
-        </div>
-      </div>
-
-      <!-- Question 2 (Conscious Shopping) -->
-      <div class="bg-[#FDF9F2] p-5 rounded-2xl border border-[#E8E0D2]">
-        <h3 class="font-bold text-base text-[#3A2B48] mb-3">
-          2. When considering a new clothing purchase, your primary priority is:
-        </h3>
-        <div class="space-y-2">
-          <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-[#E8E0D2] cursor-pointer hover:border-[#3F6699] transition">
-            <input type="radio" name="q2" value="Versatility" class="accent-[#3F6699]" required>
-            <span class="text-sm font-medium">Versatility: Must pair with at least 3 existing items</span>
-          </label>
-          <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-[#E8E0D2] cursor-pointer hover:border-[#3F6699] transition">
-            <input type="radio" name="q2" value="Durability" class="accent-[#3F6699]">
-            <span class="text-sm font-medium">Durability: High-quality, sustainable materials & timeless design</span>
-          </label>
-          <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-[#E8E0D2] cursor-pointer hover:border-[#3F6699] transition">
-            <input type="radio" name="q2" value="Necessity" class="accent-[#3F6699]">
-            <span class="text-sm font-medium">Necessity: Replacing essential items only when worn out</span>
-          </label>
-        </div>
-      </div>
-
-      <!-- Question 3 -->
-      <div class="bg-[#FDF9F2] p-5 rounded-2xl border border-[#E8E0D2]">
-        <h3 class="font-bold text-base text-[#3A2B48] mb-3">
-          3. What is your main wardrobe management goal?
-        </h3>
-        <div class="space-y-2">
-          <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-[#E8E0D2] cursor-pointer hover:border-[#3F6699] transition">
-            <input type="radio" name="q3" value="Maximize Existing Clothes" class="accent-[#3F6699]" required>
-            <span class="text-sm font-medium">Maximize current wardrobe use & curb impulse buying</span>
-          </label>
-          <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-[#E8E0D2] cursor-pointer hover:border-[#3F6699] transition">
-            <input type="radio" name="q3" value="Effortless Daily Planning" class="accent-[#3F6699]">
-            <span class="text-sm font-medium">Plan daily outfits effortlessly without decision fatigue</span>
-          </label>
-        </div>
-      </div>
-
-      <button type="submit" class="w-full py-3.5 bg-[#3F6699] hover:bg-[#3A2B48] text-white font-bold text-sm rounded-xl transition duration-200 shadow-md">
-        Save Persona & Create Account
-      </button>
-    </form>
-  </div>
 </div>
-{% endblock %}
+
+<script>
+    // visual feedback saat kartu diklik
+    document.querySelectorAll('.quiz-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const input = this.querySelector('input[type="radio"]');
+            const groupName = input.name;
+            
+            // reset state untuk opsi di grup pertanyaan yang sama
+            document.querySelectorAll(`input[name="${groupName}"]`).forEach(radio => {
+                const parent = radio.closest('.quiz-card');
+                parent.classList.remove('border-[#3A2B48]', 'bg-[#3F6699]', 'shadow-md');
+                parent.classList.add('border-[#E8E0D2]', 'bg-[#FDF9F2]');
+                parent.querySelector('span').classList.remove('text-white');
+                parent.querySelector('span').classList.add('text-[#3A2B48]');
+            });
+
+            // set state aktif untuk kartu yang dipilih
+            input.checked = true;
+            this.classList.remove('border-[#E8E0D2]', 'bg-[#FDF9F2]');
+            this.classList.add('border-[#3A2B48]', 'bg-[#3F6699]', 'shadow-md');
+            this.querySelector('span').classList.remove('text-[#3A2B48]');
+            this.querySelector('span').classList.add('text-white');
+        });
+    });
+</script>
+{% endblock content %}
