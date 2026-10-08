@@ -35,7 +35,7 @@
     transition: background-color .2s ease-out;
 }
 
-.app-nav-links a:hover{
+.nav-links:hover{
     background-color: var(--color-azure-57);
 }
 
@@ -116,6 +116,10 @@
     color: var(--color-azure-martinique);
     font-weight: 700;
     text-decoration: none;
+}
+
+.brand-nav{
+    height: 30px;
 }
 
 @media (max-width: 900px) {
