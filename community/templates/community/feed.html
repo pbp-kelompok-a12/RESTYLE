@@ -18,7 +18,7 @@
             <p>Discover styling inspiration, mix and match ideas, and everyday outfit tips from fellow students using clothes you already own.</p>
             <div class="cm-hero-actions">
                 <a href="#composer" class="cm-btn cm-btn-primary"><i class="fa-solid fa-plus"></i> New post</a>
-                <a href="#" class="cm-btn cm-btn-outline">My saved ideas</a>
+                <a href="{% url 'community:show_saved' %}" class="cm-btn cm-btn-outline">My saved ideas</a>
             </div>
         </div>
         <img class="cm-hero-img" src="{% static 'img/community/chameleon.png' %}"
@@ -68,7 +68,7 @@
             {% for post in posts %}
                 {% include 'community/_post_card.html' %}
             {% empty %}
-                <p class="cm-empty">No posts yet. Be the first to share a look.</p>
+                {% include 'community/_empty_state.html' with title="No posts yet" text="Be the first to share a look with the community." %}            
             {% endfor %}
         </section>
 

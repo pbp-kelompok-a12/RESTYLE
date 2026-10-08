@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.db.models import Count
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -188,3 +188,39 @@ def delete_comment(request, comment_id):
     post_id = comment.post_id
     comment.delete()
     return redirect(feed_url(post_id))
+
+def toggle_user(relation, user):
+    """Menambahkan user ke sebuah daftar (like atau saved) kalau belum ada,
+    dan mengeluarkannya kalau sudah ada. Mengembalikan True kalau sekarang ada."""
+    if relation.filter(id=user.id).exists():
+        relation.remove(user)
+        return False
+    relation.add(user)
+    return True
+
+@login_required(login_url=LOGIN_URL)
+@require_POST
+def toggle_post_like(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    is_liked = toggle_user(post.likes, request.user)
+    return JsonResponse({"active": is_liked, "count": post.likes.count()})
+
+
+@login_required(login_url=LOGIN_URL)
+@require_POST
+def toggle_comment_like(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    is_liked = toggle_user(comment.likes, request.user)
+    return JsonResponse({"active": is_liked, "count": comment.likes.count()})
+
+@login_required(login_url=LOGIN_URL)
+@require_POST
+def toggle_post_save(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    is_saved = toggle_user(post.saved_by, request.user)
+    return JsonResponse({"active": is_saved})
+
+@login_required(login_url=LOGIN_URL)
+def show_saved(request):
+    posts = request.user.saved_posts.select_related("author")
+    return render(request, "community/saved.html", {"posts": posts})

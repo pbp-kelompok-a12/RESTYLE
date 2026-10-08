@@ -24,7 +24,10 @@
         {% endif %}
 
         <div class="cm-actions cm-actions-small">
-            <button type="button"><i class="fa-regular fa-heart"></i> {{ comment.likes.count }}</button>
+            <button type="button" class="cm-react {% if user in comment.likes.all %}is-active{% endif %}"
+                    data-url="{% url 'community:toggle_comment_like' comment.id %}" aria-label="Like this reply">
+                <i class="fa-regular fa-heart"></i> <span class="cm-count">{{ comment.likes.count }}</span>
+            </button>            
             <button type="button" class="cm-toggle-reply">Reply</button>
             {% if comment.author == user or user.is_staff %}
             <div class="cm-menu">

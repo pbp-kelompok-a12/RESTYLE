@@ -178,3 +178,51 @@ document.addEventListener("keydown", (event) => {
         closeAllMenus();
     }
 });
+
+// Like dan Save: kirim ke server tanpa memuat ulang halaman, lalu perbarui tombolnya.
+document.querySelectorAll(".cm-react").forEach((button) => {
+    button.addEventListener("click", async () => {
+        const token = button.closest(".cm-post").querySelector("input[name=csrfmiddlewaretoken]").value;
+
+        try {
+            const response = await fetch(button.dataset.url, {
+                method: "POST",
+                headers: { "X-CSRFToken": token },
+            });
+            const result = await response.json();
+
+            button.classList.toggle("is-active", result.active);
+
+            const count = button.querySelector(".cm-count");
+            if (count) {
+                count.textContent = result.count;
+            }
+
+            const saveLabel = button.querySelector(".cm-save-label");
+            if (saveLabel) {
+                saveLabel.textContent = result.active ? "Saved" : "Save";
+            }
+        } catch (error) {
+            alert("Something went wrong. Please refresh the page and try again.");
+        }
+    });
+});
+
+// Tombol "New post" dan "Post": gulir ke kotak tulis post dan langsung siap mengetik.
+function focusComposer() {
+    const box = document.querySelector("#composer");
+    if (!box) {
+        return false; // halaman ini tidak punya kotak tulis post
+    }
+    box.scrollIntoView({ behavior: "smooth", block: "center" });
+    box.querySelector("textarea").focus({ preventScroll: true });
+    return true;
+}
+
+document.querySelectorAll('a[href$="#composer"]').forEach((link) => {
+    link.addEventListener("click", (event) => {
+        if (focusComposer()) {
+            event.preventDefault();
+        }
+    });
+});
