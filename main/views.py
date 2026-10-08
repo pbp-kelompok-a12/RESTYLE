@@ -21,11 +21,12 @@ def show_landing_page(request):
 def style_quiz(request):
     if request.method == "POST":
         request.session['quiz_data'] = {
-            'preferred_style': request.POST.get('q1'),
-            'conscious_priority': request.POST.get('q2'),
-            'wardrobe_goal': request.POST.get('q3')
+            'wardrobe_goal': request.POST.get('wardrobe_goal'),
+            'style_persona': request.POST.get('style_persona'),
+            'conscious_priority': request.POST.get('conscious_priority')
         }
         return redirect('main:register')
+    
     return render(request, 'style_quiz.html')
 
 def register(request):
@@ -40,10 +41,10 @@ def register(request):
             quiz_data = request.session.get('quiz_data', {})
             UserProfile.objects.create(
                 user=user,
-                preferred_style=quiz_data.get('preferred_style', ''),
-                conscious_shopping_priority=quiz_data.get('conscious_priority', ''),
-                wardrobe_goal=quiz_data.get('wardrobe_goal', ''),
-                style_persona=quiz_data.get('preferred_style', 'The Conscious Minimalist')
+                preferred_style=quiz_data.get('style_persona') or 'Minimal',
+                conscious_shopping_priority=quiz_data.get('conscious_priority') or '',
+                wardrobe_goal=quiz_data.get('wardrobe_goal') or '',
+                style_persona=quiz_data.get('style_persona') or 'The Conscious Minimalist'
             )
             if 'quiz_data' in request.session:
                 del request.session['quiz_data']
