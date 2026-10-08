@@ -21,7 +21,7 @@
         <button class="app-nav-bell" type="button" aria-label="Notifications">
             <i class="fa-regular fa-bell"></i>
         </button>
-        <a href="#" class="app-nav-avatar" aria-label="Your profile">{{ user.username|first|upper }}</a>
+        <a href="{% url 'main:profile' %}" class="app-nav-avatar" aria-label="Your profile">{{ user.username|first|upper }}</a>
     </div>
 </header>
 
@@ -41,7 +41,7 @@
 
     <div class="app-nav-tools">
         <a href="{% url 'main:login' %}" class="nav-links">SIGN IN</a>
-        <a href="{% url 'main:register' %}">
+        <a href="{% url 'main:style_quiz' %}">
             {% include 'components/button.html' with btn_class="secondary" label="Try It Now!" extra_class="padding-gede"%}
         </a>
             
