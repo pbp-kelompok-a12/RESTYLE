@@ -21,6 +21,12 @@
           <span class="inline-block mt-2 px-3 py-1 bg-[#F9EAA9] text-[#3A2B48] text-xs font-bold rounded-full border border-[#3A2B48]">
             Conscious Member
           </span>
+          <div class="profile-follow-stats mt-3">
+            {% url 'community:show_following' user.username as following_url %}
+            {% url 'community:show_followers' user.username as followers_url %}
+            {% include 'components/button.html' with href=following_url btn_class="tertiary" extra_class="profile-stat-btn" stat_button=True value=user.following_links.count label="Following" %}
+            {% include 'components/button.html' with href=followers_url btn_class="tertiary" extra_class="profile-stat-btn" stat_button=True value=user.follower_links.count label="Followers" %}
+          </div>
         </div>
       </div>
 

@@ -108,7 +108,7 @@
                     <li>
                         <span class="cm-avatar cm-avatar-small">{{ person.username|first|upper }}</span>
                         <div>
-                            <a href="#">@{{ person.username }}</a>
+                            <a href="{% url 'community:show_user_profile' person.username %}">@{{ person.username }}</a>
                             <p>{{ person.post_count }} post{{ person.post_count|pluralize }}</p>
                         </div>
                         <button type="button" class="cm-btn cm-btn-outline cm-btn-tiny cm-follow"
@@ -132,7 +132,7 @@
                     <li>
                         <span class="cm-avatar cm-avatar-small">{{ person.username|first|upper }}</span>
                         <div>
-                            <a href="#">@{{ person.username }}</a>
+                            <a href="{% url 'community:show_user_profile' person.username %}">@{{ person.username }}</a>
                         </div>
                         <button type="button" class="cm-btn cm-btn-outline cm-btn-tiny cm-follow is-active"
                                 data-url="{% url 'community:toggle_follow' person.username %}" title="Click to unfollow">

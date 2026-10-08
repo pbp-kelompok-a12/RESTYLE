@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+    <title>{{ title }} - @{{ profile_user.username }} | RE:STYLE</title>
+    <link rel="stylesheet" href="{% static 'css/community.css' %}">
+    <script src="{% static 'js/community.js' %}" defer></script>
+{% endblock meta %}
+
+{% block content %}
+<main class="cm-page">
+    <section class="cm-follow-page">
+        <form hidden>{% csrf_token %}</form>
+        <header class="cm-follow-page-heading">
+            <a href="{% url 'community:show_user_profile' profile_user.username %}" class="cm-follow-back">
+                <i class="fa-solid fa-arrow-left"></i> @{{ profile_user.username }}
+            </a>
+            <h1>{{ title }}</h1>
+            <p>People {{ title|lower }} by @{{ profile_user.username }}</p>
+        </header>
+
+        <ul class="cm-follow-list">
+            {% for person in people %}
+            <li>
+                <a class="cm-follow-person" href="{% url 'community:show_user_profile' person.username %}">
+                    <span class="cm-avatar">{{ person.username|first|upper }}</span>
+                    <span>
+                        <strong>@{{ person.username }}</strong>
+                        <small>RE:STYLE community member</small>
+                    </span>
+                </a>
+                {% if person != user %}
+                <button type="button"
+                        class="cm-btn cm-btn-outline cm-btn-tiny cm-follow {% if person.is_following %}is-active{% endif %}"
+                        data-url="{% url 'community:toggle_follow' person.username %}">
+                    <span class="cm-follow-label">{% if person.is_following %}Following{% else %}Follow{% endif %}</span>
+                </button>
+                {% endif %}
+            </li>
+            {% empty %}
+            <li class="cm-follow-empty">
+                <h2>No {{ title|lower }} yet</h2>
+                <p>This list will show up here when @{{ profile_user.username }} has {{ title|lower }}.</p>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+</main>
+{% endblock content %}

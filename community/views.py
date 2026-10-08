@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.db.models import Count
+from django.db.models import Count, Exists, OuterRef
 from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -237,6 +237,69 @@ def toggle_post_save(request, post_id):
 def show_saved(request):
     posts = request.user.saved_posts.select_related("author")
     return render(request, "community/saved.html", {"posts": posts})
+
+@login_required(login_url=LOGIN_URL)
+def show_user_profile(request, username):
+    profile_user = get_object_or_404(get_user_model(), username=username)
+    posts = (
+        Post.objects.filter(author=profile_user)
+        .select_related("author")
+        .prefetch_related("images")
+    )
+    is_following = Follow.objects.filter(
+        follower=request.user,
+        followed=profile_user,
+    ).exists()
+
+    return render(
+        request,
+        "community/profile.html",
+        {
+            "profile_user": profile_user,
+            "posts": posts,
+            "following_count": profile_user.following_links.count(),
+            "followers_count": profile_user.follower_links.count(),
+            "is_following": is_following,
+        },
+    )
+
+@login_required(login_url=LOGIN_URL)
+def show_follow_list(request, username, list_type):
+    profile_user = get_object_or_404(get_user_model(), username=username)
+
+    if list_type == "following":
+        people = get_user_model().objects.filter(
+            follower_links__follower=profile_user,
+        )
+        title = "Following"
+    else:
+        people = get_user_model().objects.filter(
+            following_links__followed=profile_user,
+        )
+        title = "Followers"
+
+    people = (
+        people.annotate(
+            is_following=Exists(
+                Follow.objects.filter(
+                    follower=request.user,
+                    followed_id=OuterRef("pk"),
+                )
+            )
+        )
+        .order_by("username")
+    )
+
+    return render(
+        request,
+        "community/follow_list.html",
+        {
+            "profile_user": profile_user,
+            "people": people,
+            "list_type": list_type,
+            "title": title,
+        },
+    )
 
 @login_required(login_url=LOGIN_URL)
 def show_community(request):
