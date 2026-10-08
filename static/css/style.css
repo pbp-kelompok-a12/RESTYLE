@@ -26,6 +26,7 @@
   --color-white-solid: #ffffff;
   --color-yellow-peach-yellow: #f9eaa9;
   --color-green-eco-leaf: #9CC24B;
+  --color-red-cherry: #D6251B;
 
   /* number */
   --corner-radius-6: 0.375rem;
@@ -125,6 +126,16 @@ body{
 
 .tertiary-btn:hover{
     background-color: var(--color-azure-martinique-6);
+}
+
+.danger-btn{
+    background-color: var(--color-red-cherry);
+    color: var(--color-orange-linen)!important;
+    font-weight: 700;
+}
+
+.danger-btn:hover{
+    background-color: #f9726b;
 }
 
 .profile-stat-buttons{
@@ -248,22 +259,6 @@ body{
     margin-top: 12px;
 }
 
-.profile-logout-button{
-    padding: 10px 24px;
-    border: 1px solid #fca5a5;
-    border-radius: var(--corner-radius-12);
-    background-color: #fee2e2;
-    color: #b91c1c;
-    font-size: 14px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: background-color 0.2s ease-out;
-}
-
-.profile-logout-button:hover{
-    background-color: #fecaca;
-}
-
 .profile-persona-section.section-container{
     display: block;
     padding: 24px;
@@ -320,7 +315,6 @@ body{
 .community-profile-card.section-container{
     width: auto;
     display: block;
-    margin: 12px 0 24px;
     padding: 28px;
     border-color: var(--color-azure-san-marino);
     box-shadow: 5px 5px 0 var(--color-azure-st-blue);
@@ -480,10 +474,6 @@ body{
     .profile-header{
         align-items: flex-start;
         flex-direction: column;
-    }
-
-    .profile-logout-button{
-        align-self: center;
     }
 
     .community-profile-card.section-container{
