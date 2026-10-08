@@ -858,3 +858,137 @@ body{
     margin-top: 8px;
     max-width: 480px;
 }
+
+
+/*  edit n hapus */
+
+.cm-page :where(form){
+    margin: 0;
+}
+
+.cm-owner-actions{
+    display: flex;
+    gap: 12px;
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--color-azure-dolphin);
+}
+
+.cm-owner-actions button:hover{
+    color: var(--color-azure-san-marino);
+    text-decoration: underline;
+}
+
+.cm-actions form{
+    display: inline-flex;
+}
+
+.cm-edit-form{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.cm-edit-form textarea{
+    width: 100%;
+    padding: 8px 12px;
+    background-color: var(--color-orange-linen);
+    border: 1px solid var(--color-azure-polo-blue);
+    border-radius: var(--corner-radius-12);
+    font-size: 16px;
+    line-height: 1.5;
+    resize: vertical;
+}
+
+.cm-comment .cm-edit-form{
+    max-width: 480px;
+}
+
+.cm-comment .cm-edit-form textarea{
+    font-size: 12px;
+}
+
+.cm-edit-actions{
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+
+/* menu titik tiga (Edit / Delete) */
+
+.cm-menu{
+    position: relative;
+    align-self: center;
+    margin-left: auto;
+}
+
+.cm-actions .cm-menu{
+    margin-left: 0;
+}
+
+.cm-menu-button{
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border-radius: var(--corner-radius-999);
+    color: var(--color-azure-dolphin);
+    font-size: 14px;
+}
+
+.cm-menu-button:hover,
+.cm-menu-button[aria-expanded="true"]{
+    background-color: var(--color-azure-martinique-6);
+    color: var(--color-azure-martinique);
+}
+
+.cm-menu-list{
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    z-index: 10;
+    min-width: 140px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background-color: var(--color-white-solid);
+    border: 1px solid var(--color-orange-pearl-brush);
+    border-radius: var(--corner-radius-12);
+    box-shadow: var(--drop-shadow);
+}
+
+.cm-actions .cm-menu-list{
+    left: 0;
+    right: auto;
+}
+
+
+.cm-menu-list form{
+    display: block;
+    width: 100%;
+}
+
+.cm-menu-list button{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: var(--corner-radius-8);
+    color: var(--color-azure-martinique);
+    font-size: 13px;
+    font-weight: 500;
+    text-align: left;
+}
+
+.cm-menu-list button:hover{
+    background-color: var(--color-orange-linen);
+    color: var(--color-azure-martinique);
+}
+
+.cm-menu-list .cm-menu-danger:hover{
+    background-color: var(--color-orange-dairy-cream);
+}

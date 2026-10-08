@@ -9,13 +9,42 @@
             <span class="cm-time">{{ comment.time_ago }}</span>
         </header>
 
-        <p class="cm-bubble">{{ comment.content }}</p>
+        <p class="cm-bubble cm-editable">{{ comment.content }}</p>
+
+        {% if comment.author == user %}
+        <form class="cm-edit-form" method="post" action="{% url 'community:edit_comment' comment.id %}" hidden>
+            {% csrf_token %}
+            <textarea name="content" rows="2" maxlength="500" required
+                      aria-label="Edit your reply">{{ comment.content }}</textarea>
+            <div class="cm-edit-actions">
+                <button type="button" class="cm-btn cm-btn-outline cm-btn-small cm-cancel-edit">Cancel</button>
+                <button type="submit" class="cm-btn cm-btn-primary cm-btn-small">Save</button>
+            </div>
+        </form>
+        {% endif %}
 
         <div class="cm-actions cm-actions-small">
             <button type="button"><i class="fa-regular fa-heart"></i> {{ comment.likes.count }}</button>
             <button type="button" class="cm-toggle-reply">Reply</button>
+            {% if comment.author == user or user.is_staff %}
+            <div class="cm-menu">
+                <button type="button" class="cm-menu-button" aria-label="More options" aria-expanded="false">
+                    <i class="fa-solid fa-ellipsis"></i>
+                </button>
+                <div class="cm-menu-list" hidden>
+                    {% if comment.author == user %}
+                    <button type="button" class="cm-toggle-edit"><i class="fa-regular fa-pen-to-square"></i> Edit</button>
+                    {% endif %}
+                    <form method="post" action="{% url 'community:delete_comment' comment.id %}"
+                          data-confirm="Delete this reply? Replies under it will be deleted too.">
+                        {% csrf_token %}
+                        <button type="submit" class="cm-menu-danger"><i class="fa-regular fa-trash-can"></i> Delete</button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
         </div>
-
+        
 
         <form class="cm-reply-form cm-reply-inline" method="post"
               action="{% url 'community:create_comment' comment.post_id %}" hidden>

@@ -6,9 +6,39 @@
         <header class="cm-post-head">
             <a href="#" class="cm-username">@{{ post.author.username }}</a>
             <span class="cm-time">{{ post.time_ago }}</span>
+
+            {% if post.author == user or user.is_staff %}
+            <div class="cm-menu">
+                <button type="button" class="cm-menu-button" aria-label="More options" aria-expanded="false">
+                    <i class="fa-solid fa-ellipsis"></i>
+                </button>
+                <div class="cm-menu-list" hidden>
+                    {% if post.author == user %}
+                    <button type="button" class="cm-toggle-edit"><i class="fa-regular fa-pen-to-square"></i> Edit</button>
+                    {% endif %}
+                    <form method="post" action="{% url 'community:delete_post' post.id %}"
+                          data-confirm="Delete this post? This can't be undone.">
+                        {% csrf_token %}
+                        <button type="submit" class="cm-menu-danger"><i class="fa-regular fa-trash-can"></i> Delete</button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}        
         </header>
 
-        <div class="cm-post-body">{{ post.content|linebreaks }}</div>
+        <div class="cm-post-body cm-editable">{{ post.content|linebreaks }}</div>
+
+        {% if post.author == user %}
+        <form class="cm-edit-form" method="post" action="{% url 'community:edit_post' post.id %}" hidden>
+            {% csrf_token %}
+            <textarea name="content" rows="3" maxlength="1000" required
+                      aria-label="Edit your post">{{ post.content }}</textarea>
+            <div class="cm-edit-actions">
+                <button type="button" class="cm-btn cm-btn-outline cm-btn-small cm-cancel-edit">Cancel</button>
+                <button type="submit" class="cm-btn cm-btn-primary cm-btn-small">Save</button>
+            </div>
+        </form>
+        {% endif %}
 
         {% if post.images.all %}
         <div class="cm-photos">
@@ -18,7 +48,8 @@
         </div>
         {% endif %}
 
-        {# tag dari closet ditambahkan di sini nanti, setelah model pakaian dari modul 1 ada #}
+        {# Tag dari closet ditambahkan di sini nanti, setelah model pakaian dari Modul 1 ada. #}
+
 
         <div class="cm-actions">
             <button type="button"><i class="fa-regular fa-heart"></i> {{ post.likes.count }}</button>

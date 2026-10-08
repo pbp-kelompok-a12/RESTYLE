@@ -118,3 +118,63 @@ if (location.hash.startsWith("#post-")) {
         setCommentsOpen(post, true);
     }
 }
+
+// edit: tombol "Edit" menukar tulisan dengan kotak edit, "Cancel" mengembalikannya
+document.querySelectorAll(".cm-toggle-edit").forEach((button) => {
+    const box = button.closest(".cm-post-main, .cm-comment-main");
+    const view = box.querySelector(".cm-editable");
+    const form = box.querySelector(".cm-edit-form");
+
+    function setEditing(isEditing) {
+        form.hidden = !isEditing;
+        view.hidden = isEditing;
+        if (isEditing) {
+            form.querySelector("textarea").focus();
+        }
+    }
+
+    button.addEventListener("click", () => setEditing(form.hidden));
+    form.querySelector(".cm-cancel-edit").addEventListener("click", () => setEditing(false));
+});
+
+
+// Hapus: tanya dulu sebelum benar-benar menghapus
+document.querySelectorAll("form[data-confirm]").forEach((form) => {
+    form.addEventListener("submit", (event) => {
+        if (!confirm(form.dataset.confirm)) {
+            event.preventDefault();
+        }
+    });
+});
+
+
+// Menu titik tiga: buka-tutup, dan tutup otomatis saat klik di luar atau tekan Escape.
+function closeAllMenus() {
+    document.querySelectorAll(".cm-menu-list").forEach((list) => {
+        list.hidden = true;
+    });
+    document.querySelectorAll(".cm-menu-button").forEach((button) => {
+        button.setAttribute("aria-expanded", "false");
+    });
+}
+
+document.querySelectorAll(".cm-menu").forEach((menu) => {
+    const button = menu.querySelector(".cm-menu-button");
+    const list = menu.querySelector(".cm-menu-list");
+
+    button.addEventListener("click", (event) => {
+        event.stopPropagation(); // supaya klik ini ga dianggap "klik di luar"
+        const willOpen = list.hidden;
+        closeAllMenus();
+        list.hidden = !willOpen;
+        button.setAttribute("aria-expanded", String(willOpen));
+    });
+});
+
+document.addEventListener("click", closeAllMenus);
+
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+        closeAllMenus();
+    }
+});

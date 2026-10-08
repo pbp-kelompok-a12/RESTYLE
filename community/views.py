@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.db.models import Count
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -116,3 +117,74 @@ def create_comment(request, post_id):
 
     # balik ke feed, langsung ke post yang dikomentari
     return redirect(reverse("community:show_community") + f"#post-{post.id}")
+
+def feed_url(post_id):
+    """Alamat feed yang langsung melompat ke satu post."""
+    return reverse("community:show_community") + f"#post-{post_id}"
+
+@login_required(login_url=LOGIN_URL)
+@require_POST
+def edit_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if post.author != request.user:
+        return HttpResponseForbidden("You can only edit your own posts.")
+
+    form = PostForm(request.POST, instance=post)
+    if not form.is_valid():
+        messages.error(request, "A post can't be empty (up to 1000 characters).")
+        return redirect("community:show_community")
+
+    form.save()
+    return redirect(feed_url(post.id))
+
+@login_required(login_url=LOGIN_URL)
+@require_POST
+def delete_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if post.author != request.user and not request.user.is_staff:
+        return HttpResponseForbidden("You can only delete your own posts.")
+
+    post.delete()
+    messages.success(request, "Post deleted.")
+    return redirect("community:show_community")
+
+@login_required(login_url=LOGIN_URL)
+@require_POST
+def edit_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if comment.author != request.user:
+        return HttpResponseForbidden("You can only edit your own replies.")
+
+    form = CommentForm(request.POST, instance=comment)
+    if not form.is_valid():
+        messages.error(request, "A reply can't be empty (up to 500 characters).")
+        return redirect("community:show_community")
+
+    form.save()
+    return redirect(feed_url(comment.post_id))
+
+@login_required(login_url=LOGIN_URL)
+@require_POST
+def edit_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if comment.author != request.user:
+        return HttpResponseForbidden("You can only edit your own replies.")
+
+    form = CommentForm(request.POST, instance=comment)
+    if not form.is_valid():
+        messages.error(request, "A reply can't be empty (up to 500 characters).")
+        return redirect("community:show_community")
+
+    form.save()
+    return redirect(feed_url(comment.post_id))
+
+@login_required(login_url=LOGIN_URL)
+@require_POST
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if comment.author != request.user and not request.user.is_staff:
+        return HttpResponseForbidden("You can only delete your own replies.")
+
+    post_id = comment.post_id
+    comment.delete()
+    return redirect(feed_url(post_id))
