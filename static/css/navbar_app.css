@@ -23,7 +23,7 @@
     gap: 8px;
 }
 
-.app-nav-links a{
+.nav-links{
     padding: 8px 12px;
     border-radius: var(--corner-radius-999);
     color: var(--color-white-solid);

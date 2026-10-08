@@ -3,11 +3,11 @@
 {% if user.is_authenticated %}
 <header class="app-nav">
     <nav class="app-nav-links" aria-label="Main menu">
-        <a href="#">CLOSET</a>
-        <a href="#">MIX &amp; MATCH</a>
-        <a href="#">PLANNER</a>
+        <a href="#" class="nav-links">CLOSET</a>
+        <a href="#" class="nav-links">MIX &amp; MATCH</a>
+        <a href="#" class="nav-links">PLANNER</a>
         <a href="{% url 'community:show_community' %}"
-           class="{% if request.resolver_match.app_name == 'community' %}is-active{% endif %}">COMMUNITY</a>
+           class=" nav-links {% if request.resolver_match.app_name == 'community' %}is-active{% endif %}">COMMUNITY</a>
     </nav>
 
     <div class="app-nav-tools">
@@ -26,17 +26,19 @@
 
 <header class="app-nav">
     <nav class="app-nav-links" aria-label="Main menu">
-        <a href="#">FEATURES</a>
-        <a href="#">HOW IT WORKS</a>
-        <a href="#">STORIES</a>
+        <a href="#" class="nav-links">FEATURES</a>
+        <a href="#" class="nav-links">HOW IT WORKS</a>
+        <a href="#" class="nav-links">STORIES</a>
         <a href="{% url 'community:show_community' %}"
-           class="{% if request.resolver_match.app_name == 'community' %}is-active{% endif %}">COMMUNITY</a>
+           class="nav-links {% if request.resolver_match.app_name == 'community' %}is-active{% endif %}">COMMUNITY</a>
     </nav>
 
     <div class="app-nav-tools">
-        <a href="#">
+        <a href="{% url 'main:login' %}" class="nav-links">SIGN IN</a>
+        <a href="{% url 'main:register' %}">
             {% include 'components/button.html' with btn_class="secondary" label="Try It Now!" extra_class="padding-gede"%}
         </a>
+            
     </div>
 </header>
 

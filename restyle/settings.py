@@ -62,6 +62,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'restyle.urls'
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://aulia-nur51-restyle.pws.cs.ui.ac.id",
+]
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
