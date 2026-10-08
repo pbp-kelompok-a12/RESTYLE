@@ -1021,7 +1021,6 @@ body{
     color: var(--color-azure-martinique);
 }
 
-
 /* empty state bunglon */
 
 .cm-empty{
@@ -1075,4 +1074,11 @@ body{
 .cm-composer:focus-within{
     border-color: var(--color-azure-san-marino);
     box-shadow: 0 0 0 3px var(--color-azure-st-blue);
+}
+
+/* follow */
+
+.cm-follow.is-active{
+    background-color: var(--color-azure-martinique);
+    color: var(--color-white-solid);
 }

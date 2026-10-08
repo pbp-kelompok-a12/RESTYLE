@@ -12,6 +12,8 @@ from community.views import (
     toggle_comment_like,
     toggle_post_like,
     toggle_post_save,
+    toggle_comment_like,
+    toggle_follow,
 )
 
 app_name = "community"
@@ -28,4 +30,5 @@ urlpatterns = [
     path("comment/<int:comment_id>/edit/", edit_comment, name="edit_comment"),
     path("comment/<int:comment_id>/delete/", delete_comment, name="delete_comment"),
     path("comment/<int:comment_id>/like/", toggle_comment_like, name="toggle_comment_like"),
+    path("user/<str:username>/follow/", toggle_follow, name="toggle_follow"),
 ]

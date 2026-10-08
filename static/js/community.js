@@ -226,3 +226,23 @@ document.querySelectorAll('a[href$="#composer"]').forEach((link) => {
         }
     });
 });
+
+// Follow: kirim ke server tanpa memuat ulang halaman, lalu ubah tombolnya.
+document.querySelectorAll(".cm-follow").forEach((button) => {
+    button.addEventListener("click", async () => {
+        const token = document.querySelector("input[name=csrfmiddlewaretoken]").value;
+
+        try {
+            const response = await fetch(button.dataset.url, {
+                method: "POST",
+                headers: { "X-CSRFToken": token },
+            });
+            const result = await response.json();
+
+            button.classList.toggle("is-active", result.active);
+            button.querySelector(".cm-follow-label").textContent = result.active ? "Following" : "Follow";
+        } catch (error) {
+            alert("Something went wrong. Please refresh the page and try again.");
+        }
+    });
+});
