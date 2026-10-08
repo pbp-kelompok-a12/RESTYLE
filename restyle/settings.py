@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',
-    'community'
+    'community',
+    'planner',
 ]
 
 
@@ -60,6 +61,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'restyle.urls'
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://aulia-nur51-restyle.pws.cs.ui.ac.id",
+]
 
 TEMPLATES = [
     {

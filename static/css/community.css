@@ -12,6 +12,7 @@ body{
     font-size: 14px;
     line-height: 1.5;
     color: var(--color-azure-martinique);
+    padding-top: 120px;
 }
 
 .cm-page :where(h1, h2, h3, p, ul, ol, figure, hr){

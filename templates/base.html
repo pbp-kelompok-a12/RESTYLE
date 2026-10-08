@@ -18,43 +18,7 @@
 </head>
 
 <body>
-    {% if user.is_authenticated %}
-        {% include 'navbar_app.html' %}
-    {% else %}
-    <header class="site-header">
-        <nav>
-            <div class="nav-act">
-                <a href="#">FEATURES</a>
-                <a href="#">HOW IT WORKS</a>
-                <a href="#">STORIES</a>
-            </div>
-            
-            <a href="/" class="font-poppins font-extrabold text-2xl tracking-wide flex items-center">
-                <span class="text-[#9CC24B] mr-1">RE:</span>
-                <span class="bg-[#FAE0C6] text-[#3A2B48] px-2 py-0.5 leading-none">STYLE</span>
-            </a>
-
-            <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <div class="nav-act">
-                <a href="#">COMMUNITY</a>
-                
-                {% if user.is_authenticated %}
-                    <span class="text-sm font-medium">Hi, {{ user.username }}!</span>
-                    <a href="{% url 'main:logout' %}">
-                        <button class="primary-btn">LOGOUT</button>
-                    </a>
-                {% else %}
-                    <a href="{% url 'main:login' %}">SIGN IN</a>
-                    <a href="{% url 'main:register' %}">
-                        <button class="primary-btn">TRY IT NOW</button>
-                    </a>
-                {% endif %}
-            </div>
-        </nav>
-    </header>
-    {% endif %}
+    {% include 'components/navbar_app.html' %}
 
     {% block content %} {% endblock content %}
 

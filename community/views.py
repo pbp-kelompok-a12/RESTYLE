@@ -16,7 +16,7 @@ from community.forms import CommentForm, PostForm
 from community.models import Comment, Follow, Post, PostImage
 
 # sementara login lewat halaman admin dulu, ntar ganti kalau halaman login modul 4 udah ada
-LOGIN_URL = "/admin/login/"
+LOGIN_URL = "/login/"
 
 MAX_PHOTOS = 3
 MAX_PHOTO_SIZE = 5 * 1024 * 1024  # 5 MB

@@ -1,0 +1,10 @@
+{% if icon %}
+<button class="btn {{ btn_class|default:'primary' }}-btn {{ extra_class }}" type="{{ btn_type|default:'button' }}">
+    <span>{{ label|default:'Klik Disini' }}</span>
+    <i class="{{ icon }}"></i>
+</button>
+{% else %}
+<button class="btn {{ btn_class|default:'primary' }}-btn {{ extra_class }}" type="{{ btn_type|default:'button' }}">
+    {{ label|default:'Klik Disini' }}
+</button>
+{% endif %}
