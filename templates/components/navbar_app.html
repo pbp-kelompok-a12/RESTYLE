@@ -21,7 +21,7 @@
         <button class="app-nav-bell" type="button" aria-label="Notifications">
             <i class="fa-regular fa-bell"></i>
         </button>
-        <a href="{% url 'main:profile' %}" class="app-nav-avatar" aria-label="Your profile">{{ user.username|first|upper }}</a>
+        <a href="{% url 'main:profile_view' %}" class="app-nav-avatar" aria-label="Your profile">{{ user.username|first|upper }}</a>
     </div>
 </header>
 
