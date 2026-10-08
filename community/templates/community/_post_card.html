@@ -4,7 +4,7 @@
 
     <div class="cm-post-main">
         <header class="cm-post-head">
-            <a href="#" class="cm-username">@{{ post.author.username }}</a>
+            <a href="{% url 'community:show_user_profile' post.author.username %}" class="cm-username">@{{ post.author.username }}</a>
             <span class="cm-time">{{ post.time_ago }}</span>
 
             {% if post.author == user or user.is_staff %}
