@@ -104,7 +104,11 @@
             <!-- Action Button -->
             <div class="pt-4">
                 <button type="submit" class="w-full py-4 bg-[#3F6699] hover:bg-[#3A2B48] text-white font-bold rounded-2xl transition shadow-md text-base">
-                    Continue to Account Registration
+                    {% if user.is_authenticated %}
+                        Save my choices
+                    {% else %}
+                        Continue to Account Registration
+                    {% endif %}
                 </button>
             </div>
         </form>
