@@ -25,22 +25,22 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
                         <span class="text-sm font-semibold text-[#3A2B48]">Organize my wardrobe</span>
-                        <input type="radio" name="wardrobe_goal" value="Organize" class="hidden" required>
+                        <input type="radio" name="wardrobe_goal" value="Organize" class="hidden" required {% if quiz_data.wardrobe_goal == 'Organize' %}checked{% endif %}>
                     </label>
 
                     <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
                         <span class="text-sm font-semibold text-[#3A2B48]">Discover new outfit ideas</span>
-                        <input type="radio" name="wardrobe_goal" value="Outfits" class="hidden">
+                        <input type="radio" name="wardrobe_goal" value="Outfits" class="hidden" {% if quiz_data.wardrobe_goal == 'Outfits' %}checked{% endif %}>
                     </label>
 
                     <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
                         <span class="text-sm font-semibold text-[#3A2B48]">Buy less, shop smarter</span>
-                        <input type="radio" name="wardrobe_goal" value="SmartShop" class="hidden">
+                        <input type="radio" name="wardrobe_goal" value="SmartShop" class="hidden" {% if quiz_data.wardrobe_goal == 'SmartShop' %}checked{% endif %}>
                     </label>
 
                     <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
                         <span class="text-sm font-semibold text-[#3A2B48]">Refine my personal style</span>
-                        <input type="radio" name="wardrobe_goal" value="RefineStyle" class="hidden">
+                        <input type="radio" name="wardrobe_goal" value="RefineStyle" class="hidden" {% if quiz_data.wardrobe_goal == 'RefineStyle' %}checked{% endif %}>
                     </label>
                 </div>
             </div>
@@ -53,22 +53,22 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
                         <span class="text-sm font-semibold text-[#3A2B48]">Minimal & Timeless</span>
-                        <input type="radio" name="style_persona" value="Minimal" class="hidden" required>
+                        <input type="radio" name="style_persona" value="Minimal" class="hidden" required {% if quiz_data.preferred_style == 'Minimal' %}checked{% endif %}>
                     </label>
 
                     <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
                         <span class="text-sm font-semibold text-[#3A2B48]">Casual & Comfy</span>
-                        <input type="radio" name="style_persona" value="Casual" class="hidden">
+                        <input type="radio" name="style_persona" value="Casual" class="hidden" {% if quiz_data.preferred_style == 'Casual' %}checked{% endif %}>
                     </label>
 
                     <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
                         <span class="text-sm font-semibold text-[#3A2B48]">Thrifted & Vintage</span>
-                        <input type="radio" name="style_persona" value="Vintage" class="hidden">
+                        <input type="radio" name="style_persona" value="Vintage" class="hidden" {% if quiz_data.preferred_style == 'Vintage' %}checked{% endif %}>
                     </label>
 
                     <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
                         <span class="text-sm font-semibold text-[#3A2B48]">Trendy & Bold</span>
-                        <input type="radio" name="style_persona" value="Bold" class="hidden">
+                        <input type="radio" name="style_persona" value="Bold" class="hidden" {% if quiz_data.preferred_style == 'Bold' %}checked{% endif %}>
                     </label>
                 </div>
             </div>
@@ -81,22 +81,22 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
                         <span class="text-sm font-semibold text-[#3A2B48]">Long-lasting quality</span>
-                        <input type="radio" name="conscious_priority" value="Quality" class="hidden" required>
+                        <input type="radio" name="conscious_priority" value="Quality" class="hidden" required {% if quiz_data.conscious_priority == 'Quality' %}checked{% endif %}>
                     </label>
 
                     <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
                         <span class="text-sm font-semibold text-[#3A2B48]">Easy to mix & match</span>
-                        <input type="radio" name="conscious_priority" value="Versatility" class="hidden">
+                        <input type="radio" name="conscious_priority" value="Versatility" class="hidden" {% if quiz_data.conscious_priority == 'Versatility' %}checked{% endif %}>
                     </label>
 
                     <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
                         <span class="text-sm font-semibold text-[#3A2B48]">Eco-friendly materials</span>
-                        <input type="radio" name="conscious_priority" value="Eco" class="hidden">
+                        <input type="radio" name="conscious_priority" value="Eco" class="hidden" {% if quiz_data.conscious_priority == 'Eco' %}checked{% endif %}>
                     </label>
 
                     <label class="quiz-card cursor-pointer border-2 border-[#E8E0D2] bg-[#FDF9F2] hover:border-[#3A2B48] p-4 rounded-2xl transition flex items-center justify-between">
                         <span class="text-sm font-semibold text-[#3A2B48]">Ethical & fair trade</span>
-                        <input type="radio" name="conscious_priority" value="Ethical" class="hidden">
+                        <input type="radio" name="conscious_priority" value="Ethical" class="hidden" {% if quiz_data.conscious_priority == 'Ethical' %}checked{% endif %}>
                     </label>
                 </div>
             </div>
@@ -104,7 +104,11 @@
             <!-- Action Button -->
             <div class="pt-4">
                 <button type="submit" class="w-full py-4 bg-[#3F6699] hover:bg-[#3A2B48] text-white font-bold rounded-2xl transition shadow-md text-base">
-                    Continue to Account Registration
+                    {% if user.is_authenticated %}
+                        Save my choices
+                    {% else %}
+                        Continue to Account Registration
+                    {% endif %}
                 </button>
             </div>
         </form>
@@ -134,6 +138,15 @@
             this.querySelector('span').classList.remove('text-[#3A2B48]');
             this.querySelector('span').classList.add('text-white');
         });
+    });
+
+    // Tampilkan pilihan yang sudah tersimpan di profil saat kuis dibuka ulang.
+    document.querySelectorAll('input[type="radio"]:checked').forEach(input => {
+        const card = input.closest('.quiz-card');
+        card.classList.remove('border-[#E8E0D2]', 'bg-[#FDF9F2]');
+        card.classList.add('border-[#3A2B48]', 'bg-[#3F6699]', 'shadow-md');
+        card.querySelector('span').classList.remove('text-[#3A2B48]');
+        card.querySelector('span').classList.add('text-white');
     });
 </script>
 {% endblock content %}
