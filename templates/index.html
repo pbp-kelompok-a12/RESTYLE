@@ -86,6 +86,36 @@
             </a>
         </div>
     </section>
+
+    {% if user.is_authenticated %}
+        {% url ... as cta_url %}
+    {% else %}
+        {% url 'main:style_quiz' as cta_url %}
+    {% endif %}
+
+    <section class="section-container features-section" id="features">
+        <h2 class="features-title">RE: STYLE FEATURES</h2>
+
+        <div class="features-grid">
+            {% include 'components/feature_card.html' with type='closet' %}
+            {% include 'components/feature_card.html' with type='mixmatch' %}
+            {% include 'components/feature_card.html' with type='planner' %}
+            {% include 'components/feature_card.html' with type='community' %}
+            {% include 'components/feature_card.html' with type='shopping' %}
+
+            <article class="features-cta">
+                <div class="features-cta-dots" aria-hidden="true">
+                    <span class="features-cta-dot features-cta-dot--yellow"></span>
+                    <span class="features-cta-dot features-cta-dot--blue"></span>
+                </div>
+                <div class="features-cta-content">
+                    <h3 class="features-cta-title">All features, one digital closet.</h3>
+                    <p class="features-cta-bio">From logging clothes to shopping more mindfully, everything happens in RE:STYLE.</p>
+                    {% include 'components/button.html' with href="#" btn_class='secondary' label='Try RE:STYLE' %}
+                </div>
+            </article>
+        </div>
+    </section>
     
 </main>
 

@@ -1,0 +1,90 @@
+{% load static %}
+
+{% if type == 'closet' %}
+    {% url ... as try_url %}
+{% elif type == 'community' %}
+    {% url 'community:show_community' as try_url %}
+{% elif type == 'planner' %}
+    {% url 'planner:show_planner' as try_url %}
+{% endif %}
+
+<article class="fc-card fc-card--{{ type }}">
+    <img class="fc-bg" src="{% static 'img/cards/'|add:type|add:'.webp' %}" alt="">
+
+    <div class="fc-panel">
+        <div class="fc-head">
+            <span class="fc-icon" aria-hidden="true">
+                <i class="{% if type == 'closet' %}fa-solid fa-shirt{% elif type == 'mixmatch' %}fa-solid fa-layer-group{% elif type == 'shopping' %}fa-regular fa-bell{% elif type == 'community' %}fa-regular fa-comment{% elif type == 'planner' %}fa-regular fa-calendar{% endif %}"></i>
+            </span>
+            <button type="button" class="fc-toggle" aria-expanded="false" aria-label="Show details">
+                <i class="fa-solid fa-arrow-up"></i>
+            </button>
+        </div>
+
+        <h3 class="fc-title">
+            {% if type == 'closet' %}Digital Closet
+            {% elif type == 'mixmatch' %}Mix &amp; Match
+            {% elif type == 'shopping' %}Shopping Reminder
+            {% elif type == 'community' %}Fashion Community
+            {% elif type == 'planner' %}Weekly Planner
+            {% endif %}
+        </h3>
+
+        {# teks singkat: tampil saat card tertutup #}
+        <div class="fc-collapse fc-short">
+            <div>
+                <p class="fc-desc">
+                    {% if type == 'closet' %}Everything in your wardrobe, neatly tracked.
+                    {% elif type == 'mixmatch' %}Turn what you have into new looks.
+                    {% elif type == 'shopping' %}Get a nudge before buying something similar.
+                    {% elif type == 'community' %}Share styling inspiration.
+                    {% elif type == 'planner' %}A week of outfits, weather-ready.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        {# detail: tampil saat card terbuka #}
+        <div class="fc-collapse fc-detail">
+            <div>
+                <p class="fc-desc">
+                    {% if type == 'closet' %}Log and organize your wardrobe in one digital closet.
+                    {% elif type == 'mixmatch' %}Create outfits that make the most of what you already own.
+                    {% elif type == 'shopping' %}Get reminders when you're about to buy something you already own.
+                    {% elif type == 'community' %}A space for users to share styling ideas and inspiration.
+                    {% elif type == 'planner' %}Plan your outfits for the week so nothing feels repetitive.
+                    {% endif %}
+                </p>
+
+                <ul class="fc-list">
+                    {% if type == 'closet' %}
+                        <li><i class="fa-regular fa-circle-check"></i> Group by color and category</li>
+                        <li><i class="fa-regular fa-circle-check"></i> Filter by style</li>
+                        <li><i class="fa-regular fa-circle-check"></i> Track ready-to-wear or in-the-wash items</li>
+                        <li><i class="fa-regular fa-circle-check"></i> Everything in one place</li>
+                    {% elif type == 'mixmatch' %}
+                        <li><i class="fa-regular fa-circle-check"></i> Mix tops, bottoms, shoes, and accessories</li>
+                        <li><i class="fa-regular fa-circle-check"></i> Save your favorite combos</li>
+                        <li><i class="fa-regular fa-circle-check"></i> Find new styles without buying more</li>
+                    {% elif type == 'shopping' %}
+                        <li><i class="fa-regular fa-circle-check"></i> Spot similar items in your closet</li>
+                        <li><i class="fa-regular fa-circle-check"></i> Reminders before checkout</li>
+                        <li><i class="fa-regular fa-circle-check"></i> Help you avoid impulse buys</li>
+                    {% elif type == 'community' %}
+                        <li><i class="fa-regular fa-circle-check"></i> Share styling inspiration</li>
+                        <li><i class="fa-regular fa-circle-check"></i> Discuss mix-and-match ideas</li>
+                        <li><i class="fa-regular fa-circle-check"></i> Everyday outfit ideas from fellow students</li>
+                    {% elif type == 'planner' %}
+                        <li><i class="fa-regular fa-circle-check"></i> Plan outfits for the week</li>
+                        <li><i class="fa-regular fa-circle-check"></i> Daily picks based on real-time weather</li>
+                        <li><i class="fa-regular fa-circle-check"></i> Rotate pieces so your looks stay fresh</li>
+                    {% endif %}
+                </ul>
+
+                <div class="fc-actions">
+                    {% include 'components/button.html' with href=try_url|default:'#' btn_class='primary' label='Try it now' extra_class='fc-btn' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</article>

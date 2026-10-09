@@ -1,0 +1,194 @@
+/* Feature card (templates/components/feature_card.html) */
+
+.fc-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    width: 100%;
+}
+
+.fc-card{
+    --fc-accent: var(--color-azure-st-blue);
+    --fc-speed: .35s;
+
+    position: relative;
+    overflow: hidden;
+    height: 26rem;
+    background-color: var(--fc-accent); /* fallback kalau gambar belum ada */
+    border: var(--container-border);
+    border-radius: var(--corner-radius-24);
+    font-family: var(--font-family-font-1);
+    color: var(--color-azure-martinique);
+}
+
+.fc-card--closet,
+.fc-card--shopping{ --fc-accent: var(--color-azure-st-blue); }
+
+.fc-card--mixmatch,
+.fc-card--community{ --fc-accent: var(--color-yellow-peach-yellow); }
+
+.fc-card--planner{ --fc-accent: var(--color-orange-dairy-cream); }
+
+/* gambar background (sudah jadi, termasuk mockup di dalamnya) */
+.fc-bg{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit:contain;
+    transform: scale(.75);
+    transform-origin: top center;
+    object-position: top center;
+}
+
+/* panel bawah: tumbuh ke atas karena menempel di bawah card */
+.fc-panel{
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 16px 16px 20px;
+    background-color: var(--color-orange-linen);
+    border-top: var(--container-border);
+    border-radius: var(--corner-radius-24) var(--corner-radius-24) 0 0;
+}
+
+.fc-head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.fc-icon{
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    background-color: var(--fc-accent);
+    border: 1px solid var(--color-azure-san-marino);
+    border-radius: var(--corner-radius-8);
+    color: var(--color-azure-san-marino);
+    font-size: 12px;
+}
+
+.fc-toggle{
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    background: transparent;
+    border: none;
+    border-radius: var(--corner-radius-999);
+    color: var(--color-azure-martinique);
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color .2s ease-out;
+}
+
+.fc-toggle:hover{
+    background-color: var(--color-azure-martinique-6);
+}
+
+.fc-toggle:focus-visible{
+    outline: 2px solid var(--color-azure-san-marino);
+    outline-offset: 2px;
+}
+
+.fc-toggle i{
+    transition: transform var(--fc-speed) ease;
+}
+
+.fc-title{
+    margin: 12px 0 0;
+    font-family: var(--font-family-font-1);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.fc-desc{
+    margin: 6px 0 0;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--color-azure-dolphin);
+}
+
+/* animasi buka-tutup (tinggi 0 -> auto lewat grid) */
+.fc-collapse{
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows var(--fc-speed) ease;
+}
+
+.fc-collapse > div{
+    min-height: 0;
+    overflow: hidden;
+}
+
+.fc-detail{
+    grid-template-rows: 0fr;
+}
+
+/* konten detail tidak bisa di-tab saat tertutup */
+.fc-detail > div{
+    visibility: hidden;
+    transition: visibility 0s linear var(--fc-speed);
+}
+
+.fc-card.is-open .fc-short{ grid-template-rows: 0fr; }
+.fc-card.is-open .fc-detail{ grid-template-rows: 1fr; }
+
+.fc-card.is-open .fc-detail > div{
+    visibility: visible;
+    transition-delay: 0s;
+}
+
+.fc-card.is-open .fc-toggle i{
+    transform: rotate(180deg);
+}
+
+/* checklist */
+.fc-list{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.fc-list li{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.fc-list i{
+    color: var(--color-azure-san-marino);
+    font-size: 12px;
+}
+
+/* tombol (pakai components/button.html) */
+.fc-actions{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.fc-actions .fc-btn{
+    display: block;
+    width: 100%;
+    padding: 10px 16px;
+    text-align: center;
+    font-size: 11px;
+}
+
+@media (prefers-reduced-motion: reduce){
+    .fc-collapse,
+    .fc-toggle i{
+        transition: none;
+    }
+}
