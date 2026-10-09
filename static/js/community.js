@@ -90,7 +90,11 @@ function setCommentsOpen(post, isOpen) {
 
 // button "replies" di tiap post membuka atau menutup commentnya
 document.querySelectorAll(".cm-post").forEach((post) => {
-    post.querySelector(".cm-toggle-comments").addEventListener("click", () => {
+    const toggleButton = post.querySelector("button.cm-toggle-comments");
+    if (!toggleButton) {
+        return;
+    }
+    toggleButton.addEventListener("click", () => {
         const isOpenNow = !post.querySelector(".cm-comments").hidden;
         setCommentsOpen(post, !isOpenNow);
     });
@@ -180,8 +184,13 @@ document.addEventListener("keydown", (event) => {
 });
 
 // Like dan Save: kirim ke server tanpa memuat ulang halaman, lalu perbarui tombolnya.
-document.querySelectorAll(".cm-react").forEach((button) => {
+document.querySelectorAll("button.cm-react").forEach((button) => {
     button.addEventListener("click", async () => {
+        if (button.dataset.loginUrl) {
+            window.location.assign(button.dataset.loginUrl);
+            return;
+        }
+
         const token = button.closest(".cm-post").querySelector("input[name=csrfmiddlewaretoken]").value;
 
         try {
@@ -230,6 +239,11 @@ document.querySelectorAll('a[href$="#composer"]').forEach((link) => {
 // Follow: kirim ke server tanpa memuat ulang halaman, lalu ubah tombolnya.
 document.querySelectorAll(".cm-follow").forEach((button) => {
     button.addEventListener("click", async () => {
+        if (button.dataset.loginUrl) {
+            window.location.assign(button.dataset.loginUrl);
+            return;
+        }
+
         const token = document.querySelector("input[name=csrfmiddlewaretoken]").value;
 
         try {
