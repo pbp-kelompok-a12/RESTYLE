@@ -17,8 +17,13 @@
             <h1>Share <em class="cm-accent">outfit ideas</em>,<br>not shopping <em>pressure</em>.</h1>
             <p>Discover styling inspiration, mix and match ideas, and everyday outfit tips from fellow students using clothes you already own.</p>
             <div class="cm-hero-actions">
+                {% if user.is_authenticated %}
                 <a href="#composer" class="cm-btn cm-btn-primary"><i class="fa-solid fa-plus"></i> New post</a>
                 <a href="{% url 'community:show_saved' %}" class="cm-btn cm-btn-outline">My saved ideas</a>
+                {% else %}
+                <a href="{% url 'main:login' %}" class="cm-btn cm-btn-primary"><i class="fa-solid fa-plus"></i> New post</a>
+                <a href="{% url 'main:login' %}" class="cm-btn cm-btn-outline">My saved ideas</a>
+                {% endif %}
             </div>
         </div>
         <img class="cm-hero-img" src="{% static 'img/community/chameleon.png' %}"
@@ -34,8 +39,13 @@
             <div class="cm-tabs">
                 <a href="{% url 'community:show_community' %}"
                    class="cm-tab {% if tab != 'following' %}is-active{% endif %}">For you</a>
+                {% if user.is_authenticated %}
                 <a href="{% url 'community:show_community' %}?tab=following"
                    class="cm-tab {% if tab == 'following' %}is-active{% endif %}">Following</a>            
+                {% else %}
+                <a href="{% url 'main:login' %}"
+                   class="cm-tab">Following</a>
+                {% endif %}
             </div>
 
             {% if messages %}
@@ -47,6 +57,7 @@
             {% endif %}
 
             {# Kotak tulis post #}
+            {% if user.is_authenticated %}
             <form class="cm-card cm-composer" id="composer" method="post"
                   action="{% url 'community:create_post' %}" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -66,6 +77,11 @@
                     <button type="submit" class="cm-btn cm-btn-primary cm-btn-small" id="post-button">Post</button>
                 </div>
             </form>
+            {% else %}
+            <a class="cm-card cm-composer" id="composer" href="{% url 'main:login' %}">
+                Sign in to share a post with the community.
+            </a>
+            {% endif %}
 
             {% for post in posts %}
                 {% include 'community/_post_card.html' %}
@@ -112,7 +128,8 @@
                             <p>{{ person.post_count }} post{{ person.post_count|pluralize }}</p>
                         </div>
                         <button type="button" class="cm-btn cm-btn-outline cm-btn-tiny cm-follow"
-                                data-url="{% url 'community:toggle_follow' person.username %}">
+                                data-url="{% url 'community:toggle_follow' person.username %}"
+                                {% if not user.is_authenticated %}data-login-url="{% url 'main:login' %}"{% endif %}>
                             <span class="cm-follow-label">Follow</span>
                         </button>
                     </li>

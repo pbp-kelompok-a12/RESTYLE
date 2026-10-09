@@ -24,11 +24,19 @@
         {% endif %}
 
         <div class="cm-actions cm-actions-small">
-            <button type="button" class="cm-react {% if user in comment.likes.all %}is-active{% endif %}"
-                    data-url="{% url 'community:toggle_comment_like' comment.id %}" aria-label="Like this reply">
+            {% if user.is_authenticated %}
+            <button type="button" class="cm-react {% if user.is_authenticated and user in comment.likes.all %}is-active{% endif %}"
+                    data-url="{% url 'community:toggle_comment_like' comment.id %}"
+                    aria-label="Like this reply">
                 <i class="fa-regular fa-heart"></i> <span class="cm-count">{{ comment.likes.count }}</span>
-            </button>            
+            </button>
             <button type="button" class="cm-toggle-reply">Reply</button>
+            {% else %}
+            <a class="cm-react" href="{% url 'main:login' %}" aria-label="Like this reply">
+                <i class="fa-regular fa-heart"></i> <span class="cm-count">{{ comment.likes.count }}</span>
+            </a>
+            <a class="cm-toggle-reply" href="{% url 'main:login' %}">Reply</a>
+            {% endif %}
             {% if comment.author == user or user.is_staff %}
             <div class="cm-menu">
                 <button type="button" class="cm-menu-button" aria-label="More options" aria-expanded="false">
@@ -49,6 +57,7 @@
         </div>
         
 
+        {% if user.is_authenticated %}
         <form class="cm-reply-form cm-reply-inline" method="post"
               action="{% url 'community:create_comment' comment.post_id %}" hidden>
             {% csrf_token %}
@@ -58,6 +67,7 @@
                    aria-label="Reply to @{{ comment.author.username }}">
             <button type="submit" class="cm-btn cm-btn-dark cm-btn-small">Reply</button>
         </form>
+        {% endif %}
 
         {% if comment.replies.all %}
         <div class="cm-replies">
