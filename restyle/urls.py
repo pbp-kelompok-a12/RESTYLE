@@ -26,4 +26,5 @@ urlpatterns = [
     path("community/", include("community.urls")),
     re_path(r"^media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),
     path("planner/", include("planner.urls")),
+    path("closet/", include("closet.urls")),
 ]
