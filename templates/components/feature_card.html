@@ -1,7 +1,7 @@
 {% load static %}
 
 {% if type == 'closet' %}
-    {% url ... as try_url %}
+    {% url 'closet:show_closet' as try_url %}
 {% elif type == 'community' %}
     {% url 'community:show_community' as try_url %}
 {% elif type == 'planner' %}

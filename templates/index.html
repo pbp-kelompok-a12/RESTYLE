@@ -88,7 +88,7 @@
     </section>
 
     {% if user.is_authenticated %}
-        {% url ... as cta_url %}
+        {% url 'closet:show_closet' as cta_url %}
     {% else %}
         {% url 'main:style_quiz' as cta_url %}
     {% endif %}
@@ -111,7 +111,7 @@
                 <div class="features-cta-content">
                     <h3 class="features-cta-title">All features, one digital closet.</h3>
                     <p class="features-cta-bio">From logging clothes to shopping more mindfully, everything happens in RE:STYLE.</p>
-                    {% include 'components/button.html' with href="#" btn_class='secondary' label='Try RE:STYLE' %}
+                    {% include 'components/button.html' with href=cta_url btn_class='secondary' label='Try RE:STYLE' %}
                 </div>
             </article>
         </div>
