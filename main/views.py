@@ -40,7 +40,22 @@ def style_quiz(request):
 
         request.session['quiz_data'] = quiz_data
         return redirect('main:register')
-    return render(request, 'style_quiz.html')
+
+    quiz_data = {}
+    if request.user.is_authenticated:
+        try:
+            profile = request.user.profile
+        except UserProfile.DoesNotExist:
+            profile = None
+
+        if profile:
+            quiz_data = {
+                'preferred_style': profile.preferred_style,
+                'conscious_priority': profile.conscious_shopping_priority,
+                'wardrobe_goal': profile.wardrobe_goal,
+            }
+
+    return render(request, 'style_quiz.html', {'quiz_data': quiz_data})
 
 def register(request):
     form = UserCreationForm()
