@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+    <title>{% if is_edit %}Edit item{% else %}Add item{% endif %} | RE:STYLE</title>
+    <link rel="stylesheet" href="{% static 'css/closet.css' %}">
+{% endblock meta %}
+
+{% block content %}
+<main>
+<section class="section-container cl-page">
+    <a href="{% if is_edit %}{% url 'closet:show_item_detail' item.id %}{% else %}{% url 'closet:show_closet' %}{% endif %}" class="cl-back"><i class="fa-solid fa-arrow-left"></i> Back</a>
+    <h1>{% if is_edit %}Edit{% else %}Add{% endif %} <span class="cl-highlight">item</span></h1>
+
+    <form method="post" class="cl-form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <section class="cl-section">
+            <h2>Basics</h2>
+            <div class="cl-field">
+                <label for="id_name">Item name <em>*</em></label>
+                <input type="text" name="name" id="id_name" maxlength="100" placeholder="e.g. Cream Knit Sweater" value="{{ form.name.value|default_if_none:'' }}" required>
+                {{ form.name.errors }}
+            </div>
+            <div class="cl-field">
+                <span class="cl-label">Category <em>*</em></span>
+                <div class="cl-opts">
+                    {% for value, label in category_options %}
+                    <label class="cl-opt"><input type="radio" name="category" value="{{ value }}" {% if form.category.value == value %}checked{% endif %} required><span>{{ label }}</span></label>
+                    {% endfor %}
+                </div>
+                {{ form.category.errors }}
+            </div>
+            <div class="cl-field">
+                <span class="cl-label">Color <em>*</em></span>
+                <div class="cl-swatches">
+                    {% for c in color_options %}
+                    <label class="cl-swatch" title="{{ c.label }}"><input type="radio" name="color" value="{{ c.value }}" {% if form.color.value == c.value %}checked{% endif %} required><span style="background:{{ c.hex }}"></span></label>
+                    {% endfor %}
+                </div>
+                {{ form.color.errors }}
+            </div>
+            <div class="cl-field">
+                <label for="id_material">Material</label>
+                {{ form.material }}
+                {{ form.material.errors }}
+            </div>
+        </section>
+
+        <section class="cl-section">
+            <h2>Status</h2>
+            <div class="cl-opts">
+                {% for value, label in status_options %}
+                <label class="cl-opt"><input type="radio" name="status" value="{{ value }}" {% if form.status.value == value %}checked{% endif %}><span>{{ label }}</span></label>
+                {% endfor %}
+            </div>
+        </section>
+
+        <div class="cl-form-actions">
+            <a href="{% if is_edit %}{% url 'closet:show_item_detail' item.id %}{% else %}{% url 'closet:show_closet' %}{% endif %}" class="btn tertiary-btn">Cancel</a>
+            <button type="submit" class="btn primary-btn">{% if is_edit %}Save changes{% else %}Save item{% endif %}</button>
+        </div>
+    </form>
+</section>
+</main>
+{% endblock content %}
