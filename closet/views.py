@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from closet.forms import ItemForm
@@ -33,3 +33,8 @@ def add_item(request):
         messages.success(request, f'Yay! "{item.name}" is now in your closet!')
         return redirect("closet:show_closet")
     return render(request, "item_form.html", {"form": form, "is_edit": False, **option_context()})
+
+@login_required(login_url="/login")
+def show_item_detail(request, item_id):
+    item = get_object_or_404(Item, pk=item_id, user=request.user)
+    return render(request, "item_detail.html", {"item": item})

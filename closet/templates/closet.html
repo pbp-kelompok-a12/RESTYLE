@@ -38,7 +38,7 @@
                 <span class="cl-badge cl-badge-{{ item.status }}">{{ item.get_status_display }}</span>
             </div>
             <div class="cl-card-body">
-                <h2>{{ item.name }}</h2>
+                <h2><a class="cl-card-link" href="{% url 'closet:show_item_detail' item.id %}">{{ item.name }}</a></h2>
                 <div class="cl-tags">
                     <span>{{ item.get_category_display }}</span>
                     <span><i class="cl-dot" style="background:{{ item.color_hex }}"></i>{{ item.get_color_display }}</span>
