@@ -40,6 +40,15 @@
                 <div><dt>Material</dt><dd>{{ item.get_material_display|default:"—" }}</dd></div>
                 <div><dt>Status</dt><dd>{{ item.get_status_display }}</dd></div>
             </dl>
+
+            <div class="cl-detail-actions">
+                <a href="{% url 'closet:edit_item' item.id %}" class="btn primary-btn">Edit</a>
+                <form method="post" action="{% url 'closet:delete_item' item.id %}" onsubmit="return confirm('Delete {{ item.name|escapejs }}? This can\'t be undone.')">
+                    {% csrf_token %}
+                    <button type="submit" class="btn tertiary-btn">Delete</button>
+                </form>
+            </div>
+            
         </div>
     </article>
 </section>

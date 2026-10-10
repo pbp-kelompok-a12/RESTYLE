@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from closet.forms import ItemForm
@@ -38,3 +39,23 @@ def add_item(request):
 def show_item_detail(request, item_id):
     item = get_object_or_404(Item, pk=item_id, user=request.user)
     return render(request, "item_detail.html", {"item": item})
+
+@login_required(login_url="/login")
+def edit_item(request, item_id):
+    item = get_object_or_404(Item, pk=item_id, user=request.user)
+    form = ItemForm(request.POST or None, request.FILES or None, instance=item)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, f'"{item.name}" was updated!')
+        return redirect("closet:show_item_detail", item_id=item.id)
+    return render(request, "item_form.html", {"form": form, "item": item, "is_edit": True, **option_context()})
+
+
+@login_required(login_url="/login")
+@require_POST
+def delete_item(request, item_id):
+    item = get_object_or_404(Item, pk=item_id, user=request.user)
+    name = item.name
+    item.delete()
+    messages.success(request, f'"{name}" was removed from your closet.')
+    return redirect("closet:show_closet")

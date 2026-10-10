@@ -16,7 +16,7 @@
         {{ form.non_field_errors }}
 
         <section class="cl-section">
-            <h2>Photo</h2>
+            <h2>Photo <em>*<em></h2>
             <label class="cl-dropzone" for="photo-input">
                 <img id="photo-preview" alt="Preview" {% if is_edit and item.photo %}src="{{ item.photo.url }}"{% else %}hidden{% endif %}>
                 <span id="photo-placeholder" {% if is_edit and item.photo %}hidden{% endif %}>
@@ -26,9 +26,6 @@
                 </span>
             </label>
             <input type="file" name="photo" id="photo-input" accept="image/*" hidden>
-            {% if is_edit and item.photo %}
-            <label class="cl-check"><input type="checkbox" name="photo-clear"> Remove current photo</label>
-            {% endif %}
             {{ form.photo.errors }}
         </section>
 

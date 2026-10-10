@@ -29,6 +29,7 @@
     <div class="cl-grid" aria-label="Your clothes">
         {% for item in items %}
         <article class="cl-card">
+
             <div class="cl-card-img">
                 {% if item.photo %}
                 <img src="{{ item.photo.url }}" alt="{{ item.name }}" loading="lazy">
@@ -37,6 +38,7 @@
                 {% endif %}
                 <span class="cl-badge cl-badge-{{ item.status }}">{{ item.get_status_display }}</span>
             </div>
+
             <div class="cl-card-body">
                 <h2><a class="cl-card-link" href="{% url 'closet:show_item_detail' item.id %}">{{ item.name }}</a></h2>
                 <div class="cl-tags">
@@ -44,6 +46,21 @@
                     <span><i class="cl-dot" style="background:{{ item.color_hex }}"></i>{{ item.get_color_display }}</span>
                 </div>
             </div>
+
+            <div class="cl-menu">
+                <button type="button" class="cl-menu-button" aria-haspopup="true" aria-expanded="false" aria-label="Options for {{ item.name }}">
+                    <i class="fa-solid fa-ellipsis"></i>
+                </button>
+                <div class="cl-menu-list" hidden>
+                    <a href="{% url 'closet:show_item_detail' item.id %}">View details</a>
+                    <a href="{% url 'closet:edit_item' item.id %}">Edit item</a>
+                    <form method="post" action="{% url 'closet:delete_item' item.id %}" onsubmit="return confirm('Delete {{ item.name|escapejs }}? This can\'t be undone.')">
+                        {% csrf_token %}
+                        <button type="submit" class="cl-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+
         </article>
         {% empty %}
         <p>Your closet is empty.</p>
@@ -51,4 +68,5 @@
     </div>
 </section>
 </main>
+<script src="{% static 'js/closet.js' %}"></script>
 {% endblock content %}

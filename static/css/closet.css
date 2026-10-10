@@ -22,6 +22,7 @@
     font-size: 48px;
     font-weight: 700;
     line-height: 1.15;
+    margin-bottom: 20px;
 }
 
 .cl-highlight {
@@ -131,6 +132,56 @@
     flex-shrink: 0;
 }
 
+/* menu titik tiga */
+.cl-menu { position: absolute; top: 8px; right: 8px; z-index: 5; }
+.cl-menu-button {
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, .92);
+    border: 1px solid var(--color-azure-polo-blue);
+    border-radius: 50%;
+    color: var(--color-azure-san-marino);
+    cursor: pointer;
+    transition: background-color .2s ease-out, border-color .2s ease-out;
+}
+.cl-menu-button:hover, .cl-menu-button[aria-expanded="true"] {
+    background: var(--color-azure-san-marino);
+    border-color: var(--color-azure-san-marino);
+    color: var(--color-white-solid);
+}
+.cl-menu-list {
+    position: absolute;
+    top: 36px;
+    right: 0;
+    width: 180px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background: var(--color-white-solid);
+    border: 1px solid var(--color-azure-polo-blue);
+    border-radius: var(--corner-radius-12);
+    box-shadow: var(--drop-shadow);
+}
+.cl-menu-list a,
+.cl-menu-list button {
+    display: block;
+    width: 100%;
+    padding: 8px 10px;
+    border: none;
+    background: none;
+    border-radius: var(--corner-radius-8);
+    font-size: 13px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+}
+.cl-menu-list a:hover, .cl-menu-list button:hover { background: var(--color-orange-linen); }
+.cl-menu-list .cl-danger { color: var(--color-red-cherry); }
+.cl-menu-list form { margin-top: 4px; padding-top: 4px; border-top: 1px solid var(--color-orange-pearl-brush); }
+
 /* form */
 .cl-back { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--color-azure-san-marino); }
 .cl-back:hover { text-decoration: underline !important; }
@@ -143,8 +194,10 @@
     background: var(--color-white-solid);
     border: 1px solid var(--color-azure-polo-blue);
     border-radius: var(--corner-radius-16);
+    margin-top: 15px;
 }
 .cl-section h2 { font-family: var(--font-family-font-3), sans-serif; font-size: 16px; font-weight: 700; }
+.cl-section h2 em { color: var(--color-red-cherry); font-style: normal; }
 .cl-field { display: flex; flex-direction: column; gap: 6px; }
 .cl-field > label, .cl-label { font-size: 12px; font-weight: 700; color: var(--color-azure-dolphin); }
 .cl-field em { color: var(--color-red-cherry); font-style: normal; }
@@ -176,7 +229,6 @@
 .cl-dropzone span { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 24px; color: var(--color-azure-dolphin); }
 .cl-dropzone i { font-size: 28px; color: var(--color-azure-san-marino); margin-bottom: 6px; }
 .cl-dropzone strong { color: var(--color-azure-san-marino); font-size: 15px; }
-.cl-check { display: flex; align-items: center; gap: 8px; font-size: 13px; }
 
 /* pilihan chip (radio disembunyikan, yang tampil span-nya) */
 .cl-opts { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -219,7 +271,7 @@
     color: var(--color-azure-san-marino);
 }
 
-.cl-form-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.cl-form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 12px}
 
 /* tombol di form closet */
 .cl-form-actions .primary-btn {
@@ -235,6 +287,14 @@
 }
 .cl-form-actions .tertiary-btn:hover {
     filter: brightness(.9);
+}
+
+.cl-form-actions .btn,
+.cl-detail-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 /* detail */
@@ -268,6 +328,16 @@
 .cl-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px; margin: 20px 0; }
 .cl-facts dt { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--color-azure-dolphin); }
 .cl-facts dd { font-weight: 600; }
+
+.cl-detail-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 22px; }
+.cl-detail-actions .primary-btn { color: var(--color-white-solid); font-weight: 700; }
+.cl-detail-actions .tertiary-btn {
+    background: var(--color-red-cherry);
+    border-color: var(--color-red-cherry);
+    color: var(--color-white-solid);
+    font-weight: 700;
+}
+.cl-detail-actions .tertiary-btn:hover { filter: brightness(.9); }
 
 /* responsive */
 @media (max-width: 1100px) { .cl-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
