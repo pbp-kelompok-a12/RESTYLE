@@ -6,7 +6,7 @@
         <a href="{% url 'main:show_landing_page' %}">
             <img src="/static/img/brand.webp" alt="RE:STYLE logo" class="brand-nav">
         </a>
-        <a href="#" class="nav-links">CLOSET</a>
+        <a href="{% url 'closet:show_closet' %}" class="nav-links {% if request.resolver_match.app_name == 'closet' %}is-active{% endif %}">CLOSET</a>
         <a href="#" class="nav-links">MIX &amp; MATCH</a>
         <a href="{% url 'planner:show_planner' %}" class="nav-links {% if request.resolver_match.app_name == 'planner' %}is-active{% endif %}">PLANNER</a>
         <a href="{% url 'community:show_community' %}"
