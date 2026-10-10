@@ -1,1 +1,38 @@
-<h1>Closet page</h1>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+    <title>Closet | RE:STYLE</title>
+    <link rel="stylesheet" href="{% static 'css/closet.css' %}">
+{% endblock meta %}
+
+{% block content %}
+<main>
+<section class="section-container cl-page">
+    <header>
+        <h1>Welcome to your <span class="cl-highlight">closet!</span></h1>
+    </header>
+
+    <p>{{ total_count }} item{{ total_count|pluralize }}</p>
+
+    <div class="cl-grid" aria-label="Your clothes">
+        {% for item in items %}
+        <article class="cl-card">
+            <div class="cl-card-img">
+                {% include '_icon.html' with category=item.category %}
+            </div>
+            <div class="cl-card-body">
+                <h2>{{ item.name }}</h2>
+                <div class="cl-tags">
+                    <span>{{ item.get_category_display }}</span>
+                    <span><i class="cl-dot" style="background:{{ item.color_hex }}"></i>{{ item.get_color_display }}</span>
+                </div>
+            </div>
+        </article>
+        {% empty %}
+        <p>Your closet is empty.</p>
+        {% endfor %}
+    </div>
+</section>
+</main>
+{% endblock content %}

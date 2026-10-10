@@ -7,6 +7,8 @@ class Item(models.Model):
         ("bottom", "Bottom"),
         ("shoes", "Shoes"),
         ("accessories", "Accessories"),
+        ("outerwear", "Outerwear"),
+        ("dresses", "Dresses")
     ]
 
     COLOR_CHOICES = [
@@ -23,6 +25,12 @@ class Item(models.Model):
         ("blue","Blue"),
         ("purple","Purple"),   
     ]
+
+    COLOR_HEX = {
+        "white": "#FFFFFF", "black": "#111111", "gray": "#9AA0A6", "beige": "#D9C3A0",
+        "brown": "#944E18", "red": "#A6231B", "orange": "#E8893A", "yellow": "#F2D45C",
+        "pink": "#E88AC0", "green": "#9CC24B", "blue": "#3375B5", "purple": "#9567DB",
+    }
 
     MATERIAL_CHOICES = [
         ("cotton", "Cotton"),
@@ -43,6 +51,10 @@ class Item(models.Model):
         ("ready", "Ready to Wear"),
         ("washing", "In the Wash"),
     ]
+
+    @property
+    def color_hex(self):
+        return self.COLOR_HEX.get(self.color, "#CCCCCC")
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
