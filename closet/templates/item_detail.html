@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+    <title>{{ item.name }} | RE:STYLE</title>
+    <link rel="stylesheet" href="{% static 'css/closet.css' %}">
+{% endblock meta %}
+
+{% block content %}
+<main>
+<section class="section-container cl-page">
+    {% if messages %}
+    <div class="cl-messages">
+        {% for message in messages %}
+        <p class="cl-message cl-message-{{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <a href="{% url 'closet:show_closet' %}" class="cl-back"><i class="fa-solid fa-arrow-left"></i> Back to closet</a>
+
+    <article class="cl-detail">
+        <div class="cl-detail-img">
+            {% if item.photo %}
+            <img src="{{ item.photo.url }}" alt="{{ item.name }}">
+            {% else %}
+            {% include '_icon.html' with category=item.category %}
+            {% endif %}
+            <span class="cl-badge cl-badge-{{ item.status }}">{{ item.get_status_display }}</span>
+        </div>
+
+        <div class="cl-detail-info">
+            <h1>{{ item.name }}</h1>
+            <div class="cl-tags">
+                <span>{{ item.get_category_display }}</span>
+                <span><i class="cl-dot" style="background:{{ item.color_hex }}"></i>{{ item.get_color_display }}</span>
+            </div>
+
+            <dl class="cl-facts">
+                <div><dt>Material</dt><dd>{{ item.get_material_display|default:"—" }}</dd></div>
+                <div><dt>Status</dt><dd>{{ item.get_status_display }}</dd></div>
+            </dl>
+
+            <div class="cl-detail-actions">
+                <a href="{% url 'closet:edit_item' item.id %}" class="btn primary-btn">Edit</a>
+                <form method="post" action="{% url 'closet:delete_item' item.id %}" onsubmit="return confirm('Delete {{ item.name|escapejs }}? This can\'t be undone.')">
+                    {% csrf_token %}
+                    <button type="submit" class="btn tertiary-btn">Delete</button>
+                </form>
+            </div>
+            
+        </div>
+    </article>
+</section>
+</main>
+{% endblock content %}

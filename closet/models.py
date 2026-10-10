@@ -62,6 +62,7 @@ class Item(models.Model):
         related_name="closet_items",
     )
 
+    photo = models.ImageField(upload_to="closet/items/", blank=True)
     name = models.CharField(max_length=100)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
     color = models.CharField(max_length=20, choices=COLOR_CHOICES)
