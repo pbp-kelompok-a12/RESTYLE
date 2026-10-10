@@ -30,7 +30,11 @@
         {% for item in items %}
         <article class="cl-card">
             <div class="cl-card-img">
+                {% if item.photo %}
+                <img src="{{ item.photo.url }}" alt="{{ item.name }}" loading="lazy">
+                {% else %}
                 {% include '_icon.html' with category=item.category %}
+                {% endif %}
                 <span class="cl-badge cl-badge-{{ item.status }}">{{ item.get_status_display }}</span>
             </div>
             <div class="cl-card-body">

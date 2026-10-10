@@ -14,6 +14,7 @@
 .cl-page :where(a) { color: inherit; text-decoration: none; }
 .cl-page :where(button, input, select) { font: inherit; color: inherit; }
 .cl-page :where(form) { margin: 0; }
+.cl-page [hidden] { display: none !important; }
 
 .cl-page h1 {
     color: var(--color-azure-san-marino);
@@ -69,6 +70,7 @@
 .cl-card:hover { transform: translateY(-3px); box-shadow: var(--drop-shadow); }
 
 .cl-card-img {
+    overflow:hidden;
     position: relative;
     aspect-ratio: 1 / 1;
     display: flex;
@@ -79,6 +81,7 @@
     border-bottom: 1px solid var(--color-azure-polo-blue);
     color: var(--color-azure-san-marino);
 }
+.cl-card-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .cl-icon { font-size: 72px; }
 .cl-badge {
     position: absolute;
@@ -151,6 +154,26 @@
 }
 .cl-form input:focus-visible, .cl-form select:focus-visible { outline: 2px solid var(--color-azure-san-marino); outline-offset: 1px; }
 .errorlist { list-style: none; margin: 0; padding: 0; color: var(--color-red-cherry); font-size: 12px; font-weight: 600; }
+
+.cl-dropzone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    overflow: hidden;
+    background: var(--color-orange-linen);
+    border: 2px dashed var(--color-azure-polo-blue);
+    border-radius: var(--corner-radius-16);
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .2s ease-out;
+}
+.cl-dropzone:hover { border-color: var(--color-azure-san-marino); }
+.cl-dropzone img { width: 100%; max-height: 320px; object-fit: contain; display: block; }
+.cl-dropzone span { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 24px; color: var(--color-azure-dolphin); }
+.cl-dropzone i { font-size: 28px; color: var(--color-azure-san-marino); margin-bottom: 6px; }
+.cl-dropzone strong { color: var(--color-azure-san-marino); font-size: 15px; }
+.cl-check { display: flex; align-items: center; gap: 8px; font-size: 13px; }
 
 /* pilihan chip (radio disembunyikan, yang tampil span-nya) */
 .cl-opts { display: flex; flex-wrap: wrap; gap: 8px; }

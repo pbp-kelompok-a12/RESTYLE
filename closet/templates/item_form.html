@@ -11,9 +11,26 @@
 <section class="section-container cl-page">
     <h1>{% if is_edit %}Edit{% else %}Add new{% endif %} <span class="cl-highlight">item!</span></h1>
 
-    <form method="post" class="cl-form">
+    <form method="post" enctype="multipart/form-data" class="cl-form">
         {% csrf_token %}
         {{ form.non_field_errors }}
+
+        <section class="cl-section">
+            <h2>Photo</h2>
+            <label class="cl-dropzone" for="photo-input">
+                <img id="photo-preview" alt="Preview" {% if is_edit and item.photo %}src="{{ item.photo.url }}"{% else %}hidden{% endif %}>
+                <span id="photo-placeholder" {% if is_edit and item.photo %}hidden{% endif %}>
+                    <i class="fa-solid fa-camera"></i>
+                    <strong>Upload a photo</strong>
+                    <small>Tap to take a photo or choose from your gallery</small>
+                </span>
+            </label>
+            <input type="file" name="photo" id="photo-input" accept="image/*" hidden>
+            {% if is_edit and item.photo %}
+            <label class="cl-check"><input type="checkbox" name="photo-clear"> Remove current photo</label>
+            {% endif %}
+            {{ form.photo.errors }}
+        </section>
 
         <section class="cl-section">
             <h2>Basics</h2>
@@ -63,4 +80,5 @@
     </form>
 </section>
 </main>
+<script src="{% static 'js/closet.js' %}"></script>
 {% endblock content %}
