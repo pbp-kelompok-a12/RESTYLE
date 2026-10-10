@@ -22,7 +22,7 @@
         <h1>Welcome to your <span class="cl-highlight">closet!</span></h1>
         <div class="cl-head-actions">
             <span class="cl-count">{{ total_count }} item{{ total_count | pluralize }}</span>
-            <a href="{% url 'closet:create_item' %}" class="btn primary-btn"><i class="fa-solid fa-plus"></i> Add item</a>
+            <a href="{% url 'closet:add_item' %}" class="btn primary-btn"><i class="fa-solid fa-plus"></i> Add item</a>
         </div>
     </header>
 
@@ -31,6 +31,7 @@
         <article class="cl-card">
             <div class="cl-card-img">
                 {% include '_icon.html' with category=item.category %}
+                <span class="cl-badge cl-badge-{{ item.status }}">{{ item.get_status_display }}</span>
             </div>
             <div class="cl-card-body">
                 <h2>{{ item.name }}</h2>

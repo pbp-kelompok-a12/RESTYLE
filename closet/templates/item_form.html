@@ -9,8 +9,7 @@
 {% block content %}
 <main>
 <section class="section-container cl-page">
-    <a href="{% if is_edit %}{% url 'closet:show_item_detail' item.id %}{% else %}{% url 'closet:show_closet' %}{% endif %}" class="cl-back"><i class="fa-solid fa-arrow-left"></i> Back</a>
-    <h1>{% if is_edit %}Edit{% else %}Add{% endif %} <span class="cl-highlight">item</span></h1>
+    <h1>{% if is_edit %}Edit{% else %}Add new{% endif %} <span class="cl-highlight">item!</span></h1>
 
     <form method="post" class="cl-form">
         {% csrf_token %}
@@ -34,9 +33,9 @@
             </div>
             <div class="cl-field">
                 <span class="cl-label">Color <em>*</em></span>
-                <div class="cl-swatches">
+                <div class="cl-opts">
                     {% for c in color_options %}
-                    <label class="cl-swatch" title="{{ c.label }}"><input type="radio" name="color" value="{{ c.value }}" {% if form.color.value == c.value %}checked{% endif %} required><span style="background:{{ c.hex }}"></span></label>
+                    <label class="cl-opt"><input type="radio" name="color" value="{{ c.value }}" {% if form.color.value == c.value %}checked{% endif %} required><span><i class="cl-dot" style="background:{{ c.hex }}"></i>{{ c.label }}</span></label>
                     {% endfor %}
                 </div>
                 {{ form.color.errors }}

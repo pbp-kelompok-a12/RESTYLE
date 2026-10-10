@@ -24,12 +24,12 @@ def option_context():
     }
 
 @login_required(login_url="/login")
-def create_item(request):
+def add_item(request):
     form = ItemForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         item = form.save(commit=False)
         item.user = request.user
         item.save()
-        messages.success(request, f'"{item.name}" was added to your closet.')
+        messages.success(request, f'Yay! "{item.name}" is now in your closet!')
         return redirect("closet:show_closet")
     return render(request, "item_form.html", {"form": form, "is_edit": False, **option_context()})
