@@ -48,8 +48,11 @@
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{% url 'closet:show_item_detail' item.id %}">
                     {% if item.status == 'ready' %}
-                    <select name="days" aria-label="Wash time"><option value="1">1 day</option><option value="2">2 days</option><option value="3" selected>3 days</option><option value="5">5 days</option></select>
                     <button type="submit" class="btn secondary-btn">Mark as Washing</button>
+                    <label class="cl-days-input">
+                        <input type="number" name="days" min="1" max="30" value="3" aria-label="Wash time in days">
+                        <span>days</span>
+                    </label>
                     {% else %}
                     <button type="submit" class="btn secondary-btn">Mark as Ready now</button>
                     {% endif %}

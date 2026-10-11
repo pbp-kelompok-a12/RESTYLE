@@ -40,4 +40,24 @@
             placeholder.hidden = true;
         });
     }
+
+    /* ---------- kolom wash time ---------- */
+    var washBox = document.getElementById("wash-box");
+    if (washBox) {
+        var syncWash = function () {
+            var checked = document.querySelector('input[name="status"]:checked');
+            washBox.hidden = !(checked && checked.value === "washing");
+        };
+        document.querySelectorAll('input[name="status"]').forEach(function (input) {
+            input.addEventListener("change", syncWash);
+        });
+        syncWash();
+
+        var daysInput = document.getElementById("id_wash_days");
+        document.querySelectorAll(".cl-quick").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                daysInput.value = btn.getAttribute("data-days");
+            });
+        });
+    }
 })();

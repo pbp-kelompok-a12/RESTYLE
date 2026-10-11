@@ -57,8 +57,8 @@
                     <form method="post" action="{% url 'closet:toggle_item_status' item.id %}">
                         {% csrf_token %}
                         {% if item.status == 'ready' %}
-                        <label class="cl-days-pick">Wash time
-                            <select name="days"><option value="1">1 day</option><option value="2">2 days</option><option value="3" selected>3 days</option><option value="5">5 days</option></select>
+                        <label class="cl-days-pick">Wash (days)
+                            <input type="number" name="days" min="1" max="30" value="3" aria-label="Wash time in days">
                         </label>
                         <button type="submit">Mark as Washing</button>
                         {% else %}
