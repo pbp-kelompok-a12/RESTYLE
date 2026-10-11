@@ -26,7 +26,7 @@
             {% else %}
             {% include '_icon.html' with category=item.category %}
             {% endif %}
-            <span class="cl-badge cl-badge-{{ item.status }}">{{ item.get_status_display }}</span>
+            <span class="cl-badge cl-badge-{{ item.status }}">{% if item.status == 'washing' %}Washing · {{ item.days_left }}d{% else %}Ready{% endif %}</span>
         </div>
 
         <div class="cl-detail-info">
@@ -38,17 +38,29 @@
 
             <dl class="cl-facts">
                 <div><dt>Material</dt><dd>{{ item.get_material_display|default:"—" }}</dd></div>
-                <div><dt>Status</dt><dd>{{ item.get_status_display }}</dd></div>
+                <div><dt>Status</dt><dd>{% if item.status == 'washing' %}In the wash, ready in {{ item.days_left }} day{{ item.days_left|pluralize }}{% else %}Ready to wear{% endif %}</dd>
             </dl>
 
             <div class="cl-detail-actions">
                 <a href="{% url 'closet:edit_item' item.id %}" class="btn primary-btn">Edit</a>
+                
+                <form method="post" action="{% url 'closet:toggle_item_status' item.id %}" class="cl-inline-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{% url 'closet:show_item_detail' item.id %}">
+                    {% if item.status == 'ready' %}
+                    <select name="days" aria-label="Wash time"><option value="1">1 day</option><option value="2">2 days</option><option value="3" selected>3 days</option><option value="5">5 days</option></select>
+                    <button type="submit" class="btn secondary-btn">Mark as Washing</button>
+                    {% else %}
+                    <button type="submit" class="btn secondary-btn">Mark as Ready now</button>
+                    {% endif %}
+                </form>
+
                 <form method="post" action="{% url 'closet:delete_item' item.id %}" onsubmit="return confirm('Delete {{ item.name|escapejs }}? This can\'t be undone.')">
                     {% csrf_token %}
                     <button type="submit" class="btn tertiary-btn">Delete</button>
                 </form>
             </div>
-            
+
         </div>
     </article>
 </section>
