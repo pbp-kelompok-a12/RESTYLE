@@ -1,0 +1,12 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/toast.css' %}">
+
+<div class="toast-stack" id="toast-stack" aria-live="polite">
+    {% for message in messages %}
+    <div class="toast toast-{% if message.tags == 'error' %}error{% else %}success{% endif %}" role="status">
+        <i class="fa-solid {% if message.tags == 'error' %}fa-circle-exclamation{% else %}fa-circle-check{% endif %}"></i>
+        <span>{{ message }}</span>
+    </div>
+    {% endfor %}
+</div>
+<script src="{% static 'js/toast.js' %}"></script>
