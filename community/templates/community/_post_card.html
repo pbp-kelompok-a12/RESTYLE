@@ -51,18 +51,38 @@
         {# Tag dari closet ditambahkan di sini nanti, setelah model pakaian dari Modul 1 ada. #}
 
         <div class="cm-actions">
-            <button type="button" class="cm-react {% if user in post.likes.all %}is-active{% endif %}"
-                    data-url="{% url 'community:toggle_post_like' post.id %}" aria-label="Like this post">
+            {% if user.is_authenticated %}
+            <button type="button" class="cm-react {% if user.is_authenticated and user in post.likes.all %}is-active{% endif %}"
+                    data-url="{% url 'community:toggle_post_like' post.id %}"
+                    aria-label="Like this post">
                 <i class="fa-regular fa-heart"></i> <span class="cm-count">{{ post.likes.count }}</span>
             </button>
+            {% else %}
+            <a class="cm-react" href="{% url 'main:login' %}" aria-label="Like this post">
+                <i class="fa-regular fa-heart"></i> <span class="cm-count">{{ post.likes.count }}</span>
+            </a>
+            {% endif %}
+            {% if user.is_authenticated %}
             <button type="button" class="cm-toggle-comments" aria-expanded="false">
                 <i class="fa-regular fa-comment"></i> {{ post.comments.count }} repl{{ post.comments.count|pluralize:"y,ies" }}
             </button>
-            <button type="button" class="cm-react cm-save {% if user in post.saved_by.all %}is-active{% endif %}"
+            {% else %}
+            <a class="cm-toggle-comments" href="{% url 'main:login' %}">
+                <i class="fa-regular fa-comment"></i> {{ post.comments.count }} repl{{ post.comments.count|pluralize:"y,ies" }}
+            </a>
+            {% endif %}
+            {% if user.is_authenticated %}
+            <button type="button" class="cm-react cm-save {% if user.is_authenticated and user in post.saved_by.all %}is-active{% endif %}"
                     data-url="{% url 'community:toggle_post_save' post.id %}">
                 <i class="fa-regular fa-bookmark"></i>
-                <span class="cm-save-label">{% if user in post.saved_by.all %}Saved{% else %}Save{% endif %}</span>
+                <span class="cm-save-label">{% if user.is_authenticated and user in post.saved_by.all %}Saved{% else %}Save{% endif %}</span>
             </button>
+            {% else %}
+            <a class="cm-react cm-save" href="{% url 'main:login' %}">
+                <i class="fa-regular fa-bookmark"></i>
+                <span class="cm-save-label">Save</span>
+            </a>
+            {% endif %}
         </div>
 
         <section class="cm-comments" hidden>
@@ -77,6 +97,7 @@
             {% endfor %}
             {% endif %}
 
+            {% if user.is_authenticated %}
             <form class="cm-reply-form" method="post" action="{% url 'community:create_comment' post.id %}">
                 {% csrf_token %}
                 <span class="cm-avatar">{{ user.username|first|upper|default:"?" }}</span>
@@ -84,6 +105,9 @@
                        placeholder="Write a reply..." aria-label="Write a reply">
                 <button type="submit" class="cm-btn cm-btn-dark">Reply</button>
             </form>
+            {% else %}
+            <a class="cm-reply-form" href="{% url 'main:login' %}">Sign in to reply.</a>
+            {% endif %}
         </section>
     </div>
 </article>

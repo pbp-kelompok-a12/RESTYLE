@@ -15,20 +15,21 @@ from django.views.decorators.http import require_POST
 from community.forms import CommentForm, PostForm
 from community.models import Comment, Follow, Post, PostImage
 
-# sementara login lewat halaman admin dulu, ntar ganti kalau halaman login modul 4 udah ada
+# URL halaman login aplikasi.
 LOGIN_URL = "/login/"
 
 MAX_PHOTOS = 3
 MAX_PHOTO_SIZE = 5 * 1024 * 1024  # 5 MB
 ALLOWED_PHOTO_TYPES = ["image/jpeg", "image/png"]
 
-@login_required(login_url=LOGIN_URL)
 def show_community(request):
     # tab yang sedang dibuka: "for-you" (semua post) atau "following".
     tab = request.GET.get("tab", "for-you")
 
     posts = Post.objects.select_related("author")
     if tab == "following":
+        if not request.user.is_authenticated:
+            return redirect(LOGIN_URL)
         # Hanya post dari orang yang diikuti user ini.
         posts = posts.filter(author__follower_links__follower=request.user)
 
@@ -42,16 +43,25 @@ def show_community(request):
 
     # saran orang untuk diikuti: bukan diri sendiri dan belum diikuti,
     # diurutkan dari yang paling banyak post-nya.
-    following_ids = Follow.objects.filter(follower=request.user).values_list("followed_id", flat=True)
+    following_ids = (
+        Follow.objects.filter(follower=request.user).values_list("followed_id", flat=True)
+        if request.user.is_authenticated
+        else []
+    )
+    users = get_user_model().objects.all()
+    if request.user.is_authenticated:
+        users = users.exclude(id=request.user.id)
     stylists = (
-        get_user_model().objects.exclude(id=request.user.id)
-        .exclude(id__in=following_ids)
+        users.exclude(id__in=following_ids)
         .annotate(post_count=Count("community_posts"))
         .order_by("-post_count", "username")[:4]
     )
 
-    # orang yang sedang diikuti user ini, untuk daftar "Following" di kolom kanan.
-    following_people = get_user_model().objects.filter(id__in=following_ids).order_by("username")
+    following_people = (
+        get_user_model().objects.filter(id__in=following_ids).order_by("username")
+        if request.user.is_authenticated
+        else []
+    )
 
     context = {
         "tab": tab,
@@ -238,7 +248,6 @@ def show_saved(request):
     posts = request.user.saved_posts.select_related("author")
     return render(request, "community/saved.html", {"posts": posts})
 
-@login_required(login_url=LOGIN_URL)
 def show_user_profile(request, username):
     profile_user = get_object_or_404(get_user_model(), username=username)
     posts = (
@@ -246,10 +255,14 @@ def show_user_profile(request, username):
         .select_related("author")
         .prefetch_related("images")
     )
-    is_following = Follow.objects.filter(
-        follower=request.user,
-        followed=profile_user,
-    ).exists()
+    is_following = (
+        Follow.objects.filter(
+            follower=request.user,
+            followed=profile_user,
+        ).exists()
+        if request.user.is_authenticated
+        else False
+    )
 
     context = {
         "profile_user": profile_user,
@@ -269,7 +282,6 @@ def show_user_profile(request, username):
         context,
     )
 
-@login_required(login_url=LOGIN_URL)
 def show_follow_list(request, username, list_type):
     profile_user = get_object_or_404(get_user_model(), username=username)
 
@@ -284,8 +296,8 @@ def show_follow_list(request, username, list_type):
         )
         title = "Followers"
 
-    people = (
-        people.annotate(
+    if request.user.is_authenticated:
+        people = people.annotate(
             is_following=Exists(
                 Follow.objects.filter(
                     follower=request.user,
@@ -293,8 +305,7 @@ def show_follow_list(request, username, list_type):
                 )
             )
         )
-        .order_by("username")
-    )
+    people = people.order_by("username")
 
     return render(
         request,
@@ -306,42 +317,6 @@ def show_follow_list(request, username, list_type):
             "title": title,
         },
     )
-
-@login_required(login_url=LOGIN_URL)
-def show_community(request):
-    # tab yang sedang dibuka: "for-you" (semua post) atau "following".
-    tab = request.GET.get("tab", "for-you")
-
-    posts = Post.objects.select_related("author")
-    if tab == "following":
-        # hanya post dari orang yang diikuti user ini.
-        posts = posts.filter(author__follower_links__follower=request.user)
-
-    # 3 post dengan like terbanyak dalam 7 hari terakhir.
-    one_week_ago = timezone.now() - timedelta(days=7)
-    popular_posts = (
-        Post.objects.filter(created_at__gte=one_week_ago)
-        .annotate(like_count=Count("likes"))
-        .order_by("-like_count", "-created_at")[:3]
-    )
-
-    # saran orang untuk diikuti: bukan diri sendiri dan belum diikuti,
-    # diurutkan dari yang paling banyak post-nya.
-    following_ids = Follow.objects.filter(follower=request.user).values_list("followed_id", flat=True)
-    stylists = (
-        get_user_model().objects.exclude(id=request.user.id)
-        .exclude(id__in=following_ids)
-        .annotate(post_count=Count("community_posts"))
-        .order_by("-post_count", "username")[:4]
-    )
-
-    context = {
-        "tab": tab,
-        "posts": posts,
-        "popular_posts": popular_posts,
-        "stylists": stylists,
-    }
-    return render(request, "community/feed.html", context)
 
 @login_required(login_url=LOGIN_URL)
 @require_POST

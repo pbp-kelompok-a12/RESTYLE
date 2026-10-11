@@ -24,7 +24,8 @@
             {% if profile_user != user %}
             <button type="button"
                     class="cm-btn cm-btn-outline cm-follow {% if is_following %}is-active{% endif %}"
-                    data-url="{% url 'community:toggle_follow' profile_user.username %}">
+                    data-url="{% url 'community:toggle_follow' profile_user.username %}"
+                    {% if not user.is_authenticated %}data-login-url="{% url 'main:login' %}"{% endif %}>
                 <span class="cm-follow-label">{% if is_following %}Following{% else %}Follow{% endif %}</span>
             </button>
             {% else %}

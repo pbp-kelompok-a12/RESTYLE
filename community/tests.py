@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
-from community.models import Follow
+from community.models import Comment, Follow, Post
 
 
 class FollowProfileViewsTests(TestCase):
@@ -50,3 +50,44 @@ class FollowProfileViewsTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "No followers yet")
+
+
+class AnonymousCommunityTests(TestCase):
+    def setUp(self):
+        author = get_user_model().objects.create_user(
+            username="author",
+            password="test-password",
+        )
+        self.post = Post.objects.create(author=author, content="A community post")
+        Comment.objects.create(post=self.post, author=author, content="A community reply")
+
+    def test_anonymous_user_can_view_feed_and_is_prompted_to_log_in_for_actions(self):
+        response = self.client.get("/community/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "A community post")
+        self.assertContains(response, 'class="cm-react" href="/login/" aria-label="Like this post"')
+        self.assertContains(response, 'class="cm-toggle-comments" href="/login/"')
+        self.assertContains(response, 'class="cm-react" href="/login/" aria-label="Like this reply"')
+        self.assertContains(response, 'class="cm-toggle-reply" href="/login/"')
+        self.assertContains(response, "data-login-url=\"/login/\"")
+        self.assertContains(response, "Sign in to reply.")
+
+    def test_anonymous_user_is_redirected_to_login_for_following_feed(self):
+        response = self.client.get("/community/?tab=following")
+
+        self.assertRedirects(response, "/login/", fetch_redirect_response=False)
+
+    def test_anonymous_user_is_redirected_to_login_for_like_action(self):
+        response = self.client.post(f"/community/post/{self.post.id}/like/")
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, f"/login/?next=/community/post/{self.post.id}/like/")
+
+    def test_anonymous_user_can_browse_profiles_and_follow_lists(self):
+        profile_response = self.client.get("/community/profile/author/")
+        following_response = self.client.get("/community/profile/author/following/")
+
+        self.assertEqual(profile_response.status_code, 200)
+        self.assertContains(profile_response, "data-login-url=\"/login/\"")
+        self.assertEqual(following_response.status_code, 200)
