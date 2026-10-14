@@ -17,8 +17,8 @@
             <textarea name="content" rows="2" maxlength="500" required
                       aria-label="Edit your reply">{{ comment.content }}</textarea>
             <div class="cm-edit-actions">
-                <button type="button" class="cm-btn cm-btn-outline cm-btn-small cm-cancel-edit">Cancel</button>
-                <button type="submit" class="cm-btn cm-btn-primary cm-btn-small">Save</button>
+                {% include 'components/button.html' with btn_type="button" btn_class="tertiary" extra_class="cm-community-button cm-community-small cm-cancel-edit" label="Cancel" %}
+                {% include 'components/button.html' with btn_type="submit" btn_class="primary" extra_class="cm-community-button cm-community-small" label="Save" %}
             </div>
         </form>
         {% endif %}
@@ -65,7 +65,7 @@
             <input type="text" name="content" maxlength="500" required
                    placeholder="Reply to @{{ comment.author.username }}..."
                    aria-label="Reply to @{{ comment.author.username }}">
-            <button type="submit" class="cm-btn cm-btn-dark cm-btn-small">Reply</button>
+            {% include 'components/button.html' with btn_type="submit" btn_class="secondary" extra_class="cm-community-button cm-community-small" label="Reply" %}
         </form>
         {% endif %}
 

@@ -18,11 +18,13 @@
             <p>Discover styling inspiration, mix and match ideas, and everyday outfit tips from fellow students using clothes you already own.</p>
             <div class="cm-hero-actions">
                 {% if user.is_authenticated %}
-                <a href="#composer" class="cm-btn cm-btn-primary"><i class="fa-solid fa-plus"></i> New post</a>
-                <a href="{% url 'community:show_saved' %}" class="cm-btn cm-btn-outline">My saved ideas</a>
+                {% include 'components/button.html' with href="#composer" btn_class="primary" extra_class="cm-community-button" label="New post" icon="fa-solid fa-plus" icon_before=True %}
+                {% url 'community:show_saved' as saved_url %}
+                {% include 'components/button.html' with href=saved_url btn_class="tertiary" extra_class="cm-community-button" label="My saved ideas" %}
                 {% else %}
-                <a href="{% url 'main:login' %}" class="cm-btn cm-btn-primary"><i class="fa-solid fa-plus"></i> New post</a>
-                <a href="{% url 'main:login' %}" class="cm-btn cm-btn-outline">My saved ideas</a>
+                {% url 'main:login' as login_url %}
+                {% include 'components/button.html' with href=login_url btn_class="primary" extra_class="cm-community-button" label="New post" icon="fa-solid fa-plus" icon_before=True %}
+                {% include 'components/button.html' with href=login_url btn_class="tertiary" extra_class="cm-community-button" label="My saved ideas" %}
                 {% endif %}
             </div>
         </div>
@@ -74,7 +76,7 @@
                     <input type="file" name="photos" id="photo-input" accept="image/png, image/jpeg" multiple hidden>
                     <button type="button" class="cm-chip" id="photo-button"><i class="fa-regular fa-image"></i> Photo</button>
                     <button type="button" class="cm-chip" disabled title="Coming soon"><i class="fa-solid fa-shirt"></i> Tag closet items</button>
-                    <button type="submit" class="cm-btn cm-btn-primary cm-btn-small" id="post-button">Post</button>
+                    {% include 'components/button.html' with btn_type="submit" button_id="post-button" btn_class="primary" extra_class="cm-community-button cm-community-small cm-composer-post-button" label="Post" %}
                 </div>
             </form>
             {% else %}
@@ -127,11 +129,9 @@
                             <a href="{% url 'community:show_user_profile' person.username %}">@{{ person.username }}</a>
                             <p>{{ person.post_count }} post{{ person.post_count|pluralize }}</p>
                         </div>
-                        <button type="button" class="cm-btn cm-btn-outline cm-btn-tiny cm-follow"
-                                data-url="{% url 'community:toggle_follow' person.username %}"
-                                {% if not user.is_authenticated %}data-login-url="{% url 'main:login' %}"{% endif %}>
-                            <span class="cm-follow-label">Follow</span>
-                        </button>
+                        {% url 'community:toggle_follow' person.username as follow_url %}
+                        {% if not user.is_authenticated %}{% url 'main:login' as follow_login_url %}{% endif %}
+                        {% include 'components/button.html' with btn_type="button" btn_class="tertiary" extra_class="cm-community-button cm-community-tiny cm-follow" label="Follow" label_class="cm-follow-label" data_url=follow_url data_login_url=follow_login_url %}
                     </li>
                     {% empty %}
                     <li>You're following everyone here.</li>
@@ -151,10 +151,8 @@
                         <div>
                             <a href="{% url 'community:show_user_profile' person.username %}">@{{ person.username }}</a>
                         </div>
-                        <button type="button" class="cm-btn cm-btn-outline cm-btn-tiny cm-follow is-active"
-                                data-url="{% url 'community:toggle_follow' person.username %}" title="Click to unfollow">
-                            <span class="cm-follow-label">Following</span>
-                        </button>
+                        {% url 'community:toggle_follow' person.username as follow_url %}
+                        {% include 'components/button.html' with btn_type="button" btn_class="primary" extra_class="cm-community-button cm-community-tiny cm-follow is-active" label="Following" label_class="cm-follow-label" data_url=follow_url title="Click to unfollow" %}
                     </li>
                     {% endfor %}
                 </ul>
