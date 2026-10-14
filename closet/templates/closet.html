@@ -10,19 +10,11 @@
 <main>
 <section class="section-container cl-page">
 
-    {% if messages %}
-    <div class="cl-messages">
-        {% for message in messages %}
-        <p class="cl-message cl-message-{{ message.tags }}">{{ message }}</p>
-        {% endfor %}
-    </div>
-    {% endif %}
-
     <header class="cl-head">
         <h1>Welcome to your <span class="cl-highlight">closet!</span></h1>
         <div class="cl-head-actions">
             <span class="cl-count">{{ total_count }} item{{ total_count | pluralize }}</span>
-            <a href="{% url 'closet:add_item' %}" class="btn primary-btn"><i class="fa-solid fa-plus"></i> Add item</a>
+            <a href="{% url 'closet:add_item' %}" class="btn primary-btn" data-modal><i class="fa-solid fa-plus"></i> Add item</a>
         </div>
     </header>
 
@@ -40,7 +32,7 @@
             </div>
 
             <div class="cl-card-body">
-                <h2><a class="cl-card-link" href="{% url 'closet:show_item_detail' item.id %}">{{ item.name }}</a></h2>
+                <h2><a class="cl-card-link" href="{% url 'closet:show_item_detail' item.id %}" data-modal>{{ item.name }}</a></h2>
                 <div class="cl-tags">
                     <span>{{ item.get_category_display }}</span>
                     <span><i class="cl-dot" style="background:{{ item.color_hex }}"></i>{{ item.get_color_display }}</span>
@@ -52,9 +44,9 @@
                     <i class="fa-solid fa-ellipsis"></i>
                 </button>
                 <div class="cl-menu-list" hidden>
-                    <a href="{% url 'closet:show_item_detail' item.id %}">View details</a>
-                    <a href="{% url 'closet:edit_item' item.id %}">Edit item</a>
-                    <form method="post" action="{% url 'closet:delete_item' item.id %}" onsubmit="return confirm('Delete {{ item.name|escapejs }}? This can\'t be undone.')">
+                    <a href="{% url 'closet:show_item_detail' item.id %}" data-modal>View details</a>
+                    <a href="{% url 'closet:edit_item' item.id %}" data-modal>Edit item</a>
+                    <form method="post" action="{% url 'closet:delete_item' item.id %}" data-confirm="{{ item.name }}">
                         {% csrf_token %}
                         <button type="submit" class="cl-danger">Delete</button>
                     </form>
@@ -66,7 +58,15 @@
         <p>Your closet is empty.</p>
         {% endfor %}
     </div>
+
+    <div class="cl-overlay" id="cl-overlay" hidden>
+        <div class="cl-modal" role="dialog" aria-modal="true">
+            <button type="button" class="cl-modal-close" data-close aria-label="Close">&times;</button>
+            <div id="cl-modal-body"></div>
+        </div>
+    </div>
 </section>
 </main>
 <script src="{% static 'js/closet.js' %}"></script>
+{% include 'components/toast.html' %}
 {% endblock content %}
