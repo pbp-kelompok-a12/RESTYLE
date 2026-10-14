@@ -1001,7 +1001,8 @@ body{
 
 .cm-save.is-active{
     background-color: var(--color-yellow-peach-yellow);
-    color: var(--color-azure-martinique);
+    color: var(--color-azure-martinique)!important;
+    padding: 0px 12px;
 }
 
 /* empty state bunglon */
