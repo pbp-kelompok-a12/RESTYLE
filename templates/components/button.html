@@ -4,16 +4,19 @@
     <strong {% if value_data_attr %}data-{{ value_data_attr }}{% endif %}>{{ value }}</strong>
     <span>{{ label|default:'Klik Disini' }}</span>
     {% else %}
+    {% if icon and icon_before %}<i class="{{ icon }}"></i>{% endif %}
     {{ label|default:'Klik Disini' }}
+    {% if icon and not icon_before %}<i class="{{ icon }}"></i>{% endif %}
     {% endif %}
 </a>
 {% elif icon %}
-<button class="btn {{ btn_class|default:'primary' }}-btn {{ extra_class }}" type="{{ btn_type|default:'button' }}">
-    <span>{{ label|default:'Klik Disini' }}</span>
-    <i class="{{ icon }}"></i>
+<button class="btn {{ btn_class|default:'primary' }}-btn {{ extra_class }}" type="{{ btn_type|default:'button' }}"{% if button_id %} id="{{ button_id }}"{% endif %}{% if title %} title="{{ title }}"{% endif %}{% if disabled %} disabled{% endif %}{% if data_url %} data-url="{{ data_url }}"{% endif %}{% if data_login_url %} data-login-url="{{ data_login_url }}"{% endif %}>
+    {% if icon_before %}<i class="{{ icon }}"></i>{% endif %}
+    <span>{% if label_class %}<span class="{{ label_class }}">{{ label|default:'Klik Disini' }}</span>{% else %}{{ label|default:'Klik Disini' }}{% endif %}</span>
+    {% if not icon_before %}<i class="{{ icon }}"></i>{% endif %}
 </button>
 {% else %}
-<button class="btn {{ btn_class|default:'primary' }}-btn {{ extra_class }}" type="{{ btn_type|default:'button' }}">
-    {{ label|default:'Klik Disini' }}
+<button class="btn {{ btn_class|default:'primary' }}-btn {{ extra_class }}" type="{{ btn_type|default:'button' }}"{% if button_id %} id="{{ button_id }}"{% endif %}{% if title %} title="{{ title }}"{% endif %}{% if disabled %} disabled{% endif %}{% if data_url %} data-url="{{ data_url }}"{% endif %}{% if data_login_url %} data-login-url="{{ data_login_url }}"{% endif %}>
+    {% if label_class %}<span class="{{ label_class }}">{{ label|default:'Klik Disini' }}</span>{% else %}{{ label|default:'Klik Disini' }}{% endif %}
 </button>
 {% endif %}
