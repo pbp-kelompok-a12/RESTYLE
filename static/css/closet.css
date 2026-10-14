@@ -230,61 +230,6 @@
 .cl-dropzone i { font-size: 28px; color: var(--color-azure-san-marino); margin-bottom: 6px; }
 .cl-dropzone strong { color: var(--color-azure-san-marino); font-size: 15px; }
 
-/* wash time di form */
-.cl-wash {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 14px;
-    background: var(--color-orange-linen);
-    border: 1px solid var(--color-orange-pearl-brush);
-    border-radius: var(--corner-radius-12);
-}
-.cl-wash > label { font-size: 12px; font-weight: 700; color: var(--color-azure-dolphin); }
-.cl-wash-row { display: flex; align-items: center; gap: 8px; }
-.cl-wash-row input { width: 90px !important; }
-.cl-wash small { color: var(--color-azure-dolphin); }
-.cl-quick {
-    width: 36px;
-    height: 36px;
-    background: var(--color-white-solid);
-    border: 1px solid var(--color-azure-polo-blue);
-    border-radius: 50%;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color .2s ease-out;
-}
-.cl-quick:hover { background: var(--color-yellow-peach-yellow); }
-
-/* pilih lama cuci */
-.cl-inline-form { display: flex; align-items: center; gap: 10px; }
-
-.cl-days-input { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--color-azure-dolphin); }
-.cl-days-input input {
-    width: 72px;
-    padding: 10px 14px;
-    background: var(--color-white-solid);
-    border: 1px solid var(--color-azure-polo-blue);
-    border-radius: var(--corner-radius-999);
-    text-align: center;
-}
-
-.cl-days-pick { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 12px; font-size: 12px; color: var(--color-azure-dolphin); }
-.cl-days-pick input {
-    width: 56px;
-    padding: 4px 8px;
-    background: var(--color-white-solid);
-    border: 1px solid var(--color-azure-polo-blue);
-    border-radius: var(--corner-radius-8);
-    text-align: center;
-}
-
-.cl-days-input input:focus-visible, .cl-days-pick input:focus-visible { outline: 2px solid var(--color-azure-san-marino); outline-offset: 1px; }
-
-.cl-days-input input::-webkit-inner-spin-button, .cl-days-input input::-webkit-outer-spin-button,
-.cl-days-pick input::-webkit-inner-spin-button, .cl-days-pick input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-.cl-days-input input, .cl-days-pick input { -moz-appearance: textfield; }
-
 /* pilihan chip (radio disembunyikan, yang tampil span-nya) */
 .cl-opts { display: flex; flex-wrap: wrap; gap: 8px; }
 .cl-opt input { position: absolute; opacity: 0; pointer-events: none; }
@@ -310,18 +255,6 @@
 /* terpilih: Category dan Color */
 .cl-opt input:checked + span {
     background: var(--color-yellow-peach-yellow);
-    border-color: var(--color-azure-san-marino);
-    color: var(--color-azure-san-marino);
-}
-
-/* terpilih: Status */
-.cl-opt input[value="ready"]:checked + span {
-    background: var(--color-green-eco-leaf);
-    border-color: var(--color-green-eco-leaf);
-    color: var(--color-white-solid);
-}
-.cl-opt input[value="washing"]:checked + span {
-    background: var(--color-azure-st-blue);
     border-color: var(--color-azure-san-marino);
     color: var(--color-azure-san-marino);
 }

@@ -1,9 +1,4 @@
-import math
-from datetime import timedelta
-
 from django.conf import settings
-from django.core.validators import MaxValueValidator, MinValueValidator
-from django.utils import timezone
 from django.db import models
 
 class Item(models.Model):
@@ -67,36 +62,6 @@ class Item(models.Model):
         related_name="closet_items",
     )
 
-    @property
-    def ready_at(self):
-        if self.status == "washing" and self.wash_started_at and self.wash_days:
-            return self.wash_started_at + timedelta(days=self.wash_days)
-        return None
-
-    @property
-    def is_wash_done(self):
-        ready_at = self.ready_at
-        return ready_at is not None and ready_at <= timezone.now()
-
-    @property
-    def days_left(self):
-        ready_at = self.ready_at
-        if ready_at is None:
-            return 0
-        return max(1, math.ceil((ready_at - timezone.now()).total_seconds() / 86400))
-
-    def start_washing(self, days):
-        self.status = "washing"
-        self.wash_days = days
-        self.wash_started_at = timezone.now()
-        self.save(update_fields=["status", "wash_days", "wash_started_at"])
-
-    def mark_ready(self):
-        self.status = "ready"
-        self.wash_days = None
-        self.wash_started_at = None
-        self.save(update_fields=["status", "wash_days", "wash_started_at"])    
-
     photo = models.ImageField(upload_to="closet/items/", blank=True)
     name = models.CharField(max_length=100)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
@@ -104,21 +69,9 @@ class Item(models.Model):
     material = models.CharField(max_length=50, choices=MATERIAL_CHOICES, blank=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="ready")
     created_at = models.DateTimeField(auto_now_add=True)
-    wash_days = models.PositiveSmallIntegerField(null=True, blank=True, validators = [MinValueValidator(1), MaxValueValidator(31)])
-    wash_started_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ["-created_at"]
 
     def __str__(self):
         return f"{self.name} ({self.user.username})"
-
-# baju yang masa cucinya udah lewat, otomatis jadi Ready
-def release_finished_washes(user):
-    released = 0
-    for item in Item.objects.filter(user=user, status="washing"):
-        if item.is_wash_done:
-            item.mark_ready()
-            released += 1
-    return released
-    

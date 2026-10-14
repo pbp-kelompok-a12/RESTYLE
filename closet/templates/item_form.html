@@ -16,7 +16,7 @@
         {{ form.non_field_errors }}
 
         <section class="cl-section">
-            <h2>Photo <em>*<em></h2>
+            <h2>Photo <em>*</em></h2>
             <label class="cl-dropzone" for="photo-input">
                 <img id="photo-preview" alt="Preview" {% if is_edit and item.photo %}src="{{ item.photo.url }}"{% else %}hidden{% endif %}>
                 <span id="photo-placeholder" {% if is_edit and item.photo %}hidden{% endif %}>
@@ -58,15 +58,6 @@
                 <label for="id_material">Material</label>
                 {{ form.material }}
                 {{ form.material.errors }}
-            </div>
-        </section>
-
-        <section class="cl-section">
-            <h2>Status</h2>
-            <div class="cl-opts">
-                {% for value, label in status_options %}
-                <label class="cl-opt"><input type="radio" name="status" value="{{ value }}" {% if form.status.value == value %}checked{% endif %}><span>{{ label }}</span></label>
-                {% endfor %}
             </div>
         </section>
 
