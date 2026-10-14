@@ -255,6 +255,8 @@ document.querySelectorAll(".cm-follow").forEach((button) => {
 
             const wasFollowing = button.classList.contains("is-active");
             button.classList.toggle("is-active", result.active);
+            button.classList.toggle("primary-btn", result.active);
+            button.classList.toggle("tertiary-btn", !result.active);
             button.querySelector(".cm-follow-label").textContent = result.active ? "Following" : "Follow";
             const followersCount = document.querySelector("[data-followers-count]");
             if (followersCount && wasFollowing !== result.active) {

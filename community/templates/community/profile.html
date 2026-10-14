@@ -22,12 +22,13 @@
                 {% endif %}
             </div>
             {% if profile_user != user %}
-            <button type="button"
-                    class="cm-btn cm-btn-outline cm-follow {% if is_following %}is-active{% endif %}"
-                    data-url="{% url 'community:toggle_follow' profile_user.username %}"
-                    {% if not user.is_authenticated %}data-login-url="{% url 'main:login' %}"{% endif %}>
-                <span class="cm-follow-label">{% if is_following %}Following{% else %}Follow{% endif %}</span>
-            </button>
+            {% url 'community:toggle_follow' profile_user.username as follow_url %}
+            {% if not user.is_authenticated %}{% url 'main:login' as follow_login_url %}{% endif %}
+            {% if is_following %}
+                {% include 'components/button.html' with btn_type="button" btn_class="primary" extra_class="cm-community-button cm-follow is-active" label="Following" label_class="cm-follow-label" data_url=follow_url data_login_url=follow_login_url %}
+            {% else %}
+                {% include 'components/button.html' with btn_type="button" btn_class="tertiary" extra_class="cm-community-button cm-follow" label="Follow" label_class="cm-follow-label" data_url=follow_url data_login_url=follow_login_url %}
+            {% endif %}
             {% else %}
             {% url 'main:logout' as logout_url %}
             {% include 'components/button.html' with href=logout_url btn_class="danger" label="Log Out" %}
@@ -58,9 +59,8 @@
     <section class="section-container community-profile-posts" id="posts">
         <div class="community-profile-section-heading">
             <h2>Posts</h2>
-            <a href="{% url 'community:show_community' %}" class="cm-btn cm-btn-outline cm-btn-small">
-                Back to community
-            </a>
+            {% url 'community:show_community' as community_url %}
+            {% include 'components/button.html' with href=community_url btn_class="tertiary" extra_class="cm-community-button cm-community-small" label="Back to community" %}
         </div>
         {% for post in posts %}
             {% include 'community/_post_card.html' %}

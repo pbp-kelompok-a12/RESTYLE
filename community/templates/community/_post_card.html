@@ -34,8 +34,8 @@
             <textarea name="content" rows="3" maxlength="1000" required
                       aria-label="Edit your post">{{ post.content }}</textarea>
             <div class="cm-edit-actions">
-                <button type="button" class="cm-btn cm-btn-outline cm-btn-small cm-cancel-edit">Cancel</button>
-                <button type="submit" class="cm-btn cm-btn-primary cm-btn-small">Save</button>
+                {% include 'components/button.html' with btn_type="button" btn_class="tertiary" extra_class="cm-community-button cm-community-small cm-cancel-edit" label="Cancel" %}
+                {% include 'components/button.html' with btn_type="submit" btn_class="primary" extra_class="cm-community-button cm-community-small" label="Save" %}
             </div>
         </form>
         {% endif %}
@@ -103,7 +103,7 @@
                 <span class="cm-avatar">{{ user.username|first|upper|default:"?" }}</span>
                 <input type="text" name="content" maxlength="500" required
                        placeholder="Write a reply..." aria-label="Write a reply">
-                <button type="submit" class="cm-btn cm-btn-dark">Reply</button>
+                {% include 'components/button.html' with btn_type="submit" btn_class="secondary" extra_class="cm-community-button" label="Reply" %}
             </form>
             {% else %}
             <a class="cm-reply-form" href="{% url 'main:login' %}">Sign in to reply.</a>

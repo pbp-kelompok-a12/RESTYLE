@@ -28,16 +28,18 @@ body{
 }
 
 .cm-page :where(a){
-    color: inherit;
     text-decoration: none;
 }
 
 .cm-page :where(button, input){
     font: inherit;
+}
+
+.cm-page :where(button, input):not(.btn){
     color: inherit;
 }
 
-.cm-page :where(button){
+.cm-page :where(button):not(.btn){
     background: none;
     border: none;
     padding: 0;
@@ -49,15 +51,12 @@ body{
     outline-offset: 2px;
 }
 
-/* tombol */
-
-.cm-btn{
+.cm-community-button{
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
     padding: 11px 20px;
-    border: 1px solid transparent;
     border-radius: var(--corner-radius-999);
     font-size: 13px;
     font-weight: 700;
@@ -66,47 +65,22 @@ body{
     transition: background-color .2s ease-out;
 }
 
-.cm-btn-primary{
-    background-color: var(--color-azure-san-marino);
-    color: var(--color-white-solid);
+.cm-community-button.primary-btn,
+.cm-community-button.secondary-btn{
+    border: 1px solid transparent;
 }
 
-.cm-btn-primary:hover{
-    background-color: var(--color-azure-57);
-}
-
-.cm-btn-primary:disabled{
-    background-color: var(--color-azure-polo-blue);
+.cm-community-button:disabled{
+    opacity: 50%;
     cursor: not-allowed;
 }
 
-.cm-btn-outline{
-    background-color: var(--color-white-solid);
-    border-color: var(--color-azure-san-marino);
-    color: var(--color-azure-san-marino);
-}
-
-.cm-btn-outline:hover{
-    background-color: var(--color-orange-linen);
-}
-
-.cm-btn-dark{
-    background-color: var(--color-azure-martinique);
-    color: var(--color-white-solid);
-}
-
-.cm-btn-dark:hover{
-    background-color: var(--color-azure-dolphin);
-}
-
-.cm-btn-small{
+.cm-community-small{
     padding: 6px 16px;
 }
 
-.cm-btn-tiny{
+.cm-community-tiny{
     padding: 6px 12px;
-    border-color: var(--color-azure-martinique);
-    color: var(--color-azure-martinique);
     font-size: 10px;
 }
 
@@ -355,7 +329,7 @@ body{
     border-top: 1px solid var(--color-azure-polo-blue);
 }
 
-.cm-composer-actions .cm-btn{
+.cm-composer-actions .cm-composer-post-button{
     margin-left: auto;
 }
 
@@ -363,8 +337,8 @@ body{
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 4px 10px;
-    border: 1px solid var(--color-azure-san-marino);
+    padding: 4px 10px!important;
+    border: 1px solid var(--color-azure-san-marino)!important;
     border-radius: var(--corner-radius-999);
     color: var(--color-azure-san-marino);
     font-size: 12px;
@@ -959,10 +933,10 @@ body{
     right: 0;
     z-index: 10;
     min-width: 140px;
-    padding: 6px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 8px;
     background-color: var(--color-white-solid);
     border: 1px solid var(--color-orange-pearl-brush);
     border-radius: var(--corner-radius-12);
@@ -1063,7 +1037,7 @@ body{
     color: var(--color-azure-dolphin);
 }
 
-.cm-empty .cm-btn{
+.cm-empty .cm-empty-button{
     margin-top: 12px;
 }
 

@@ -5,6 +5,6 @@
     <h2>{{ title }}</h2>
     <p>{{ text }}</p>
     {% if button_url %}
-    <a href="{{ button_url }}" class="cm-btn cm-btn-primary">{{ button_label }}</a>
+    {% include 'components/button.html' with href=button_url btn_class="primary" extra_class="cm-community-button cm-empty-button" label=button_label %}
     {% endif %}
 </div>

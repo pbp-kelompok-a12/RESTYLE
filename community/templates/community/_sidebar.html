@@ -11,7 +11,8 @@
     <a href="{% url 'community:show_saved' %}" class="cm-side-link {% if active == 'saved' %}is-active{% endif %}">
         <i class="fa-regular fa-bookmark"></i> Saved
     </a>
-    <a href="{% url 'community:show_community' %}#composer" class="cm-btn cm-btn-primary cm-side-post">Post</a>
+    {% url 'community:show_community' as community_url %}
+    {% include 'components/button.html' with href=community_url|add:"#composer" btn_class="primary" extra_class="cm-community-button cm-side-post" label="Post" %}
     {% else %}
     <a href="{% url 'main:login' %}" class="cm-side-link {% if active == 'mine' %}is-active{% endif %}">
         <i class="fa-regular fa-message"></i> My posts
@@ -19,6 +20,7 @@
     <a href="{% url 'main:login' %}" class="cm-side-link {% if active == 'saved' %}is-active{% endif %}">
         <i class="fa-regular fa-bookmark"></i> Saved
     </a>
-    <a href="{% url 'main:login' %}" class="cm-btn cm-btn-primary cm-side-post">Post</a>
+    {% url 'main:login' as login_url %}
+    {% include 'components/button.html' with href=login_url btn_class="primary" extra_class="cm-community-button cm-side-post" label="Post" %}
     {% endif %}
 </nav>

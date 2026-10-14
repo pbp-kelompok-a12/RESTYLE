@@ -30,12 +30,17 @@
                     </span>
                 </a>
                 {% if person != user %}
-                <button type="button"
-                        class="cm-btn cm-btn-outline cm-btn-tiny cm-follow {% if person.is_following %}is-active{% endif %}"
-                        data-url="{% url 'community:toggle_follow' person.username %}"
-                        {% if not user.is_authenticated %}data-login-url="{% url 'main:login' %}"{% endif %}>
-                    <span class="cm-follow-label">{% if person.is_following %}Following{% else %}Follow{% endif %}</span>
-                </button>
+                {% url 'community:toggle_follow' person.username as follow_url %}
+                {% if not user.is_authenticated %}{% url 'main:login' as follow_login_url %}{% endif %}
+                {% with follow_button_class="cm-community-button cm-community-tiny cm-follow" follow_label="Follow" %}
+                    {% if person.is_following %}
+                        {% with follow_button_class=follow_button_class|add:" is-active" follow_label="Following" %}
+                            {% include 'components/button.html' with btn_class="primary" btn_type="button" extra_class=follow_button_class label=follow_label label_class="cm-follow-label" data_url=follow_url data_login_url=follow_login_url %}
+                        {% endwith %}
+                    {% else %}
+                        {% include 'components/button.html' with btn_class="tertiary" btn_type="button" extra_class=follow_button_class label=follow_label label_class="cm-follow-label" data_url=follow_url data_login_url=follow_login_url %}
+                    {% endif %}
+                {% endwith %}
                 {% endif %}
             </li>
             {% empty %}
