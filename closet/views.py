@@ -5,7 +5,7 @@ from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from closet.forms import ItemForm
 from django.db.models import Q
-from closet.models import Item, SEASON_OPTIONS, STYLE_OPTIONS, WEATHER_OPTIONS
+from closet.models import Item, SEASON_OPTIONS, STYLE_OPTIONS, WEATHER_OPTIONS, ALL_YEAR
 
 FILTER_KEYS = ("cat", "color", "style", "season", "weather", "status", "q")
 
