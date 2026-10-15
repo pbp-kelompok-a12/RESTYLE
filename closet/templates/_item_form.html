@@ -50,6 +50,60 @@
         </div>
     </section>
 
+    <section class="cl-section">
+        <h2>Style &amp; weather</h2>
+        <div class="cl-field">
+            <span class="cl-label">Style tags</span>
+            <div class="cl-opts">
+                {% for s in style_options %}
+                <label class="cl-opt"><input type="checkbox" name="styles" value="{{ s }}" {% if s in form.styles.value %}checked{% endif %}><span>{{ s }}</span></label>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="cl-field">
+            <span class="cl-label">Season</span>
+            <div class="cl-opts">
+                {% for s in season_options %}
+                <label class="cl-opt"><input type="checkbox" name="seasons" value="{{ s }}" {% if s in form.seasons.value %}checked{% endif %}><span>{{ s }}</span></label>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="cl-field">
+            <span class="cl-label">Weather</span>
+            <div class="cl-opts">
+                {% for w in weather_options %}
+                <label class="cl-opt"><input type="checkbox" name="weather" value="{{ w }}" {% if w in form.weather.value %}checked{% endif %}><span>{{ w }}</span></label>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="cl-section">
+        <h2>Purchase info</h2>
+        <div class="cl-field">
+            <label for="id_store">Store / brand</label>
+            <input type="text" name="store" id="id_store" maxlength="80" placeholder="e.g. Uniqlo" value="{{ form.store.value|default_if_none:'' }}">
+            {{ form.store.errors }}
+        </div>
+        <div class="cl-field">
+            <label for="id_purchase_link">Purchase link</label>
+            <input type="url" name="purchase_link" id="id_purchase_link" maxlength="500" placeholder="https://..." value="{{ form.purchase_link.value|default_if_none:'' }}">
+            {{ form.purchase_link.errors }}
+        </div>
+        <div class="cl-row">
+            <div class="cl-field">
+                <label for="id_date_purchased">Date purchased</label>
+                <input type="date" name="date_purchased" id="id_date_purchased" value="{{ form.date_purchased.value|default_if_none:''|stringformat:'s' }}">
+                {{ form.date_purchased.errors }}
+            </div>
+            <div class="cl-field">
+                <label for="id_price">Price (Rp)</label>
+                <input type="text" name="price" id="id_price" inputmode="numeric" data-money placeholder="0" value="{{ form.price.value|default_if_none:'' }}">
+                {{ form.price.errors }}
+            </div>
+        </div>
+    </section>
+
     <div class="cl-form-actions">
         <a href="{% if is_edit %}{% url 'closet:show_item_detail' item.id %}{% else %}{% url 'closet:show_closet' %}{% endif %}" class="btn tertiary-btn" {% if is_modal %}data-close{% endif %}>Cancel</a>
         <button type="submit" class="btn primary-btn">{% if is_edit %}Save changes{% else %}Save item{% endif %}</button>
