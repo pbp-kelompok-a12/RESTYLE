@@ -13,10 +13,47 @@
     <header class="cl-head">
         <h1>Welcome to your <span class="cl-highlight">closet!</span></h1>
         <div class="cl-head-actions">
-            <span class="cl-count">{{ total_count }} item{{ total_count | pluralize }}</span>
+            <span class="cl-count">{{ shown_count }}{% if shown_count != total_count %} of {{ total_count }}{% endif %} item{{ total_count|pluralize }}</span>
             <a href="{% url 'closet:add_item' %}" class="btn primary-btn" data-modal><i class="fa-solid fa-plus"></i> Add item</a>
         </div>
     </header>
+
+    <nav class="cl-cats" aria-label="Category">
+        {% for chip in cat_chips %}
+        <a href="{{ chip.url }}" class="cl-cat {% if chip.active %}is-selected{% endif %}">{{ chip.label }}</a>
+        {% endfor %}
+    </nav>
+
+    <form method="get" class="cl-filterbar">
+        {% if f.cat %}<input type="hidden" name="cat" value="{{ f.cat }}">{% endif %}
+        <label class="cl-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="search" name="q" value="{{ f.q }}" placeholder="Search your closet" aria-label="Search your closet">
+        </label>
+        <span class="cl-filter-label">Filter by</span>
+        <select name="color" data-autosubmit aria-label="Color">
+            <option value="">Color</option>
+            {% for c in color_options %}<option value="{{ c.value }}" {% if f.color == c.value %}selected{% endif %}>{{ c.label }}</option>{% endfor %}
+        </select>
+        <select name="style" data-autosubmit aria-label="Style">
+            <option value="">Style</option>
+            {% for s in style_options %}<option value="{{ s }}" {% if f.style == s %}selected{% endif %}>{{ s }}</option>{% endfor %}
+        </select>
+        <select name="season" data-autosubmit aria-label="Season">
+            <option value="">Season</option>
+            {% for s in season_options %}<option value="{{ s }}" {% if f.season == s %}selected{% endif %}>{{ s }}</option>{% endfor %}
+        </select>
+        <select name="weather" data-autosubmit aria-label="Weather">
+            <option value="">Weather</option>
+            {% for w in weather_options %}<option value="{{ w }}" {% if f.weather == w %}selected{% endif %}>{{ w }}</option>{% endfor %}
+        </select>
+        <select name="status" data-autosubmit aria-label="Status">
+            <option value="">Status</option>
+            {% for value, label in status_options %}<option value="{{ value }}" {% if f.status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+        <noscript><button type="submit" class="btn primary-btn">Apply</button></noscript>
+        {% if has_filters %}<a href="{% url 'closet:show_closet' %}" class="cl-clear">Clear filters</a>{% endif %}
+    </form>
 
     <div class="cl-grid" aria-label="Your clothes">
         {% for item in items %}
@@ -56,7 +93,18 @@
 
         </article>
         {% empty %}
-        <p>Your closet is empty.</p>
+        <div class="cl-empty">
+            <img src="{% static 'img/bunglon_hires.png' %}" alt="">
+            {% if total_count == 0 %}
+            <h2>Your closet is empty</h2>
+            <p>Add your first piece to start building your digital wardrobe.</p>
+            <a href="{% url 'closet:add_item' %}" class="btn primary-btn" data-modal>Add item</a>
+            {% else %}
+            <h2>No items match</h2>
+            <p>Try changing or clearing your filters.</p>
+            <a href="{% url 'closet:show_closet' %}" class="btn primary-btn">Clear filters</a>
+            {% endif %}
+        </div>
         {% endfor %}
     </div>
 

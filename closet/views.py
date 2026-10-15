@@ -4,17 +4,65 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from closet.forms import ItemForm
+from django.db.models import Q
 from closet.models import Item, SEASON_OPTIONS, STYLE_OPTIONS, WEATHER_OPTIONS
+
+FILTER_KEYS = ("cat", "color", "style", "season", "weather", "status", "q")
+
+def chip_url(request, **changes):
+    params = request.GET.copy()
+    for key, value in changes.items():
+        if value:
+            params[key] = value
+        else:
+            params.pop(key, None)
+    query = params.urlencode()
+    return f"?{query}" if query else "?"
 
 def wants_modal(request):
     return request.GET.get("modal") == "1" or request.headers.get("x-requested-with") == "fetch"
 
 @login_required(login_url="/login")
 def show_closet(request):
-    items = Item.objects.filter(user=request.user)
+    filters = {key: request.GET.get(key, "").strip() for key in FILTER_KEYS}
+    all_items = Item.objects.filter(user=request.user)
+    items = all_items
+
+    if filters["cat"]:
+        items = items.filter(category=filters["cat"])
+    if filters["color"]:
+        items = items.filter(color=filters["color"])
+    if filters["status"]:
+        items = items.filter(status=filters["status"])
+    if filters["q"]:
+        items = items.filter(
+            Q(name__icontains=filters["q"])
+            | Q(store__icontains=filters["q"])
+            | Q(material__icontains=filters["q"])
+        )
+
+    # kolom list (JSON) difilter di Python supaya jalan di SQLite dan PostgreSQL
+    items = list(items)
+    if filters["style"]:
+        items = [i for i in items if filters["style"] in i.styles]
+    if filters["season"]:
+        items = [i for i in items if filters["season"] in i.seasons or ALL_YEAR in i.seasons]
+    if filters["weather"]:
+        items = [i for i in items if filters["weather"] in i.weather]
+
+    cat_chips = [{"label": "All", "url": chip_url(request, cat=""), "active": not filters["cat"]}]
+    for value, label in Item.CATEGORY_CHOICES:
+        cat_chips.append({"label": label, "url": chip_url(request, cat=value), "active": filters["cat"] == value})
+
     context = {
         "items": items,
-        "total_count": items.count(),
+        "total_count": all_items.count(),
+        "shown_count": len(items),
+        "f": filters,
+        "has_filters": any(filters.values()),
+        "cat_chips": cat_chips,
+        "status_options": Item.STATUS_CHOICES,
+        **option_context(),
     }
     return render(request, "closet.html", context)
 

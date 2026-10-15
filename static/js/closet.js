@@ -164,4 +164,11 @@
         if (e.target.matches && e.target.matches("[data-money]")) formatMoney(e.target);
     });
     document.querySelectorAll("[data-money]").forEach(formatMoney);
+
+    /* filter */
+    document.addEventListener("change", function (e) {
+        if (e.target.matches && e.target.matches("select[data-autosubmit]")) {
+            e.target.form.submit();
+        }
+    });
 })();
