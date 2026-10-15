@@ -1,6 +1,11 @@
 from django.conf import settings
 from django.db import models
 
+STYLE_OPTIONS = ["Casual", "Formal", "Street", "Minimal", "Sporty", "Party", "Cozy", "Vintage"]
+ALL_YEAR = "All year round"
+SEASON_OPTIONS = ["Spring", "Summer", "Autumn", "Winter", ALL_YEAR]
+WEATHER_OPTIONS = ["Hot", "Stormy", "Cool", "Moderate", "Rainy"]
+
 class Item(models.Model):
     CATEGORY_CHOICES = [
         ("top", "Top"),
@@ -51,6 +56,15 @@ class Item(models.Model):
         ("ready", "Ready to Wear"),
         ("washing", "In the Wash"),
     ]
+
+    styles = models.JSONField(default=list, blank=True)
+    seasons = models.JSONField(default=list, blank=True)
+    weather = models.JSONField(default=list, blank=True)
+
+    store = models.CharField(max_length=80, blank=True)
+    purchase_link = models.URLField(max_length=500, blank=True)
+    date_purchased = models.DateField(null=True, blank=True)
+    price = models.PositiveIntegerField(null=True, blank=True)
 
     @property
     def color_hex(self):

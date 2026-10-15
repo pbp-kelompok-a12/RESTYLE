@@ -1,3 +1,4 @@
+{% load currency_format %}
 <article class="cl-detail">
     <div class="cl-detail-img">
         {% if item.photo %}
@@ -16,9 +17,20 @@
         </div>
 
         <dl class="cl-facts">
-            <div><dt>Material</dt><dd>{{ item.get_material_display|default:"—" }}</dd></div>
+            <div><dt>Material</dt><dd>{{ item.get_material_display|default:"-" }}</dd></div>
             <div><dt>Status</dt><dd>{{ item.get_status_display }}</dd></div>
+            <div><dt>Store / brand</dt><dd>{{ item.store|default:"-" }}</dd></div>
+            <div><dt>Date purchased</dt><dd>{% if item.date_purchased %}{{ item.date_purchased|date:"j M Y" }}{% else %}-{% endif %}</dd></div>
+            <div><dt>Price</dt><dd>{{ item.price|rupiah }}</dd></div>
+            <div><dt>Purchase link</dt><dd>{% if item.purchase_link %}<a href="{{ item.purchase_link }}" target="_blank" rel="noopener noreferrer" class="cl-link">Open link <i class="fa-solid fa-arrow-up-right-from-square"></i></a>{% else %}-{% endif %}</dd></div>
         </dl>
+
+        <div class="cl-group"><h2>Style</h2>
+            <div class="cl-tags">{% for s in item.styles %}<span>{{ s }}</span>{% empty %}<span>-</span>{% endfor %}</div></div>
+        <div class="cl-group"><h2>Season</h2>
+            <div class="cl-tags">{% for s in item.seasons %}<span>{{ s }}</span>{% empty %}<span>-</span>{% endfor %}</div></div>
+        <div class="cl-group"><h2>Weather</h2>
+            <div class="cl-tags">{% for w in item.weather %}<span>{{ w }}</span>{% empty %}<span>-</span>{% endfor %}</div></div>
 
         <div class="cl-detail-actions">
             <a href="{% url 'closet:edit_item' item.id %}" class="btn primary-btn" data-modal>Edit</a>

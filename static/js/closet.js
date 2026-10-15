@@ -35,6 +35,7 @@
         overlay.hidden = false;
         document.body.style.overflow = "hidden";
         initPhoto(body);
+        body.querySelectorAll("[data-money]").forEach(formatMoney);
     }
 
     function closeModal() {
@@ -142,4 +143,25 @@
     document.addEventListener("keydown", function (e) {
         if (e.key === "Escape") { closeMenus(); closeModal(); }
     });
+
+    /* all year round gaboleh dipilih barengan sama musim lain */
+    document.addEventListener("change", function (e) {
+        var input = e.target;
+        if (!input.matches || !input.matches('input[name="seasons"]') || !input.checked) return;
+        var ALL_YEAR = "All year round";
+        input.form.querySelectorAll('input[name="seasons"]').forEach(function (other) {
+            if (other !== input && (input.value === ALL_YEAR || other.value === ALL_YEAR)) {
+                other.checked = false;
+            }
+        });
+    });
+
+    /* format harga jd ada pemisah dengan . */
+    function formatMoney(input) {
+        input.value = input.value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+    document.addEventListener("input", function (e) {
+        if (e.target.matches && e.target.matches("[data-money]")) formatMoney(e.target);
+    });
+    document.querySelectorAll("[data-money]").forEach(formatMoney);
 })();

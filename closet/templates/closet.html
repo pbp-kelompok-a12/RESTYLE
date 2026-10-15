@@ -36,6 +36,7 @@
                 <div class="cl-tags">
                     <span>{{ item.get_category_display }}</span>
                     <span><i class="cl-dot" style="background:{{ item.color_hex }}"></i>{{ item.get_color_display }}</span>
+                    {% if item.styles %}<span>{{ item.styles.0 }}</span>{% endif %}
                 </div>
             </div>
 

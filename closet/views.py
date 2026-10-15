@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from closet.forms import ItemForm
-from closet.models import Item
+from closet.models import Item, SEASON_OPTIONS, STYLE_OPTIONS, WEATHER_OPTIONS
 
 def wants_modal(request):
     return request.GET.get("modal") == "1" or request.headers.get("x-requested-with") == "fetch"
@@ -25,6 +25,9 @@ def option_context():
             {"value": value, "label": label, "hex": Item.COLOR_HEX[value]}
             for value, label in Item.COLOR_CHOICES
         ],
+    "style_options": STYLE_OPTIONS,
+    "season_options": SEASON_OPTIONS,
+    "weather_options": WEATHER_OPTIONS,
     }
 
 @login_required(login_url="/login")

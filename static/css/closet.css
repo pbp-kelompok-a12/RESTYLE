@@ -190,7 +190,7 @@
 .cl-field { display: flex; flex-direction: column; gap: 6px; }
 .cl-field > label, .cl-label { font-size: 12px; font-weight: 700; color: var(--color-azure-dolphin); }
 .cl-field em { color: var(--color-red-cherry); font-style: normal; }
-.cl-form input[type="text"], .cl-form input[type="number"], .cl-form select {
+.cl-form input[type="text"], .cl-form input[type="url"], .cl-form input[type="number"], .cl-form input[type="date"], .cl-form select {
     width: 100%;
     padding: 10px 14px;
     background: var(--color-white-solid);
@@ -199,7 +199,12 @@
 }
 .cl-form input:focus-visible, .cl-form select:focus-visible { outline: 2px solid var(--color-azure-san-marino); outline-offset: 1px; }
 .errorlist { list-style: none; margin: 0; padding: 0; color: var(--color-red-cherry); font-size: 12px; font-weight: 600; }
-
+.cl-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.cl-group { margin-bottom: 14px; }
+.cl-group h2 { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--color-azure-dolphin); }
+.cl-group .cl-tags { margin-top: 6px; }
+.cl-link { color: var(--color-azure-san-marino); font-weight: 700; text-decoration: underline; }
+.cl-link i { font-size: 11px; margin-left: 4px; }
 .cl-dropzone {
     display: flex;
     align-items: center;
@@ -354,6 +359,7 @@
     z-index: 2;
 }
 .cl-modal-title {
+    font-weight: 800;
     margin: 0 0 16px;
     font-family: var(--font-family-font-3), sans-serif;
     font-size: 22px;
@@ -376,4 +382,5 @@
     .cl-form-actions .btn { width: 100%; }
     .cl-detail { grid-template-columns: 1fr; padding: 16px; }
     .cl-detail-img .cl-icon { font-size: 88px; }
+    .cl-row { grid-template-columns: 1fr; }
 }
