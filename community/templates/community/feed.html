@@ -72,10 +72,12 @@
                 <div class="cm-photo-previews" id="photo-previews" hidden></div>
                 <p class="cm-composer-hint" id="photo-hint" hidden></p>
 
+                {% include 'community/_closet_picker.html' %}
+                
                 <div class="cm-composer-actions">
                     <input type="file" name="photos" id="photo-input" accept="image/png, image/jpeg" multiple hidden>
                     <button type="button" class="cm-chip" id="photo-button"><i class="fa-regular fa-image"></i> Photo</button>
-                    <button type="button" class="cm-chip" disabled title="Coming soon"><i class="fa-solid fa-shirt"></i> Tag closet items</button>
+                    <button type="button" class="cm-chip cm-tag-toggle" aria-expanded="false"><i class="fa-solid fa-shirt"></i> <span class="cm-tag-toggle-label">Tag closet items</span></button>
                     {% include 'components/button.html' with btn_type="submit" button_id="post-button" btn_class="primary" extra_class="cm-community-button cm-community-small cm-composer-post-button" label="Post" %}
                 </div>
             </form>

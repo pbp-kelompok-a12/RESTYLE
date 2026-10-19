@@ -13,6 +13,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from community.forms import CommentForm, PostForm
+from closet.models import Item
 from community.models import Comment, Follow, Post, PostImage
 
 # URL halaman login aplikasi.
@@ -21,12 +22,13 @@ LOGIN_URL = "/login/"
 MAX_PHOTOS = 3
 MAX_PHOTO_SIZE = 5 * 1024 * 1024  # 5 MB
 ALLOWED_PHOTO_TYPES = ["image/jpeg", "image/png"]
+MAX_TAGS = 5
 
 def show_community(request):
     # tab yang sedang dibuka: "for-you" (semua post) atau "following".
     tab = request.GET.get("tab", "for-you")
 
-    posts = Post.objects.select_related("author")
+    posts = Post.objects.select_related("author").prefetch_related("images", "tagged_items")    
     if tab == "following":
         if not request.user.is_authenticated:
             return redirect(LOGIN_URL)
@@ -89,6 +91,11 @@ def check_photos(photos):
 
     return None
 
+def pick_tagged_items(request):
+    """ambil item closet yang dicentang, tapi hanya yang benar-benar milik user ini"""
+    item_ids = [item_id for item_id in request.POST.getlist("tagged_items") if item_id.isdigit()]
+    return Item.objects.filter(user=request.user, id__in=item_ids)
+
 @login_required(login_url=LOGIN_URL)
 @require_POST
 def create_post(request):
@@ -104,9 +111,15 @@ def create_post(request):
         messages.error(request, photo_error)
         return redirect("community:show_community")
 
+    tagged_items = pick_tagged_items(request)
+    if tagged_items.count() > MAX_TAGS:
+        messages.error(request, f"You can tag up to {MAX_TAGS} closet items per post.")
+        return redirect("community:show_community")
+    
     post = form.save(commit=False)  # belum disimpan, karena authornya belum diisi
     post.author = request.user
     post.save()
+    post.tagged_items.set(tagged_items)
 
     for photo in photos:
         PostImage.objects.create(post=post, image=photo)
@@ -173,8 +186,15 @@ def edit_post(request, post_id):
         messages.error(request, photo_error)
         return redirect(feed_url(post.id))
 
+    tagged_items = pick_tagged_items(request)
+    if tagged_items.count() > MAX_TAGS:
+        messages.error(request, f"You can tag up to {MAX_TAGS} closet items per post.")
+        return redirect(feed_url(post.id))
+
     form.save()
-    photos_to_remove.delete()
+    post.tagged_items.set(tagged_items)
+    photos_to_remove.delete()    
+    
     for photo in new_photos:
         PostImage.objects.create(post=post, image=photo)
 

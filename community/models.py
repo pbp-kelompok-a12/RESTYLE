@@ -34,6 +34,12 @@ class Post(models.Model):
         related_name="saved_posts",
         blank=True,
     )
+    # pakaian dari Digital Closet yang dipakai di post ini
+    tagged_items = models.ManyToManyField(
+        "closet.Item",
+        related_name="community_posts",
+        blank=True,
+    )    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -125,3 +131,5 @@ class Follow(models.Model):
 
     def __str__(self):
         return f"@{self.follower.username} follows @{self.followed.username}"
+    
+    

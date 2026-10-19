@@ -212,6 +212,109 @@ if (document.querySelector(".cm-photos img")) {
     lightbox.addEventListener("click", () => lightbox.close());
 }
 
+// tag closet items: buka-tutup daftar pakaian, maksimal 5, dan tampilkan jumlah yang dipilih
+document.querySelectorAll(".cm-tag-toggle").forEach((button) => {
+    const form = button.closest("form");
+    const picker = form.querySelector(".cm-tag-picker");
+    const label = button.querySelector(".cm-tag-toggle-label");
+    const hint = picker.querySelector(".cm-tag-hint");
+    const MAX_TAGS = 5;
+
+    function updateTags() {
+        const count = form.querySelectorAll('input[name="tagged_items"]:checked').length;
+        label.textContent = count > 0 ? `Tagged (${count})` : "Tag closet items";
+    }
+
+    button.addEventListener("click", () => {
+        picker.hidden = !picker.hidden;
+        button.setAttribute("aria-expanded", String(!picker.hidden));
+    });
+
+    picker.addEventListener("change", (event) => {
+        const checked = form.querySelectorAll('input[name="tagged_items"]:checked');
+        if (checked.length > MAX_TAGS) {
+            event.target.checked = false; // batalkan centang yang ke-6
+            hint.textContent = `You can tag up to ${MAX_TAGS} items.`;
+        } else if (hint) {
+            hint.textContent = "Pick up to 5 items you're wearing.";
+        }
+        updateTags();
+    });
+
+    // Cancel di form edit mengembalikan centang ke keadaan awal
+    form.addEventListener("reset", () => setTimeout(updateTags));
+
+    updateTags();
+});
+
+// tag di post: klik untuk melihat detail pakaiannya (bisa dilihat semua orang)
+if (document.querySelector(".cm-tag-button")) {
+    const itemDialog = document.createElement("dialog");
+    itemDialog.className = "cm-item-dialog";
+    itemDialog.innerHTML = `
+        <button type="button" class="cm-item-close" aria-label="Close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <img class="cm-item-photo" alt="">
+        <span class="cm-item-swatch"></span>
+        <h3 class="cm-item-name"></h3>
+        <dl class="cm-item-info"></dl>
+        <a class="cm-item-link" href="#">Open in my closet</a>`;
+    document.body.append(itemDialog);
+
+    const photo = itemDialog.querySelector(".cm-item-photo");
+    const swatch = itemDialog.querySelector(".cm-item-swatch");
+    const info = itemDialog.querySelector(".cm-item-info");
+    const closetLink = itemDialog.querySelector(".cm-item-link");
+
+    document.querySelectorAll(".cm-tag-button").forEach((button) => {
+        button.addEventListener("click", () => {
+            const item = button.dataset; // isi dari atribut data-... di tombolnya
+
+            // pakai foto kalau ada, kalau tidak tampilkan kotak warnanya
+            photo.hidden = !item.photo;
+            photo.src = item.photo;
+            photo.alt = item.name;
+            swatch.hidden = Boolean(item.photo);
+            swatch.style.backgroundColor = item.colorHex;
+
+            itemDialog.querySelector(".cm-item-name").textContent = item.name;
+
+            info.innerHTML = "";
+            const rows = [
+                ["Category", item.category],
+                ["Color", item.color],
+                ["Material", item.material],
+                ["Style", item.styles],
+            ];
+            rows.forEach(([label, value]) => {
+                if (!value) {
+                    return; // lewati data yang kosong
+                }
+                const term = document.createElement("dt");
+                term.textContent = label;
+                const detail = document.createElement("dd");
+                detail.textContent = value;
+                info.append(term, detail);
+            });
+
+            // link ke closet hanya muncul untuk pemilik pakaiannya
+            closetLink.hidden = !item.closetUrl;
+            closetLink.href = item.closetUrl || "#";
+
+            itemDialog.showModal();
+        });
+    });
+
+    itemDialog.querySelector(".cm-item-close").addEventListener("click", () => itemDialog.close());
+    // klik di latar gelap (di luar kotak) juga menutup
+    itemDialog.addEventListener("click", (event) => {
+        if (event.target === itemDialog) {
+            itemDialog.close();
+        }
+    });
+}
+
 // Hapus: tanya dulu sebelum benar-benar menghapus
 document.querySelectorAll("form[data-confirm]").forEach((form) => {
     form.addEventListener("submit", (event) => {

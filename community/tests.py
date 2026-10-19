@@ -6,13 +6,12 @@ from django.test import TestCase, override_settings
 from PIL import Image
 
 from community.models import Comment, Follow, Post, PostImage
+from closet.models import Item
 
 SIMPLE_STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.InMemoryStorage"},
     "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
 }
-
-
 
 @override_settings(STORAGES=SIMPLE_STORAGES)
 class FollowProfileViewsTests(TestCase):
@@ -164,3 +163,89 @@ class EditPostPhotoTests(TestCase):
 
         self.assertContains(response, 'enctype="multipart/form-data"')
         self.assertContains(response, f'name="remove_photos" value="{self.old_photo.id}"')
+
+@override_settings(STORAGES=SIMPLE_STORAGES)
+class TagClosetItemsTests(TestCase):
+    def setUp(self):
+        user_model = get_user_model()
+        self.alice = user_model.objects.create_user(username="alice", password="test-password")
+        self.bob = user_model.objects.create_user(username="bob", password="test-password")
+        self.client.force_login(self.alice)
+        self.shirt = Item.objects.create(user=self.alice, name="Blue linen shirt", category="top", color="blue")
+        self.skirt = Item.objects.create(user=self.alice, name="Pleated skirt", category="bottom", color="beige")
+        self.bob_shoes = Item.objects.create(user=self.bob, name="Bob's sneakers", category="shoes", color="white")
+
+    def test_post_can_tag_own_closet_items(self):
+        self.client.post("/community/post/create/", {
+            "content": "Today's outfit",
+            "tagged_items": [self.shirt.id, self.skirt.id],
+        })
+
+        post = Post.objects.get(content="Today's outfit")
+        self.assertEqual(set(post.tagged_items.all()), {self.shirt, self.skirt})
+
+    def test_items_from_someone_elses_closet_are_ignored(self):
+        self.client.post("/community/post/create/", {
+            "content": "Sneaky tag",
+            "tagged_items": [self.shirt.id, self.bob_shoes.id],
+        })
+
+        post = Post.objects.get(content="Sneaky tag")
+        self.assertEqual(list(post.tagged_items.all()), [self.shirt])
+
+    def test_post_is_rejected_when_tagging_more_than_five_items(self):
+        items = [
+            Item.objects.create(user=self.alice, name=f"Item {number}", category="top", color="red")
+            for number in range(6)
+        ]
+
+        self.client.post("/community/post/create/", {
+            "content": "Too many tags",
+            "tagged_items": [item.id for item in items],
+        })
+
+        self.assertFalse(Post.objects.filter(content="Too many tags").exists())
+
+    def test_edit_post_can_change_tags(self):
+        post = Post.objects.create(author=self.alice, content="Outfit")
+        post.tagged_items.add(self.shirt)
+
+        self.client.post(f"/community/post/{post.id}/edit/", {
+            "content": "Outfit",
+            "tagged_items": [self.skirt.id],
+        })
+
+        self.assertEqual(list(post.tagged_items.all()), [self.skirt])
+
+    def test_feed_shows_tags_and_picker(self):
+        post = Post.objects.create(author=self.alice, content="Outfit")
+        post.tagged_items.add(self.shirt)
+
+        response = self.client.get("/community/")
+
+        self.assertContains(response, 'class="cm-tags"')
+        self.assertContains(response, f'data-closet-url="/closet/item/{self.shirt.id}/"')
+        self.assertContains(response, f'name="tagged_items" value="{self.skirt.id}"')
+        self.assertNotContains(response, f'name="tagged_items" value="{self.bob_shoes.id}"')
+
+    def test_other_people_can_see_item_details_but_not_closet_link(self):
+        post = Post.objects.create(author=self.alice, content="Outfit")
+        post.tagged_items.add(self.shirt)
+        self.client.force_login(self.bob)
+
+        response = self.client.get("/community/")
+
+        self.assertContains(response, 'data-name="Blue linen shirt"')
+        self.assertContains(response, 'data-category="Top"')
+        self.assertContains(response, 'data-color="Blue"')
+        self.assertNotContains(response, "data-closet-url")
+
+    def test_logged_out_visitors_can_see_item_details(self):
+        post = Post.objects.create(author=self.alice, content="Outfit")
+        post.tagged_items.add(self.shirt)
+        self.client.logout()
+
+        response = self.client.get("/community/")
+
+        self.assertContains(response, 'data-name="Blue linen shirt"')
+        self.assertNotContains(response, "data-closet-url")
