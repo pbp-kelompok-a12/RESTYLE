@@ -2,7 +2,7 @@
 
 const composer = document.querySelector("#composer");
 
-if (composer) {
+if (composer && composer.querySelector("textarea")) {    
     const textarea = composer.querySelector("textarea");
     const postButton = composer.querySelector("#post-button");
     const photoButton = composer.querySelector("#photo-button");
@@ -141,6 +141,76 @@ document.querySelectorAll(".cm-toggle-edit").forEach((button) => {
     form.querySelector(".cm-cancel-edit").addEventListener("click", () => setEditing(false));
 });
 
+// edit foto di post: tambah foto baru, tandai foto lama untuk dihapus, maksimal 3 foto
+document.querySelectorAll(".cm-edit-form").forEach((form) => {
+    const photoInput = form.querySelector(".cm-edit-photo-input");
+    if (!photoInput) {
+        return; // form edit komentar tidak punya foto
+    }
+    const addButton = form.querySelector(".cm-edit-add-photo");
+    const newPhotos = form.querySelector(".cm-edit-new-photos");
+    const hint = form.querySelector(".cm-edit-hint");
+    const saveButton = form.querySelector('button[type="submit"]');
+    const MAX_PHOTOS = 3;
+
+    // gambar ulang preview foto baru dan cek jumlah foto
+    function updatePhotos() {
+        newPhotos.innerHTML = "";
+        Array.from(photoInput.files).forEach((photo) => {
+            const item = document.createElement("div");
+            item.className = "cm-photo-preview";
+
+            const image = document.createElement("img");
+            image.src = URL.createObjectURL(photo);
+            image.alt = photo.name;
+
+            item.append(image);
+            newPhotos.append(item);
+        });
+
+        const keptPhotos = form.querySelectorAll('input[name="remove_photos"]:not(:checked)').length;
+        const total = keptPhotos + photoInput.files.length;
+        const tooMany = total > MAX_PHOTOS;
+
+        hint.textContent = tooMany
+            ? `Too many photos (${total}). Remove some so there are at most ${MAX_PHOTOS}.`
+            : "Tap a photo to remove it. Up to 3 photos per post.";
+        saveButton.disabled = tooMany;
+    }
+
+    addButton.addEventListener("click", () => photoInput.click());
+    // "change" dari input foto dan dari centang "hapus" sama-sama sampai ke form
+    form.addEventListener("change", updatePhotos);
+    // Cancel mengembalikan form ke keadaan awal
+    form.querySelector(".cm-cancel-edit").addEventListener("click", () => {
+        form.reset();
+        updatePhotos();
+    });
+});
+
+
+// foto di post: klik untuk melihat ukuran penuh, klik lagi atau tekan Escape untuk menutup
+if (document.querySelector(".cm-photos img")) {
+    const lightbox = document.createElement("dialog");
+    lightbox.className = "cm-lightbox";
+    lightbox.innerHTML = `
+        <button type="button" class="cm-lightbox-close" aria-label="Close photo">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <img alt="">`;
+    document.body.append(lightbox);
+    const lightboxImage = lightbox.querySelector("img");
+
+    document.querySelectorAll(".cm-photos img").forEach((photo) => {
+        photo.addEventListener("click", () => {
+            lightboxImage.src = photo.src;
+            lightboxImage.alt = photo.alt;
+            lightbox.showModal();
+        });
+    });
+
+    lightbox.addEventListener("click", () => lightbox.close());
+}
 
 // Hapus: tanya dulu sebelum benar-benar menghapus
 document.querySelectorAll("form[data-confirm]").forEach((form) => {

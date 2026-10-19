@@ -1,9 +1,20 @@
+import io
+
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import TestCase, override_settings
+from PIL import Image
 
-from community.models import Comment, Follow, Post
+from community.models import Comment, Follow, Post, PostImage
+
+SIMPLE_STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.InMemoryStorage"},
+    "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
+}
 
 
+
+@override_settings(STORAGES=SIMPLE_STORAGES)
 class FollowProfileViewsTests(TestCase):
     def setUp(self):
         user_model = get_user_model()
@@ -52,6 +63,7 @@ class FollowProfileViewsTests(TestCase):
         self.assertContains(response, "No followers yet")
 
 
+@override_settings(STORAGES=SIMPLE_STORAGES)
 class AnonymousCommunityTests(TestCase):
     def setUp(self):
         author = get_user_model().objects.create_user(
@@ -91,3 +103,64 @@ class AnonymousCommunityTests(TestCase):
         self.assertEqual(profile_response.status_code, 200)
         self.assertContains(profile_response, "data-login-url=\"/login/\"")
         self.assertEqual(following_response.status_code, 200)
+
+def make_photo(name="photo.png"):
+    """bikin file foto PNG kecil untuk keperluan test."""
+    buffer = io.BytesIO()
+    Image.new("RGB", (10, 10), "red").save(buffer, format="PNG")
+    return SimpleUploadedFile(name, buffer.getvalue(), content_type="image/png")
+
+
+@override_settings(STORAGES=SIMPLE_STORAGES)
+class EditPostPhotoTests(TestCase):
+    def setUp(self):
+        self.author = get_user_model().objects.create_user(
+            username="author",
+            password="test-password",
+        )
+        self.client.force_login(self.author)
+        self.post = Post.objects.create(author=self.author, content="My outfit")
+        self.old_photo = PostImage.objects.create(post=self.post, image=make_photo("old.png"))
+        self.edit_url = f"/community/post/{self.post.id}/edit/"
+
+    def test_author_can_remove_old_photo_and_add_new_one(self):
+        response = self.client.post(self.edit_url, {
+            "content": "My outfit, updated",
+            "remove_photos": [self.old_photo.id],
+            "photos": [make_photo("new.png")],
+        })
+
+        self.assertEqual(response.status_code, 302)
+        self.post.refresh_from_db()
+        self.assertEqual(self.post.content, "My outfit, updated")
+        self.assertFalse(PostImage.objects.filter(id=self.old_photo.id).exists())
+        self.assertEqual(self.post.images.count(), 1)
+
+    def test_edit_is_rejected_when_photos_go_over_the_limit(self):
+        response = self.client.post(self.edit_url, {
+            "content": "Too many photos",
+            "photos": [make_photo(f"new{number}.png") for number in range(3)],
+        })
+
+        self.assertEqual(response.status_code, 302)
+        self.post.refresh_from_db()
+        self.assertEqual(self.post.content, "My outfit")
+        self.assertEqual(self.post.images.count(), 1)
+
+    def test_other_user_cannot_edit_photos(self):
+        other = get_user_model().objects.create_user(username="other", password="test-password")
+        self.client.force_login(other)
+
+        response = self.client.post(self.edit_url, {
+            "content": "Not mine",
+            "remove_photos": [self.old_photo.id],
+        })
+
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(PostImage.objects.filter(id=self.old_photo.id).exists())
+
+    def test_feed_shows_photo_edit_controls_to_author(self):
+        response = self.client.get("/community/")
+
+        self.assertContains(response, 'enctype="multipart/form-data"')
+        self.assertContains(response, f'name="remove_photos" value="{self.old_photo.id}"')

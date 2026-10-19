@@ -155,9 +155,30 @@ def edit_post(request, post_id):
     form = PostForm(request.POST, instance=post)
     if not form.is_valid():
         messages.error(request, "A post can't be empty (up to 1000 characters).")
-        return redirect("community:show_community")
+        return redirect(feed_url(post.id))
+
+    # foto lama yang ditandai untuk dihapus, dan foto baru yang ditambahkan
+    remove_ids = [photo_id for photo_id in request.POST.getlist("remove_photos") if photo_id.isdigit()]
+    photos_to_remove = post.images.filter(id__in=remove_ids)
+    new_photos = request.FILES.getlist("photos")
+
+    # jumlah foto setelah diedit = foto lama - yang dihapus + foto baru
+    photo_total = post.images.count() - photos_to_remove.count() + len(new_photos)
+    if photo_total > MAX_PHOTOS:
+        messages.error(request, f"You can add up to {MAX_PHOTOS} photos per post.")
+        return redirect(feed_url(post.id))
+
+    photo_error = check_photos(new_photos)
+    if photo_error:
+        messages.error(request, photo_error)
+        return redirect(feed_url(post.id))
 
     form.save()
+    photos_to_remove.delete()
+    for photo in new_photos:
+        PostImage.objects.create(post=post, image=photo)
+
+    messages.success(request, "Your post was updated.")
     return redirect(feed_url(post.id))
 
 @login_required(login_url=LOGIN_URL)
@@ -170,21 +191,6 @@ def delete_post(request, post_id):
     post.delete()
     messages.success(request, "Post deleted.")
     return redirect("community:show_community")
-
-@login_required(login_url=LOGIN_URL)
-@require_POST
-def edit_comment(request, comment_id):
-    comment = get_object_or_404(Comment, id=comment_id)
-    if comment.author != request.user:
-        return HttpResponseForbidden("You can only edit your own replies.")
-
-    form = CommentForm(request.POST, instance=comment)
-    if not form.is_valid():
-        messages.error(request, "A reply can't be empty (up to 500 characters).")
-        return redirect("community:show_community")
-
-    form.save()
-    return redirect(feed_url(comment.post_id))
 
 @login_required(login_url=LOGIN_URL)
 @require_POST

@@ -823,8 +823,113 @@ body{
     object-fit: cover;
     border: 1px solid var(--color-orange-pearl-brush);
     border-radius: var(--corner-radius-12);
+    cursor: zoom-in;
 }
 
+/* foto ukuran penuh (muncul saat foto di post diklik) */
+
+.cm-lightbox{
+    max-width: none;
+    max-height: none;
+    margin: auto;
+    padding: 0;
+    overflow: visible;
+    background: transparent;
+    border: none;
+}
+
+.cm-lightbox::backdrop{
+    background-color: rgba(0, 0, 0, 0.85);
+}
+
+.cm-lightbox img{
+    display: block;
+    max-width: 92vw;
+    max-height: 92vh;
+    object-fit: contain;
+    border-radius: var(--corner-radius-12);
+    cursor: zoom-out;
+}
+
+.cm-lightbox-close{
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    background-color: var(--color-white-solid);
+    border-radius: var(--corner-radius-999);
+    color: var(--color-azure-martinique);
+    font-size: 18px;
+}
+/* edit foto di post */
+
+/* saat sedang edit, foto asli disembunyikan supaya tidak dobel dengan foto di form edit */
+.cm-post-main:has(.cm-edit-form:not([hidden])) .cm-photos{
+    display: none;
+}
+
+.cm-edit-actions .cm-edit-add-photo{
+    margin-right: auto;
+}
+
+.cm-edit-photos{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.cm-edit-new-photos{
+    display: contents;
+}
+
+.cm-edit-form .cm-composer-hint{
+    margin: 0;
+}
+
+.cm-edit-photo{
+    cursor: pointer;
+}
+
+.cm-edit-photo-x{
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    background-color: var(--color-azure-martinique);
+    border-radius: var(--corner-radius-999);
+    color: var(--color-white-solid);
+    font-size: 12px;
+}
+
+.cm-edit-photo-removed{
+    position: absolute;
+    inset: 0;
+    display: none;
+    place-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-azure-martinique);
+}
+
+/* foto yang ditandai "hapus" jadi pudar */
+.cm-edit-photo:has(input:checked) img{
+    opacity: 0.3;
+    filter: grayscale(1);
+}
+
+.cm-edit-photo:has(input:checked) .cm-edit-photo-x{
+    display: none;
+}
+
+.cm-edit-photo:has(input:checked) .cm-edit-photo-removed{
+    display: grid;
+}
 
 /*  comment n balasan  */
 

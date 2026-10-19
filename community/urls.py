@@ -14,7 +14,6 @@ from community.views import (
     toggle_comment_like,
     toggle_post_like,
     toggle_post_save,
-    toggle_comment_like,
     toggle_follow,
 )
 

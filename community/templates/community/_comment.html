@@ -4,8 +4,7 @@
 
     <div class="cm-comment-main">
         <header class="cm-comment-head">
-            <a href="#" class="cm-username">@{{ comment.author.username }}</a>
-            {% if comment.is_author %}<span class="cm-author-badge">Author</span>{% endif %}
+            <a href="{% url 'community:show_user_profile' comment.author.username %}" class="cm-username">@{{ comment.author.username }}</a>
             <span class="cm-time">{{ comment.time_ago }}</span>
         </header>
 

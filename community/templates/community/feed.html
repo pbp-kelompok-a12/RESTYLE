@@ -107,7 +107,7 @@
                     <li>
                         <span class="cm-popular-rank">{{ forloop.counter }}</span>
                         <div>
-                            <a href="#">{{ item.content|truncatechars:45 }}</a>
+                            <a href="{% url 'community:show_community' %}#post-{{ item.id }}">{{ item.content|truncatechars:45 }}</a>
                             <p><i class="fa-regular fa-heart"></i> {{ item.like_count }}</p>
                         </div>
                     </li>
