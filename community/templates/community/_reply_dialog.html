@@ -1,0 +1,41 @@
+{# Kotak reply melayang. Cukup satu per halaman; isinya (tujuan, @username, kutipan) diisi JavaScript #}
+{# dari tombol yang diklik (class "cm-reply-open"). Dipasang di halaman yang menampilkan post. #}
+{% load community_avatars %}
+{% if user.is_authenticated %}
+<dialog class="cm-reply-dialog" aria-label="Write a reply">
+    <form class="cm-reply-rich" method="post" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="parent" value="">
+
+        <header class="cm-reply-dialog-head">
+            <h2>Reply to <span class="cm-reply-to"></span></h2>
+            <button type="button" class="cm-reply-dialog-close" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+        </header>
+
+        {# potongan tulisan yang sedang dibalas, supaya tidak lupa konteksnya #}
+        <blockquote class="cm-reply-quote"></blockquote>
+
+        <div class="cm-reply-dialog-body">
+            <span class="cm-avatar">{% avatar user %}</span>
+            <textarea name="content" rows="3" maxlength="500" required
+                      placeholder="Write a reply..." aria-label="Write a reply"></textarea>
+        </div>
+
+        <div class="cm-reply-extras">
+            <div class="cm-reply-photo-preview" hidden>
+                <img alt="">
+                <button type="button" class="cm-reply-photo-remove" aria-label="Remove photo"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="cm-composer-hint cm-reply-photo-hint" hidden></p>
+            {% include 'community/_closet_picker.html' with post=None done_label="Add to reply" %}
+        </div>
+
+        <footer class="cm-reply-dialog-foot">
+            <input type="file" name="photo" class="cm-reply-photo-input" accept="image/png, image/jpeg" hidden>
+            <button type="button" class="cm-chip cm-reply-photo-button"><i class="fa-regular fa-image"></i> Photo</button>
+            <button type="button" class="cm-chip cm-tag-toggle"><i class="fa-solid fa-shirt"></i> <span class="cm-tag-toggle-label">Tag closet items</span></button>
+            {% include 'components/button.html' with btn_type="submit" btn_class="primary" extra_class="cm-community-button cm-community-small cm-reply-send" label="Reply" %}
+        </footer>
+    </form>
+</dialog>
+{% endif %}

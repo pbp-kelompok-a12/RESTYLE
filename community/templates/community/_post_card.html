@@ -71,29 +71,8 @@
         {% endif %}
 
         {# pakaian dari closet yang di-tag di post ini; diklik untuk melihat detailnya #}
-        {% if post.tagged_items.all %}
-        <div class="cm-tags">
-            {% for item in post.tagged_items.all %}
-            <button type="button" class="cm-tag cm-tag-button"
-                    data-name="{{ item.name }}"
-                    data-photo="{% if item.photo %}{{ item.photo.url }}{% endif %}"
-                    data-color="{{ item.get_color_display }}"
-                    data-color-hex="{{ item.color_hex }}"
-                    data-category="{{ item.get_category_display }}"
-                    data-material="{{ item.get_material_display }}"
-                    data-styles="{{ item.styles|join:', ' }}"
-                    {% if item.user_id == user.id %}data-closet-url="{% url 'closet:show_item_detail' item.id %}"{% endif %}>
-                {% if item.photo %}
-                <img src="{{ item.photo.url }}" alt="">
-                {% else %}
-                <span class="cm-tag-dot" style="background-color: {{ item.color_hex }}"></span>
-                {% endif %}
-                {{ item.name }}
-            </button>
-            {% endfor %}
-        </div>
-        {% endif %}
-
+        {% include 'community/_tag_list.html' with items=post.tagged_items.all %}
+        
         <div class="cm-actions">
             {% if user.is_authenticated %}
             <button type="button" class="cm-react {% if user.is_authenticated and user in post.likes.all %}is-active{% endif %}"
@@ -142,13 +121,14 @@
             {% endif %}
 
             {% if user.is_authenticated %}
-            <form class="cm-reply-form" method="post" action="{% url 'community:create_comment' post.id %}">
-                {% csrf_token %}
+            {# membuka kotak reply melayang (_reply_dialog.html) #}
+            <button type="button" class="cm-reply-form cm-reply-open"
+                    data-url="{% url 'community:create_comment' post.id %}"
+                    data-to="@{{ post.author.username }}"
+                    data-quote="{{ post.content|truncatechars:140 }}">
                 <span class="cm-avatar">{% avatar user %}</span>
-                <input type="text" name="content" maxlength="500" required
-                       placeholder="Write a reply..." aria-label="Write a reply">
-                {% include 'components/button.html' with btn_type="submit" btn_class="secondary" extra_class="cm-community-button" label="Reply" %}
-            </form>
+                <span class="cm-reply-fake-input">Write a reply...</span>
+            </button>            
             {% else %}
             <a class="cm-reply-form" href="{% url 'main:login' %}">Sign in to reply.</a>
             {% endif %}

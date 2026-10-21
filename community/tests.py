@@ -607,3 +607,104 @@ class SearchTests(TestCase):
         self.assertContains(response, 'action="/community/search/"')
         self.assertContains(response, 'value="linen"')
 
+
+
+@override_settings(STORAGES=SIMPLE_STORAGES)
+class ReplyPhotoAndTagTests(TestCase):
+    def setUp(self):
+        user_model = get_user_model()
+        self.asker = user_model.objects.create_user(username="asker", password="test-password")
+        self.helper = user_model.objects.create_user(username="helper", password="test-password")
+        self.post = Post.objects.create(author=self.asker, content="What goes with my jeans?")
+        self.jeans = Item.objects.create(user=self.asker, name="Wide jeans", category="bottom", color="blue")
+        self.post.tagged_items.add(self.jeans)
+        self.shirt = Item.objects.create(user=self.helper, name="White shirt", category="top", color="white")
+        self.loafers = Item.objects.create(user=self.helper, name="Black loafers", category="shoes", color="black")
+        self.reply_url = f"/community/post/{self.post.id}/comment/"
+        self.client.force_login(self.helper)
+
+    def test_reply_can_carry_a_photo_and_closet_tags(self):
+        self.client.post(self.reply_url, {
+            "content": "Try this combo!",
+            "photo": make_photo("idea.png"),
+            "tagged_items": [self.shirt.id, self.loafers.id],
+        })
+
+        comment = Comment.objects.get(content="Try this combo!")
+        self.assertTrue(comment.photo)
+        self.assertEqual(set(comment.tagged_items.all()), {self.shirt, self.loafers})
+
+    def test_reply_cannot_tag_someone_elses_items(self):
+        self.client.post(self.reply_url, {"content": "Sneaky", "tagged_items": [self.shirt.id, self.jeans.id]})
+
+        comment = Comment.objects.get(content="Sneaky")
+        self.assertEqual(list(comment.tagged_items.all()), [self.shirt])
+
+    def test_reply_with_more_than_five_tags_is_rejected(self):
+        items = [Item.objects.create(user=self.helper, name=f"Item {n}", category="top", color="red") for n in range(6)]
+
+        self.client.post(self.reply_url, {"content": "Too many", "tagged_items": [item.id for item in items]})
+
+        self.assertFalse(Comment.objects.filter(content="Too many").exists())
+
+    def test_reply_photo_must_be_an_image(self):
+        fake = SimpleUploadedFile("notes.png", b"not really a picture", content_type="image/png")
+
+        self.client.post(self.reply_url, {"content": "Broken photo", "photo": fake})
+
+        self.assertFalse(Comment.objects.filter(content="Broken photo").exists())
+
+    def test_text_only_reply_still_works(self):
+        self.client.post(self.reply_url, {"content": "Cute!"})
+
+        comment = Comment.objects.get(content="Cute!")
+        self.assertFalse(comment.photo)
+        self.assertEqual(comment.tagged_items.count(), 0)
+
+    def test_feed_shows_reply_photo_and_tags(self):
+        comment = Comment.objects.create(post=self.post, author=self.helper, content="Like this",
+                                         photo=make_photo("idea.png"))
+        comment.tagged_items.add(self.shirt)
+
+        response = self.client.get("/community/")
+
+        self.assertContains(response, 'class="cm-photos cm-comment-photos"')
+        self.assertContains(response, "Photo from @helper's reply")
+        self.assertContains(response, 'data-name="White shirt"\n')
+
+    def test_reply_picker_does_not_precheck_the_posts_tags(self):
+        self.client.force_login(self.asker)
+
+        response = self.client.get("/community/")
+        html = response.content.decode()
+
+        reply_form = html[html.index('<dialog class="cm-reply-dialog"'):]
+        reply_form = reply_form[:reply_form.index("</form>")]
+        self.assertIn(f'value="{self.jeans.id}"', reply_form)
+        self.assertIn("Add to reply", reply_form)
+        self.assertNotRegex(reply_form, rf'value="{self.jeans.id}"[^>]*checked')
+
+    def test_one_floating_reply_box_per_page(self):
+        Comment.objects.create(post=self.post, author=self.asker, content="Any ideas?")
+
+        response = self.client.get("/community/")
+
+        self.assertContains(response, '<dialog class="cm-reply-dialog"', count=1)
+        self.assertContains(response, 'class="cm-reply-form cm-reply-open"')
+        self.assertNotContains(response, "cm-reply-inline")
+
+    def test_reply_button_on_a_comment_points_to_that_comment(self):
+        comment = Comment.objects.create(post=self.post, author=self.asker, content="Any ideas?")
+
+        response = self.client.get("/community/")
+
+        self.assertContains(response, f'data-parent="{comment.id}"')
+        self.assertContains(response, 'data-to="@asker"')
+        self.assertContains(response, 'data-quote="Any ideas?"')
+
+    def test_logged_out_visitors_do_not_get_the_reply_box(self):
+        self.client.logout()
+
+        response = self.client.get("/community/")
+
+        self.assertNotContains(response, "cm-reply-dialog")

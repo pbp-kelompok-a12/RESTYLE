@@ -100,19 +100,32 @@ document.querySelectorAll(".cm-post").forEach((post) => {
     });
 });
 
+// kotak reply melayang: satu kotak dipakai untuk semua tombol "Write a reply..." dan "Reply".
+// Tombolnya membawa data-url (alamat kirim), data-parent (kalau membalas komentar),
+// data-to (@username), dan data-quote (potongan tulisan yang dibalas).
+const replyDialog = document.querySelector(".cm-reply-dialog");
+if (replyDialog) {
+    const replyForm = replyDialog.querySelector("form");
+    const quote = replyDialog.querySelector(".cm-reply-quote");
 
-// button "Reply" di bawah comment nampilin kotak balasan kecil
-document.querySelectorAll(".cm-toggle-reply").forEach((button) => {
-    const form = button.closest(".cm-comment-main").querySelector(".cm-reply-inline");
-
-    button.addEventListener("click", () => {
-        form.hidden = !form.hidden;
-        if (!form.hidden) {
-            form.querySelector('input[name="content"]').focus();
-        }
+    document.querySelectorAll(".cm-reply-open").forEach((button) => {
+        button.addEventListener("click", () => {
+            replyForm.reset(); // kosongkan sisa reply sebelumnya: tulisan, foto, dan tag
+            replyForm.action = button.dataset.url;
+            replyForm.elements.parent.value = button.dataset.parent || "";
+            replyDialog.querySelector(".cm-reply-to").textContent = button.dataset.to;
+            quote.textContent = button.dataset.quote;
+            quote.hidden = !button.dataset.quote;
+            replyDialog.showModal();
+            replyForm.querySelector("textarea").focus();
+        });
     });
-});
 
+    replyDialog.querySelector(".cm-reply-dialog-close").addEventListener("click", () => replyDialog.close());
+    replyDialog.addEventListener("click", (event) => {
+        if (event.target === replyDialog) replyDialog.close(); // klik di area gelap di luar kotak
+    });
+}
 
 // setelah ngirim comment, alamat halaman berakhiran #post-12
 // komentar post itu langsung dibuka supaya komentar barunya terlihat
@@ -340,6 +353,49 @@ document.querySelectorAll(".cm-tag-toggle").forEach((button) => {
     updateTags();
 });
 
+// foto di reply: satu foto JPG/PNG (maksimal 5 MB), tampil kecil sebelum dikirim dan bisa dibatalkan
+document.querySelectorAll(".cm-reply-rich").forEach((form) => {
+    const input = form.querySelector(".cm-reply-photo-input");
+    const button = form.querySelector(".cm-reply-photo-button");
+    const preview = form.querySelector(".cm-reply-photo-preview");
+    const previewImage = preview.querySelector("img");
+    const hint = form.querySelector(".cm-reply-photo-hint");
+    const MAX_SIZE = 5 * 1024 * 1024;
+
+    function clearPhoto() {
+        input.value = "";
+        preview.hidden = true;
+        button.classList.remove("has-photo");
+    }
+
+    button.addEventListener("click", () => input.click());
+
+    input.addEventListener("change", () => {
+        const photo = input.files[0];
+        hint.hidden = true;
+        if (!photo) {
+            clearPhoto();
+            return;
+        }
+        if (!["image/jpeg", "image/png"].includes(photo.type) || photo.size > MAX_SIZE) {
+            hint.textContent = "Photos must be JPG or PNG, 5 MB or smaller.";
+            hint.hidden = false;
+            clearPhoto();
+            return;
+        }
+        previewImage.src = URL.createObjectURL(photo);
+        preview.hidden = false;
+        button.classList.add("has-photo");
+    });
+
+    preview.querySelector(".cm-reply-photo-remove").addEventListener("click", clearPhoto);
+    form.addEventListener("reset", () => {
+        clearPhoto();
+        hint.hidden = true;
+    });
+});
+
+
 // tag di post: klik untuk melihat detail pakaiannya (bisa dilihat semua orang)
 if (document.querySelector(".cm-tag-button")) {
     const itemDialog = document.createElement("dialog");
@@ -498,7 +554,7 @@ function focusComposer() {
     if (!box) {
         return false; // halaman ini tidak punya kotak tulis post
     }
-    box.scrollIntoView({ behavior: "smooth", block: "center" });
+    box.scrollIntoView({ behavior: "smooth", block: "start" });
     box.querySelector("textarea").focus({ preventScroll: true });
     return true;
 }
@@ -510,6 +566,14 @@ document.querySelectorAll('a[href$="#composer"]').forEach((link) => {
         }
     });
 });
+
+// Datang dari tombol "Ask the community" (alamatnya /community/?ask=...):
+// langsung gulir ke kotak tulis post dengan kursor di akhir tulisan, siap mengetik.
+if (new URLSearchParams(window.location.search).has("ask") && focusComposer()) {
+    const textarea = document.querySelector("#composer textarea");
+    textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+    textarea.dispatchEvent(new Event("input")); // tombol Post aktif dan tinggi kotak menyesuaikan isi
+}
 
 // Datang dari halaman lain dengan alamat berakhiran #composer (misalnya tombol "Ask the community"):
 // langsung gulir ke kotak tulis post dengan kursor di akhir tulisan, siap mengetik.
