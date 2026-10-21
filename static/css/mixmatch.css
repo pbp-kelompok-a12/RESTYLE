@@ -67,3 +67,151 @@
     border-radius: var(--corner-radius-999);
     transform: rotate(4deg) translateY(-22px);
 }
+
+/* ---------- layout 3 kolom ---------- */
+.mm-builder {
+    display: grid;
+    grid-template-columns: minmax(260px, 320px) minmax(0, 1fr) minmax(260px, 320px);
+    gap: 28px;
+    align-items: start;
+}
+
+.mm-card {
+    background: var(--color-white-solid);
+    border: 2px solid var(--color-azure-st-blue);
+    border-radius: 40px;
+    padding: 26px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.mm-card h2 {
+    text-align: center;
+    color: var(--color-azure-san-marino);
+    font-family: var(--font-family-font-3), sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.mm-swatch {
+    display: block;
+    width: 56%;
+    height: 68%;
+    margin: auto;
+    border-radius: var(--corner-radius-12);
+    border: 1px solid rgba(58, 43, 72, .12);
+}
+
+/* ---------- panel closet ---------- */
+.mm-chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+
+.mm-chip {
+    padding: 3px 12px;
+    background: var(--color-white-solid);
+    border: 1px solid var(--color-azure-polo-blue);
+    border-radius: var(--corner-radius-999);
+    color: var(--color-azure-san-marino);
+    font-family: var(--font-family-font-3), sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: .15s ease-out;
+}
+.mm-chip:hover { background: var(--color-azure-st-blue); }
+.mm-chip.is-active {
+    background: var(--color-azure-san-marino);
+    border-color: var(--color-azure-san-marino);
+    color: var(--color-white-solid);
+}
+
+.mm-items {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    max-height: 440px;
+    overflow-y: auto;
+    padding: 4px;
+}
+
+.mm-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 6px;
+    background: var(--color-white-solid);
+    border: 1px solid var(--color-azure-st-blue);
+    border-radius: var(--corner-radius-12);
+    text-align: center;
+    cursor: pointer;
+    transition: .15s ease-out;
+}
+.mm-item:hover:not(:disabled) { border-color: var(--color-azure-san-marino); transform: translateY(-2px); }
+.mm-item:disabled { opacity: .55; cursor: not-allowed; }
+.mm-item.is-picked { border-color: var(--color-azure-san-marino); background: var(--color-azure-st-blue); }
+
+.mm-item-photo {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 72px;
+}
+.mm-item-photo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+.mm-item-wash {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    padding: 0 6px;
+    background: var(--color-yellow-peach-yellow);
+    border-radius: var(--corner-radius-999);
+    font-size: 9px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.mm-item-name {
+    font-family: var(--font-family-font-2), sans-serif;
+    font-size: 11px;
+    line-height: 1.2;
+    color: var(--color-azure-san-marino);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mm-item-add {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-white-solid);
+    border: 1px solid var(--color-azure-san-marino);
+    color: var(--color-azure-san-marino);
+    font-size: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.mm-item.is-picked .mm-item-add { background: var(--color-azure-san-marino); color: var(--color-white-solid); }
+
+.mm-none { text-align: center; color: var(--color-azure-dolphin); }
+
+/* ---------- empty state ---------- */
+.mm-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 28px 16px;
+    text-align: center;
+    color: var(--color-azure-dolphin);
+}
+.mm-empty img { width: 110px; height: auto; }
+.mm-empty h3 { color: var(--color-azure-san-marino); font-family: var(--font-family-font-3), sans-serif; font-size: 18px; }
+.mm-empty-small { padding: 8px 0; }

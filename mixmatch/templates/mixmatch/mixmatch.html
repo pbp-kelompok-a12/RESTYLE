@@ -19,6 +19,51 @@
         </h1>
     </header>
 
+    <form method="post" id="mm-form" class="mm-builder">
+        {% csrf_token %}
+        <aside class="mm-card mm-closet" aria-label="Your closet">
+            <h2>Your closet</h2>
+
+            {% if items %}
+            <div class="mm-chips" role="group" aria-label="Filter by category">
+                <button type="button" class="mm-chip is-active" data-category="">ALL</button>
+                {% for value, label in category_options %}
+                <button type="button" class="mm-chip" data-category="{{ value }}">{{ label }}</button>
+                {% endfor %}
+            </div>
+
+            <div class="mm-items">
+                {% for item in items %}
+                <button type="button" class="mm-item"
+                        data-id="{{ item.id }}" data-slot="{{ item.slot }}" data-category="{{ item.category }}"
+                        data-name="{{ item.name }}" data-photo="{% if item.photo %}{{ item.photo.url }}{% endif %}" data-color="{{ item.color_hex }}"
+                        {% if item.status != 'ready' %}disabled title="This piece is in the wash"{% endif %}>
+                    <span class="mm-item-photo">
+                        {% if item.photo %}
+                        <img src="{{ item.photo.url }}" alt="" loading="lazy">
+                        {% else %}
+                        <i class="mm-swatch" style="background:{{ item.color_hex }}"></i>
+                        {% endif %}
+                        {% if item.status != 'ready' %}<span class="mm-item-wash">In the wash</span>{% endif %}
+                    </span>
+                    <span class="mm-item-name">{{ item.name }}</span>
+                    <span class="mm-item-add" aria-hidden="true"><i class="fa-solid fa-plus"></i></span>
+                </button>
+                {% endfor %}
+            </div>
+            <p class="mm-none" hidden>No pieces in this category yet.</p>
+            {% else %}
+            <div class="mm-empty mm-empty-small">
+                <img src="{% static 'img/bunglon_hires.png' %}" alt="">
+                <p>Your closet is empty.</p>
+                <a href="{% url 'closet:show_closet' %}" class="btn primary-btn">Add pieces first</a>
+            </div>
+            {% endif %}
+        </aside>
+    </form>
+
 </section>
 </main>
+<script src="{% static 'js/mixmatch.js' %}"></script>
+{% include 'components/toast.html' %}
 {% endblock content %}
