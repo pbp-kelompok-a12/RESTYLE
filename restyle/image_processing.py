@@ -20,7 +20,13 @@ def optimize_image_upload(upload):
     upload.seek(0)
     with Image.open(upload) as source:
         image = ImageOps.exif_transpose(source)
-        image.thumbnail((MAX_IMAGE_DIMENSION, MAX_IMAGE_DIMENSION), Image.Resampling.LANCZOS)
+        # reducing_gap lets Pillow shrink very large phone photos in fewer
+        # passes before the final high-quality resampling step.
+        image.thumbnail(
+            (MAX_IMAGE_DIMENSION, MAX_IMAGE_DIMENSION),
+            Image.Resampling.LANCZOS,
+            reducing_gap=3.0,
+        )
 
         # Keep alpha where present, otherwise use a compact 24-bit image.
         if "A" in image.getbands() or "transparency" in image.info:
@@ -29,7 +35,9 @@ def optimize_image_upload(upload):
             image = image.convert("RGB")
 
         output = BytesIO()
-        image.save(output, format="WEBP", quality=WEBP_QUALITY, method=6)
+        # method=6 squeezes out a little more size at a much higher CPU cost.
+        # method=4 is a better fit for synchronous web uploads.
+        image.save(output, format="WEBP", quality=WEBP_QUALITY, method=4)
 
     output.seek(0)
     return ContentFile(output.read(), name=f"{Path(upload.name).stem}.webp")
