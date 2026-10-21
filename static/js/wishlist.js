@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("wishlist-form");
     const container = document.getElementById("wishlist-items");
@@ -7,41 +8,95 @@ document.addEventListener("DOMContentLoaded", () => {
     const count = document.getElementById("wishlist-count");
     const savedCount = document.getElementById("saved-item-count");
 
+    const formSection = document.getElementById("add-wishlist");
+    const openFormButton = document.getElementById("open-wishlist-form");
+    const closeFormButton = document.getElementById("close-wishlist-form");
+    const clearFormButton = document.getElementById("clear-wishlist-form");
+
     if (!form || !container) return;
 
-    const storageKey = "restyle_wishlist_demo";
-    let items = JSON.parse(localStorage.getItem(storageKey) || "[]");
+    // Keep the form hidden until the user opens it.
+    function closeForm() {
+        formSection.hidden = true;
+        openFormButton?.setAttribute("aria-expanded", "false");
+    }
 
-    // Contoh data closet sementara untuk demo pencocokan.
-    // Ganti dengan data Digital Closet asli saat integrasi backend.
+    function openForm() {
+        formSection.hidden = false;
+        openFormButton?.setAttribute("aria-expanded", "true");
+
+        formSection.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+        document.getElementById("item-name")?.focus({
+            preventScroll: true
+        });
+    }
+
+    openFormButton?.addEventListener("click", openForm);
+    closeFormButton?.addEventListener("click", closeForm);
+
+    clearFormButton?.addEventListener("click", () => {
+        form.reset();
+        document.getElementById("item-name")?.focus();
+    });
+
+    closeForm();
+
+    const storageKey = "restyle_wishlist_demo";
+
+    let items = [];
+
+    try {
+        items = JSON.parse(localStorage.getItem(storageKey) || "[]");
+
+        if (!Array.isArray(items)) {
+            items = [];
+        }
+    } catch (error) {
+        items = [];
+    }
+
+    // DEMO DATA ONLY:
+    // Replace with the logged-in user's real Digital Closet data
+    // when the Django backend integration is ready.
     const demoCloset = [
         { category: "Top", color: "White", name: "White shirt" },
         { category: "Bottom", color: "Blue", name: "Blue jeans" },
         { category: "Shoes", color: "Black", name: "Black shoes" }
     ];
 
+    function normalize(value) {
+        return String(value || "").trim().toLowerCase();
+    }
+
     function hasClosetMatch(item) {
         return demoCloset.some(closetItem =>
-            closetItem.category.toLowerCase() === item.category.toLowerCase() &&
-            closetItem.color.toLowerCase() === item.color.toLowerCase()
+            normalize(closetItem.category) === normalize(item.category) &&
+            normalize(closetItem.color) === normalize(item.color)
         );
     }
 
     function renderItems() {
-        const keyword = search.value.trim().toLowerCase();
-        const category = categoryFilter.value;
-        const match = matchFilter.value;
+        const keyword = normalize(search?.value);
+        const category = categoryFilter?.value || "";
+        const match = matchFilter?.value || "all";
 
         const filtered = items.filter(item => {
-            const matchesKeyword =
-                item.name.toLowerCase().includes(keyword) ||
-                item.category.toLowerCase().includes(keyword) ||
-                item.color.toLowerCase().includes(keyword);
+            const matchesKeyword = [
+                item.name,
+                item.category,
+                item.color,
+                item.reason
+            ].some(value => normalize(value).includes(keyword));
 
             const matchesCategory =
                 !category || item.category === category;
 
             const matched = hasClosetMatch(item);
+
             const matchesCloset =
                 match === "all" ||
                 (match === "matched" && matched) ||
@@ -52,16 +107,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
         container.replaceChildren();
 
-        count.textContent = items.length;
-        savedCount.textContent =
-            `${items.length} item${items.length === 1 ? "" : "s"}`;
+        if (count) {
+            count.textContent = items.length;
+        }
+
+        if (savedCount) {
+            savedCount.textContent =
+                `${items.length} item${items.length === 1 ? "" : "s"}`;
+        }
 
         if (filtered.length === 0) {
             const empty = document.createElement("p");
             empty.className = "wishlist-empty";
             empty.textContent = items.length
                 ? "No items match your search or filters."
-                : "Your wishlist is empty. Add your first item above!";
+                : "Your wishlist is empty. Select “Add to wishlist” to save your first item.";
+
             container.appendChild(empty);
             return;
         }
@@ -76,8 +137,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             [
                 `Category: ${item.category}`,
-                `Color: ${item.color}`,
-                item.price ? `Estimated price: Rp ${Number(item.price).toLocaleString("id-ID")}` : "",
+                `Main color: ${item.color}`,
+                item.price
+                    ? `Estimated price: Rp ${Number(item.price).toLocaleString("id-ID")}`
+                    : "",
                 item.reason ? `Reason: ${item.reason}` : "",
                 hasClosetMatch(item)
                     ? "Closet reminder: You may already own a similar item."
@@ -91,7 +154,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (item.link) {
                 try {
                     const url = new URL(item.link);
-                    if (url.protocol === "https:" || url.protocol === "http:") {
+
+                    if (["https:", "http:"].includes(url.protocol)) {
                         const link = document.createElement("a");
                         link.href = url.href;
                         link.target = "_blank";
@@ -99,8 +163,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         link.textContent = "View product";
                         card.appendChild(link);
                     }
-                } catch (_) {
-                    // Abaikan URL yang tidak valid.
+                } catch (error) {
+                    // Ignore invalid product URLs.
                 }
             }
 
@@ -108,6 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
             removeButton.type = "button";
             removeButton.className = "remove-item";
             removeButton.textContent = "Remove";
+
             removeButton.addEventListener("click", () => {
                 items = items.filter(saved => saved.id !== item.id);
                 saveAndRender();
@@ -129,6 +194,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const name = document.getElementById("item-name").value.trim();
         const category = document.getElementById("item-category").value;
         const color = document.getElementById("item-color").value;
+        const price = document.getElementById("item-price").value;
+        const link = document.getElementById("item-link").value.trim();
+        const reason = document.getElementById("item-reason").value.trim();
 
         if (!name || !category || !color) {
             form.reportValidity();
@@ -140,18 +208,19 @@ document.addEventListener("DOMContentLoaded", () => {
             name,
             category,
             color,
-            price: document.getElementById("item-price").value,
-            link: document.getElementById("item-link").value.trim(),
-            reason: document.getElementById("item-reason").value.trim()
+            price,
+            link,
+            reason
         });
 
         saveAndRender();
         form.reset();
+        closeForm();
     });
 
-    search.addEventListener("input", renderItems);
-    categoryFilter.addEventListener("change", renderItems);
-    matchFilter.addEventListener("change", renderItems);
+    search?.addEventListener("input", renderItems);
+    categoryFilter?.addEventListener("change", renderItems);
+    matchFilter?.addEventListener("change", renderItems);
 
     renderItems();
 });

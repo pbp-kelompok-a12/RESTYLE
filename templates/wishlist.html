@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 {% load static %}
 
@@ -13,56 +14,85 @@
 <main class="wishlist-page">
 
     <section class="wishlist-heading">
-        <p class="eyebrow">MODULE 4 · CONSCIOUS SHOPPING</p>
-        <h1>Your <span>Wishlist!</span></h1>
+        <h1>Your <span>Wishlist.</span></h1>
         <p>
-            Simpan barang yang kamu incar, cek apakah kamu sudah punya
-            item serupa, dan belanja lebih sadar.
+            Save the items you love, check what you already own,
+            and make more conscious shopping decisions.
         </p>
     </section>
 
     <section class="wishlist-summary">
-        <div>
-            <strong id="wishlist-count">0</strong>
+        <article class="summary-card">
+            <span id="wishlist-count" class="summary-number">0</span>
             <p>Items in wishlist</p>
-        </div>
-        <div>
-            <strong>Think twice</strong>
+        </article>
+
+        <article class="summary-card">
+            <h2>Think twice.</h2>
             <p>Before making a new purchase</p>
-        </div>
+        </article>
     </section>
 
     <section class="wishlist-reminder">
-        <div>
+        <div class="reminder-copy">
             <h2>Pause before you purchase.</h2>
             <p>
-                Sebelum checkout, tanyakan pada diri sendiri:
-                apakah kamu sudah memiliki pakaian serupa?
+                Before checking out, ask yourself:
+                do you already own something similar?
             </p>
         </div>
-        <a href="#add-wishlist" class="wishlist-button">
+
+        <button
+            type="button"
+            id="open-wishlist-form"
+            class="wishlist-button"
+            aria-controls="add-wishlist"
+            aria-expanded="false"
+        >
             + Add to wishlist
-        </a>
+        </button>
     </section>
 
-    <section id="add-wishlist" class="wishlist-form-section">
-        <h2>Add an item to your wishlist</h2>
-        <p class="section-description">
-            Catat barang yang kamu inginkan sebelum memutuskan untuk membeli.
-        </p>
-
-        <form id="wishlist-form">
-            {% csrf_token %}
-
-            <div class="wishlist-field">
-                <label for="item-name">Item name *</label>
-                <input id="item-name" name="item-name"
-                       placeholder="e.g. White linen shirt" required>
+    <section
+        id="add-wishlist"
+        class="wishlist-form-section"
+        hidden
+    >
+        <div class="form-heading">
+            <div>
+                <h2>Add an item to your wishlist</h2>
+                <p>Save the details before deciding to buy.</p>
             </div>
 
-            <div class="wishlist-field">
+            <button
+                type="button"
+                id="close-wishlist-form"
+                class="close-form-button"
+                aria-label="Close form"
+            >
+                &times;
+            </button>
+        </div>
+
+        <form id="wishlist-form">
+            <div class="form-field">
+                <label for="item-name">Item name *</label>
+                <input
+                    type="text"
+                    id="item-name"
+                    name="item-name"
+                    placeholder="e.g. White linen shirt"
+                    required
+                >
+            </div>
+
+            <div class="form-field">
                 <label for="item-category">Category *</label>
-                <select id="item-category" name="item-category" required>
+                <select
+                    id="item-category"
+                    name="item-category"
+                    required
+                >
                     <option value="">Choose category</option>
                     <option value="Top">Top</option>
                     <option value="Bottom">Bottom</option>
@@ -73,44 +103,69 @@
                 </select>
             </div>
 
-            <div class="wishlist-field">
+            <div class="form-field">
                 <label for="item-color">Main color *</label>
                 <select id="item-color" name="item-color" required>
                     <option value="">Choose color</option>
-                    <option value="White">White</option>
                     <option value="Black">Black</option>
+                    <option value="White">White</option>
                     <option value="Blue">Blue</option>
                     <option value="Brown">Brown</option>
                     <option value="Beige">Beige</option>
                     <option value="Grey">Grey</option>
-                    <option value="Pink">Pink</option>
+                    <option value="Cream">Cream</option>
                     <option value="Green">Green</option>
+                    <option value="Pink">Pink</option>
                     <option value="Red">Red</option>
+                    <option value="Yellow">Yellow</option>
+                    <option value="Purple">Purple</option>
                     <option value="Other">Other</option>
                 </select>
             </div>
 
-            <div class="wishlist-field">
+            <div class="form-field">
                 <label for="item-price">Estimated price (Rp)</label>
-                <input id="item-price" name="item-price" type="number"
-                       min="0" placeholder="150000">
+                <input
+                    type="number"
+                    id="item-price"
+                    name="item-price"
+                    min="0"
+                    placeholder="150000"
+                >
             </div>
 
-            <div class="wishlist-field full-width">
+            <div class="form-field full-width">
                 <label for="item-link">Product link (optional)</label>
-                <input id="item-link" name="item-link" type="url"
-                       placeholder="https://...">
+                <input
+                    type="url"
+                    id="item-link"
+                    name="item-link"
+                    placeholder="https://..."
+                >
             </div>
 
-            <div class="wishlist-field full-width">
+            <div class="form-field full-width">
                 <label for="item-reason">Why do you want it? (optional)</label>
-                <textarea id="item-reason" name="item-reason" rows="3"
-                          placeholder="What occasion will you use it for?"></textarea>
+                <textarea
+                    id="item-reason"
+                    name="item-reason"
+                    rows="3"
+                    placeholder="What occasion will you use it for?"
+                ></textarea>
             </div>
 
             <div class="wishlist-form-actions full-width">
-                <button type="reset" class="wishlist-cancel">Clear form</button>
-                <button type="submit" class="wishlist-button">Save item</button>
+                <button
+                    type="button"
+                    id="clear-wishlist-form"
+                    class="secondary-button"
+                >
+                    Clear form
+                </button>
+
+                <button type="submit" class="wishlist-button">
+                    Save item
+                </button>
             </div>
         </form>
     </section>
@@ -118,18 +173,24 @@
     <section class="saved-items-section">
         <div class="saved-items-heading">
             <div>
-                <h2>Saved items <span class="heart">♡</span></h2>
+                <h2>Saved items</h2>
                 <p>
-                    Item wishlist akan dibandingkan dengan isi Digital Closet.
+                    Find and review the items you are considering.
                 </p>
             </div>
-            <span id="saved-item-count" class="item-count">0 items</span>
+
+            <span id="saved-item-count" class="items-badge">
+                0 items
+            </span>
         </div>
 
         <div class="wishlist-filters">
-            <input id="wishlist-search" type="search"
-                   placeholder="⌕ Search your wishlist..."
-                   aria-label="Search your wishlist">
+            <input
+                type="search"
+                id="wishlist-search"
+                placeholder="⌕ Search your wishlist..."
+                aria-label="Search wishlist"
+            >
 
             <select id="filter-category" aria-label="Filter by category">
                 <option value="">All categories</option>
@@ -141,33 +202,31 @@
                 <option value="Accessories">Accessories</option>
             </select>
 
-            <select id="filter-match" aria-label="Filter closet matches">
+            <select id="filter-match" aria-label="Filter by closet match">
                 <option value="all">All closet matches</option>
-                <option value="matched">Has closet match</option>
-                <option value="unmatched">No closet match</option>
+                <option value="matched">Similar items owned</option>
+                <option value="unmatched">No similar item found</option>
             </select>
         </div>
 
-        <div id="wishlist-items" class="wishlist-items">
-            <p id="wishlist-empty" class="wishlist-empty">
-                Your wishlist is empty. Add your first item above!
-            </p>
-        </div>
+        <div id="wishlist-items" class="wishlist-items"></div>
     </section>
 
     <section class="closet-note">
         <div>
             <h2>Before you buy, check your closet.</h2>
             <p>
-                RE:STYLE membantu menemukan item dengan kategori atau warna
-                serupa dari Digital Closet. Pencocokan akan aktif setelah
-                data wishlist terhubung dengan data Digital Closet.
+                Compare your wishlist with your Digital Closet
+                to help avoid unnecessary purchases.
             </p>
         </div>
-        <a href="#add-wishlist" class="wishlist-button">
-            Add an item →
+
+        <a href="{% url 'show_landing_page' %}" class="wishlist-button">
+            Back to home &rarr;
         </a>
     </section>
 
 </main>
+
+<script src="{% static 'js/wishlist.js' %}" defer></script>
 {% endblock content %}
