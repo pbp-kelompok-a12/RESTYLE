@@ -1,0 +1,18 @@
+{# Satu baris notifikasi. Butuh variabel "note". #}
+<li>
+    <a class="nt-item {% if not note.is_read %}is-unread{% endif %}" href="{% url 'community:open_notification' note.id %}">
+        <span class="nt-avatar">
+            {{ note.actor.username|first|upper }}
+            {% if note.kind == 'like' %}
+            <span class="nt-icon nt-icon-like"><i class="fa-regular fa-heart"></i></span>
+            {% elif note.kind == 'follow' %}
+            <span class="nt-icon"><i class="fa-solid fa-user-plus"></i></span>
+            {% endif %}
+        </span>
+        <span class="nt-text">
+            <span><strong>@{{ note.actor.username }}</strong> {{ note.message }}</span>
+            <small>{{ note.time_ago }}</small>
+        </span>
+        {% if not note.is_read %}<span class="nt-dot" title="Unread"></span>{% endif %}
+    </a>
+</li>

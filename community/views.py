@@ -14,7 +14,8 @@ from django.views.decorators.http import require_POST
 
 from community.forms import CommentForm, PostForm
 from closet.models import Item
-from community.models import Comment, Follow, Post, PostImage
+from community.models import Comment, Follow, Notification, Post, PostImage
+from community.notifications import notify_follow, notify_like, notify_reply, undo_follow, undo_like
 
 # URL halaman login aplikasi.
 LOGIN_URL = "/login/"
@@ -148,6 +149,8 @@ def create_comment(request, post_id):
             comment.parent = parent.parent or parent
 
         comment.save()
+        notify_reply(comment)
+
     else:
         messages.error(request, "Write a reply before sending (up to 500 characters).")
 
@@ -252,8 +255,11 @@ def toggle_user(relation, user):
 def toggle_post_like(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     is_liked = toggle_user(post.likes, request.user)
+    if is_liked:
+        notify_like(post, request.user)
+    else:
+        undo_like(post, request.user)
     return JsonResponse({"active": is_liked, "count": post.likes.count()})
-
 
 @login_required(login_url=LOGIN_URL)
 @require_POST
@@ -354,9 +360,37 @@ def toggle_follow(request, username):
     link = Follow.objects.filter(follower=request.user, followed=target)
     if link.exists():
         link.delete()
+        undo_follow(request.user, target)
         is_following = False
     else:
         Follow.objects.create(follower=request.user, followed=target)
+        notify_follow(request.user, target)
         is_following = True
 
     return JsonResponse({"active": is_following})
+
+@login_required(login_url=LOGIN_URL)
+def show_notifications(request):
+    notifications = request.user.notifications.select_related("actor", "post", "comment")[:50]
+    has_unread = request.user.notifications.filter(is_read=False).exists()
+    return render(
+        request,
+        "community/notifications.html",
+        {"notifications": notifications, "has_unread": has_unread},
+    )
+
+@login_required(login_url=LOGIN_URL)
+def open_notification(request, notification_id):
+    # notifikasi yang diklik ditandai sudah dibaca, lalu langsung ke post/profil terkait
+    notification = get_object_or_404(Notification, id=notification_id, recipient=request.user)
+    notification.is_read = True
+    notification.save(update_fields=["is_read"])
+    return redirect(notification.target_url)
+
+@login_required(login_url=LOGIN_URL)
+@require_POST
+def mark_notifications_read(request):
+    request.user.notifications.filter(is_read=False).update(is_read=True)
+    if request.headers.get("x-requested-with") == "fetch":
+        return JsonResponse({"ok": True})
+    return redirect("community:show_notifications")

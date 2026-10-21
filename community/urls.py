@@ -15,6 +15,9 @@ from community.views import (
     toggle_post_like,
     toggle_post_save,
     toggle_follow,
+    mark_notifications_read,
+    open_notification,
+    show_notifications,
 )
 
 app_name = "community"
@@ -22,6 +25,9 @@ app_name = "community"
 urlpatterns = [
     path("", show_community, name="show_community"),
     path("saved/", show_saved, name="show_saved"),
+    path("notifications/", show_notifications, name="show_notifications"),
+    path("notifications/read/", mark_notifications_read, name="mark_notifications_read"),
+    path("notifications/<int:notification_id>/", open_notification, name="open_notification"),
     path(
         "profile/<str:username>/following/",
         show_follow_list,

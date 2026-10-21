@@ -5,7 +5,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
 from PIL import Image
 
-from community.models import Comment, Follow, Post, PostImage
+from community.models import Comment, Follow, Notification, Post, PostImage
 from closet.models import Item
 
 SIMPLE_STORAGES = {
@@ -249,3 +249,128 @@ class TagClosetItemsTests(TestCase):
 
         self.assertContains(response, 'data-name="Blue linen shirt"')
         self.assertNotContains(response, "data-closet-url")
+
+@override_settings(STORAGES=SIMPLE_STORAGES)
+class NotificationTests(TestCase):
+    def setUp(self):
+        user_model = get_user_model()
+        self.alice = user_model.objects.create_user(username="alice", password="test-password")
+        self.bob = user_model.objects.create_user(username="bob", password="test-password")
+        self.carol = user_model.objects.create_user(username="carol", password="test-password")
+        self.post = Post.objects.create(author=self.alice, content="Is this outfit okay?")
+
+    def test_reply_notifies_post_author(self):
+        self.client.force_login(self.bob)
+
+        self.client.post(f"/community/post/{self.post.id}/comment/", {"content": "Not at all! Just add a cardigan"})
+
+        note = Notification.objects.get(recipient=self.alice)
+        self.assertEqual(note.kind, Notification.REPLY)
+        self.assertEqual(note.actor, self.bob)
+        self.assertEqual(note.message, "replied to your post: “Not at all! Just add a cardigan”")
+
+    def test_reply_to_a_comment_also_notifies_that_comment_author(self):
+        comment = Comment.objects.create(post=self.post, author=self.bob, content="Cute!")
+        self.client.force_login(self.carol)
+
+        self.client.post(f"/community/post/{self.post.id}/comment/", {"content": "Agree", "parent": comment.id})
+
+        self.assertTrue(Notification.objects.filter(recipient=self.alice, kind=Notification.REPLY).exists())
+        bob_note = Notification.objects.get(recipient=self.bob)
+        self.assertEqual(bob_note.message, "replied to your comment: “Agree”")
+
+    def test_no_notification_for_your_own_actions(self):
+        self.client.force_login(self.alice)
+
+        self.client.post(f"/community/post/{self.post.id}/comment/", {"content": "Thanks all"})
+        self.client.post(f"/community/post/{self.post.id}/like/")
+
+        self.assertFalse(Notification.objects.exists())
+
+    def test_likes_are_grouped_into_one_notification(self):
+        for user in [self.bob, self.carol]:
+            self.client.force_login(user)
+            self.client.post(f"/community/post/{self.post.id}/like/")
+
+        note = Notification.objects.get(recipient=self.alice)
+        self.assertEqual(note.actor, self.carol)
+        self.assertEqual(note.message, "and 1 other liked your post")
+
+    def test_unlike_updates_or_removes_the_like_notification(self):
+        for user in [self.bob, self.carol]:
+            self.client.force_login(user)
+            self.client.post(f"/community/post/{self.post.id}/like/")
+
+        self.client.post(f"/community/post/{self.post.id}/like/")  # carol batal like
+        note = Notification.objects.get(recipient=self.alice)
+        self.assertEqual(note.actor, self.bob)
+        self.assertEqual(note.message, "liked your post")
+
+        self.client.force_login(self.bob)
+        self.client.post(f"/community/post/{self.post.id}/like/")  # bob batal like
+        self.assertFalse(Notification.objects.exists())
+
+    def test_follow_and_unfollow(self):
+        self.client.force_login(self.bob)
+
+        self.client.post("/community/user/alice/follow/")
+        note = Notification.objects.get(recipient=self.alice)
+        self.assertEqual(note.message, "started following you")
+
+        self.client.post("/community/user/alice/follow/")
+        self.assertFalse(Notification.objects.exists())
+
+    def test_navbar_shows_unread_notifications(self):
+        Notification.objects.create(recipient=self.alice, actor=self.bob, kind=Notification.FOLLOW)
+        self.client.force_login(self.alice)
+
+        response = self.client.get("/community/")
+
+        self.assertContains(response, 'class="nt-badge"')
+        self.assertContains(response, "@bob</strong> started following you")
+        self.assertContains(response, "Mark all as read")
+
+    def test_navbar_shows_empty_state(self):
+        self.client.force_login(self.alice)
+
+        response = self.client.get("/community/")
+
+        self.assertContains(response, "You're all caught up")
+        self.assertNotContains(response, 'class="nt-badge"')
+
+    def test_opening_a_notification_marks_it_read_and_goes_to_target(self):
+        note = Notification.objects.create(recipient=self.alice, actor=self.bob, kind=Notification.FOLLOW)
+        self.client.force_login(self.alice)
+
+        response = self.client.get(f"/community/notifications/{note.id}/")
+
+        self.assertRedirects(response, "/community/profile/bob/", fetch_redirect_response=False)
+        note.refresh_from_db()
+        self.assertTrue(note.is_read)
+
+    def test_cannot_open_someone_elses_notification(self):
+        note = Notification.objects.create(recipient=self.alice, actor=self.bob, kind=Notification.FOLLOW)
+        self.client.force_login(self.carol)
+
+        response = self.client.get(f"/community/notifications/{note.id}/")
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_mark_all_as_read(self):
+        Notification.objects.create(recipient=self.alice, actor=self.bob, kind=Notification.FOLLOW)
+        Notification.objects.create(recipient=self.alice, actor=self.carol, kind=Notification.FOLLOW)
+        self.client.force_login(self.alice)
+
+        response = self.client.post("/community/notifications/read/", HTTP_X_REQUESTED_WITH="fetch")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Notification.objects.filter(is_read=False).exists())
+
+    def test_see_all_page(self):
+        Notification.objects.create(recipient=self.alice, actor=self.bob, kind=Notification.FOLLOW)
+        self.client.force_login(self.alice)
+
+        response = self.client.get("/community/notifications/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "@bob</strong> started following you")
