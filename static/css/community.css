@@ -1350,6 +1350,18 @@ body{
     margin: 0;
 }
 
+
+.cm-item-shop{
+    font-weight: 600;
+    color: var(--color-azure-san-marino);
+    text-decoration: underline;
+    overflow-wrap: anywhere;
+}
+
+.cm-item-shop i{
+    font-size: 11px;
+}
+
 .cm-item-link{
     display: inline-block;
     margin-top: 14px;

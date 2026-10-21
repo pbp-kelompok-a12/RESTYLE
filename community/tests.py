@@ -257,6 +257,40 @@ class TagClosetItemsTests(TestCase):
         self.assertContains(response, "Your closet is empty.")
         self.assertNotContains(response, 'placeholder="Search your closet"')
 
+    def test_tag_shows_price_in_rupiah(self):
+        self.shirt.price = 150000
+        self.shirt.save()
+        post = Post.objects.create(author=self.alice, content="Linen day")
+        post.tagged_items.add(self.shirt, self.skirt)
+
+        response = self.client.get("/community/")
+
+        self.assertContains(response, 'data-price="Rp 150.000"')
+        self.assertContains(response, 'data-price=""')  # rok tanpa harga: baris Price disembunyikan
+
+    def test_tag_shows_price_in_rupiah(self):
+        self.shirt.price = 150000
+        self.shirt.save()
+        post = Post.objects.create(author=self.alice, content="Linen day")
+        post.tagged_items.add(self.shirt, self.skirt)
+
+        response = self.client.get("/community/")
+
+        self.assertContains(response, 'data-price="Rp 150.000"')
+        self.assertContains(response, 'data-price=""')  # rok tanpa harga: baris Price disembunyikan
+
+    def test_tag_carries_store_and_purchase_link(self):
+        self.shirt.store = "Uniqlo"
+        self.shirt.purchase_link = "https://www.uniqlo.com/id/linen-shirt"
+        self.shirt.save()
+        post = Post.objects.create(author=self.alice, content="Linen day")
+        post.tagged_items.add(self.shirt)
+
+        response = self.client.get("/community/")
+
+        self.assertContains(response, 'data-store="Uniqlo"')
+        self.assertContains(response, 'data-link="https://www.uniqlo.com/id/linen-shirt"')
+
     def test_other_people_can_see_item_details_but_not_closet_link(self):
         post = Post.objects.create(author=self.alice, content="Outfit")
         post.tagged_items.add(self.shirt)

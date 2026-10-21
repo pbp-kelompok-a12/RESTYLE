@@ -495,6 +495,8 @@ if (document.querySelector(".cm-tag-button")) {
                 ["Color", item.color],
                 ["Material", item.material],
                 ["Style", item.styles],
+                ["Price", item.price],
+                ["Store", item.store],
             ];
             rows.forEach(([label, value]) => {
                 if (!value) {
@@ -507,6 +509,21 @@ if (document.querySelector(".cm-tag-button")) {
                 info.append(term, detail);
             });
 
+            // link tempat beli: hanya alamat http/https, dibuka di tab baru
+            if (/^https?:\/\//i.test(item.link || "")) {
+                const term = document.createElement("dt");
+                term.textContent = "Link";
+                const detail = document.createElement("dd");
+                const shopLink = document.createElement("a");
+                shopLink.className = "cm-item-shop";
+                shopLink.href = item.link;
+                shopLink.target = "_blank";
+                shopLink.rel = "noopener noreferrer";
+                shopLink.innerHTML = 'Open link <i class="fa-solid fa-arrow-up-right-from-square"></i>';
+                detail.append(shopLink);
+                info.append(term, detail);
+            }
+            
             // link ke closet hanya muncul untuk pemilik pakaiannya
             closetLink.hidden = !item.closetUrl;
             closetLink.href = item.closetUrl || "#";
