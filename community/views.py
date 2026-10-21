@@ -25,7 +25,7 @@ LOGIN_URL = "/login/"
 
 MAX_PHOTOS = 3
 MAX_PHOTO_SIZE = 5 * 1024 * 1024  # 5 MB
-ALLOWED_PHOTO_TYPES = ["image/jpeg", "image/png"]
+ALLOWED_PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp"]
 MAX_TAGS = 5
 
 def show_community(request):
