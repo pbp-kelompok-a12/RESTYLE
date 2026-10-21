@@ -1174,30 +1174,22 @@ body{
 /* tag pakaian dari closet */
 
 .cm-tag-picker{
-    margin: 4px 0 10px 46px;
+    margin: 0 0 10px 46px;
 }
 
 .cm-edit-form .cm-tag-picker{
     margin: 0;
 }
 
-.cm-tag-picker .cm-composer-hint{
-    margin: 0 0 6px;
+.cm-tag-selected:empty{
+    display: none;
 }
 
-.cm-tag-picker a{
-    text-decoration: underline;
-}
-
-.cm-tag-options,
 .cm-tags{
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 6px;
-}
-
-.cm-tags{
     margin-top: 10px;
 }
 
@@ -1233,27 +1225,6 @@ body{
     object-fit: cover;
     border: 1px solid var(--color-orange-pearl-brush);
     border-radius: var(--corner-radius-999);
-}
-
-.cm-tag-option{
-    position: relative;
-    cursor: pointer;
-}
-
-/* kotak centangnya disembunyikan, tapi tetap bisa dipakai dengan keyboard */
-.cm-tag-option input{
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-}
-
-.cm-tag-option:has(input:checked){
-    background-color: var(--color-yellow-peach-yellow);
-    border-color: var(--color-azure-san-marino);
-}
-
-.cm-tag-option:has(input:focus-visible){
-    outline: 2px solid var(--color-azure-san-marino);
 }
 
 /* kotak detail pakaian (muncul saat tag di post diklik) */
@@ -1534,5 +1505,272 @@ body{
     .mod-actions{
         width: 100%;
         justify-content: flex-end;
+    }
+}
+
+/* tanda x di chip pakaian terpilih */
+.cm-tag-picker .cm-tag-remove{
+    display: grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    margin-left: 2px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: var(--corner-radius-999);
+    color: var(--color-azure-dolphin);
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.cm-tag-picker .cm-tag-remove:hover{
+    background-color: var(--color-orange-linen);
+}
+
+/* pop-up "Tag from my closet" */
+.cm-closet-dialog{
+    width: min(600px, calc(100vw - 32px));
+    max-height: calc(100vh - 48px);
+    margin: auto;
+    padding: 0;
+    flex-direction: column;
+    background-color: var(--color-white-solid);
+    border: 1px solid var(--color-azure-martinique);
+    border-radius: var(--corner-radius-24);
+    box-shadow: 0 16px 40px rgba(58, 43, 72, 0.18);
+    font-family: var(--font-family-font-1);
+    color: var(--color-azure-martinique);
+}
+
+.cm-closet-dialog[open]{
+    display: flex;
+}
+
+.cm-closet-dialog::backdrop{
+    background-color: rgba(253, 249, 242, 0.6);
+    backdrop-filter: blur(4px);
+}
+
+.cm-closet-head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 20px 12px;
+}
+
+.cm-closet-head h2{
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-azure-san-marino);
+}
+
+.cm-closet-dialog .cm-closet-close{
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: var(--corner-radius-999);
+    color: var(--color-azure-martinique);
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.cm-closet-dialog .cm-closet-close:hover{
+    background-color: var(--color-orange-linen);
+}
+
+.cm-closet-search{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 20px;
+    padding: 10px 18px;
+    background-color: var(--color-orange-linen);
+    border: 2px solid var(--color-azure-san-marino);
+    border-radius: var(--corner-radius-999);
+    color: var(--color-azure-san-marino);
+}
+
+.cm-closet-search input{
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-azure-martinique);
+}
+
+.cm-closet-search input::placeholder{
+    color: var(--color-azure-57);
+}
+
+.cm-closet-filters{
+    display: flex;
+    gap: 8px;
+    padding: 14px 20px 4px;
+    overflow-x: auto;
+}
+
+.cm-closet-dialog .cm-closet-filter{
+    flex-shrink: 0;
+    padding: 6px 14px;
+    background-color: var(--color-white-solid);
+    border: 1px solid var(--color-orange-pearl-brush);
+    border-radius: var(--corner-radius-999);
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--color-azure-martinique);
+    cursor: pointer;
+}
+
+.cm-closet-dialog .cm-closet-filter.is-active{
+    background-color: var(--color-azure-martinique);
+    border-color: var(--color-azure-martinique);
+    color: var(--color-white-solid);
+    font-weight: 600;
+}
+
+.cm-closet-grid{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    padding: 12px 20px;
+    overflow-y: auto;
+}
+
+.cm-closet-item{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.cm-closet-item[hidden]{
+    display: none;
+}
+
+/* kotak centangnya disembunyikan, tapi tetap bisa dipakai dengan keyboard */
+.cm-closet-item input{
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.cm-closet-photo{
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background-color: var(--color-orange-linen);
+    border: 1px solid var(--color-orange-pearl-brush);
+    border-radius: var(--corner-radius-12);
+    color: var(--color-azure-dolphin);
+}
+
+/* foto mengisi kotak tanpa terpotong: seluruh bajunya kelihatan,
+   sisa ruangnya diisi warna latar */
+.cm-closet-photo img{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.cm-closet-check{
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 24px;
+    height: 24px;
+    display: none;
+    place-items: center;
+    background-color: var(--color-azure-san-marino);
+    border: 2px solid var(--color-white-solid);
+    border-radius: var(--corner-radius-999);
+    color: var(--color-white-solid);
+    font-size: 11px;
+}
+
+.cm-closet-item:has(input:checked) .cm-closet-photo{
+    border: 2px solid var(--color-azure-san-marino);
+}
+
+.cm-closet-item:has(input:checked) .cm-closet-check{
+    display: grid;
+}
+
+.cm-closet-item:has(input:focus-visible) .cm-closet-photo{
+    outline: 2px solid var(--color-azure-san-marino);
+    outline-offset: 2px;
+}
+
+.cm-closet-name{
+    overflow: hidden;
+    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cm-closet-none,
+.cm-closet-empty{
+    margin: 0;
+    padding: 24px 20px;
+    text-align: center;
+    color: var(--color-azure-dolphin);
+}
+
+.cm-closet-none[hidden]{
+    display: none;
+}
+
+.cm-closet-empty a{
+    text-decoration: underline;
+}
+
+.cm-closet-foot{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0 20px;
+    padding: 14px 0 18px;
+    border-top: 1px solid var(--color-orange-pearl-brush);
+}
+
+.cm-closet-count{
+    font-size: 13px;
+    color: var(--color-azure-dolphin);
+}
+
+.cm-closet-count.is-full{
+    color: var(--color-red-cherry);
+}
+
+.cm-closet-dialog .cm-closet-done{
+    padding: 10px 20px;
+    background-color: var(--color-azure-martinique);
+    border: none;
+    border-radius: var(--corner-radius-999);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-white-solid);
+    cursor: pointer;
+}
+
+@media (max-width: 480px){
+    .cm-closet-grid{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }

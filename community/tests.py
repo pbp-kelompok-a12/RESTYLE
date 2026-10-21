@@ -228,6 +228,35 @@ class TagClosetItemsTests(TestCase):
         self.assertContains(response, f'name="tagged_items" value="{self.skirt.id}"')
         self.assertNotContains(response, f'name="tagged_items" value="{self.bob_shoes.id}"')
 
+    def test_closet_picker_is_a_popup_with_search_and_category_filters(self):
+        response = self.client.get("/community/")
+
+        self.assertContains(response, '<dialog class="cm-closet-dialog"')
+        self.assertContains(response, 'placeholder="Search your closet"')
+        self.assertContains(response, 'data-category="">All</button>')
+        self.assertContains(response, 'data-category="bottom">Bottom</button>')
+        self.assertContains(response, 'data-name="pleated skirt" data-category="bottom"')
+        self.assertContains(response, "Add to post")
+
+    def test_edit_popup_keeps_existing_tags_checked(self):
+        post = Post.objects.create(author=self.alice, content="Outfit")
+        post.tagged_items.add(self.shirt)
+
+        response = self.client.get("/community/")
+
+        self.assertRegex(
+            response.content.decode(),
+            rf'value="{self.shirt.id}"\s+data-name="Blue linen shirt"[^>]*\s+checked>',
+        )
+
+    def test_empty_closet_shows_add_item_link(self):
+        self.client.force_login(get_user_model().objects.create_user(username="newbie", password="test-password"))
+
+        response = self.client.get("/community/")
+
+        self.assertContains(response, "Your closet is empty.")
+        self.assertNotContains(response, 'placeholder="Search your closet"')
+
     def test_other_people_can_see_item_details_but_not_closet_link(self):
         post = Post.objects.create(author=self.alice, content="Outfit")
         post.tagged_items.add(self.shirt)

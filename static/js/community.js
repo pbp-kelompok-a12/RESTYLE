@@ -212,32 +212,125 @@ if (document.querySelector(".cm-photos img")) {
     lightbox.addEventListener("click", () => lightbox.close());
 }
 
-// tag closet items: buka-tutup daftar pakaian, maksimal 5, dan tampilkan jumlah yang dipilih
+// tag closet items: pop-up "Tag from my closet" dengan pencarian, filter kategori, dan maksimal 5 pilihan.
+// Pakaian yang dipilih tampil sebagai chip di form, dan chip bisa dihapus dengan tanda x.
 document.querySelectorAll(".cm-tag-toggle").forEach((button) => {
     const form = button.closest("form");
-    const picker = form.querySelector(".cm-tag-picker");
+    const dialog = form.querySelector(".cm-closet-dialog");
+    const selected = form.querySelector(".cm-tag-selected");
     const label = button.querySelector(".cm-tag-toggle-label");
-    const hint = picker.querySelector(".cm-tag-hint");
+    const boxes = Array.from(form.querySelectorAll('input[name="tagged_items"]'));
+    const count = dialog.querySelector(".cm-closet-count");
+    const search = dialog.querySelector(".cm-closet-search input");
+    const filters = dialog.querySelectorAll(".cm-closet-filter");
+    const noMatch = dialog.querySelector(".cm-closet-none");
     const MAX_TAGS = 5;
+    let category = "";
+    let checkedWhenOpened = []; // untuk mengembalikan pilihan kalau pop-up ditutup tanpa "Add to post"
+
+    function checkedBoxes() {
+        return boxes.filter((box) => box.checked);
+    }
+
+    // chip pakaian terpilih di bawah kotak tulisan
+    function showSelected() {
+        selected.innerHTML = "";
+        checkedBoxes().forEach((box) => {
+            const chip = document.createElement("span");
+            chip.className = "cm-tag";
+            if (box.dataset.photo) {
+                const photo = document.createElement("img");
+                photo.src = box.dataset.photo;
+                photo.alt = "";
+                chip.append(photo);
+            } else {
+                const dot = document.createElement("span");
+                dot.className = "cm-tag-dot";
+                dot.style.backgroundColor = box.dataset.color;
+                chip.append(dot);
+            }
+            chip.append(document.createTextNode(box.dataset.name));
+
+            const remove = document.createElement("button");
+            remove.type = "button";
+            remove.className = "cm-tag-remove";
+            remove.setAttribute("aria-label", `Remove ${box.dataset.name}`);
+            remove.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+            remove.addEventListener("click", () => {
+                box.checked = false;
+                updateTags();
+            });
+            chip.append(remove);
+            selected.append(chip);
+        });
+    }
 
     function updateTags() {
-        const count = form.querySelectorAll('input[name="tagged_items"]:checked').length;
-        label.textContent = count > 0 ? `Tagged (${count})` : "Tag closet items";
+        const total = checkedBoxes().length;
+        label.textContent = total > 0 ? `Tagged (${total})` : "Tag closet items";
+        if (count) {
+            count.textContent = `${total} selected · max ${MAX_TAGS}`;
+            count.classList.remove("is-full");
+        }
+        showSelected();
+    }
+
+    // sembunyikan pakaian yang tidak cocok dengan kata yang dicari dan kategori yang dipilih
+    function filterItems() {
+        const word = search ? search.value.trim().toLowerCase() : "";
+        let shown = 0;
+        boxes.forEach((box) => {
+            const item = box.closest(".cm-closet-item");
+            const match = item.dataset.name.includes(word) && (!category || item.dataset.category === category);
+            item.hidden = !match;
+            if (match) shown += 1;
+        });
+        if (noMatch) noMatch.hidden = shown > 0;
     }
 
     button.addEventListener("click", () => {
-        picker.hidden = !picker.hidden;
-        button.setAttribute("aria-expanded", String(!picker.hidden));
+        checkedWhenOpened = checkedBoxes();
+        dialog.showModal();
     });
 
-    picker.addEventListener("change", (event) => {
-        const checked = form.querySelectorAll('input[name="tagged_items"]:checked');
-        if (checked.length > MAX_TAGS) {
+    dialog.addEventListener("change", (event) => {
+        if (checkedBoxes().length > MAX_TAGS) {
             event.target.checked = false; // batalkan centang yang ke-6
-            hint.textContent = `You can tag up to ${MAX_TAGS} items.`;
-        } else if (hint) {
-            hint.textContent = "Pick up to 5 items you're wearing.";
+            count.textContent = `You can tag up to ${MAX_TAGS} items.`;
+            count.classList.add("is-full");
+            return;
         }
+        updateTags();
+    });
+
+    if (search) {
+        search.addEventListener("input", filterItems);
+    }
+
+    filters.forEach((filter) => {
+        filter.addEventListener("click", () => {
+            category = filter.dataset.category;
+            filters.forEach((other) => other.classList.toggle("is-active", other === filter));
+            filterItems();
+        });
+    });
+
+    // "Add to post" menyimpan pilihan; tombol x, Esc, atau klik di luar pop-up membatalkannya
+    const done = dialog.querySelector(".cm-closet-done");
+    if (done) {
+        done.addEventListener("click", () => dialog.close("done"));
+    }
+    dialog.querySelector(".cm-closet-close").addEventListener("click", () => dialog.close());
+    dialog.addEventListener("click", (event) => {
+        if (event.target === dialog) dialog.close(); // klik di area gelap di luar kotak
+    });
+    dialog.addEventListener("close", () => {
+        if (dialog.returnValue !== "done") {
+            boxes.forEach((box) => {
+                box.checked = checkedWhenOpened.includes(box);
+            });
+        }
+        dialog.returnValue = "";
         updateTags();
     });
 
