@@ -1,6 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from closet.models import Item, ALL_YEAR, SEASON_OPTIONS, STYLE_OPTIONS, WEATHER_OPTIONS
+from restyle.image_processing import optimize_image_upload
 
 class ItemForm(forms.ModelForm):
     styles = forms.MultipleChoiceField(choices=[(s,s) for s in STYLE_OPTIONS], required=False, widget=forms.CheckboxSelectMultiple)
@@ -27,6 +28,14 @@ class ItemForm(forms.ModelForm):
     
     def clean_name(self):
         return self.cleaned_data["name"].strip()
+
+    def clean_photo(self):
+        photo = self.cleaned_data.get("photo")
+        if not photo or not self.files.get(self.add_prefix("photo")):
+            return photo
+        if photo.size > 10 * 1024 * 1024:
+            raise ValidationError("The photo must be 10 MB or smaller.")
+        return optimize_image_upload(photo)
 
     def clean_seasons(self):
         seasons = self.cleaned_data["seasons"]

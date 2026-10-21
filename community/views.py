@@ -18,6 +18,7 @@ from community.forms import CommentForm, PostForm
 from closet.models import Item
 from community.models import Comment, CommunityProfile, Follow, Notification, Post, PostImage
 from community.notifications import notify_follow, notify_like, notify_reply, undo_follow, undo_like
+from restyle.image_processing import optimize_image_upload
 
 # URL halaman login aplikasi.
 LOGIN_URL = "/login/"
@@ -125,7 +126,7 @@ def create_post(request):
     post.tagged_items.set(tagged_items)
 
     for photo in photos:
-        PostImage.objects.create(post=post, image=photo)
+        PostImage.objects.create(post=post, image=optimize_image_upload(photo))
 
     messages.success(request, "Your post is live.")
     return redirect("community:show_community")
@@ -164,7 +165,7 @@ def create_comment(request, post_id):
             comment.parent = parent.parent or parent
 
         if photo:
-            comment.photo = photo
+            comment.photo = optimize_image_upload(photo)
         comment.save()
         comment.tagged_items.set(tagged_items)
         notify_reply(comment)
@@ -223,7 +224,7 @@ def edit_post(request, post_id):
     photos_to_remove.delete()    
     
     for photo in new_photos:
-        PostImage.objects.create(post=post, image=photo)
+        PostImage.objects.create(post=post, image=optimize_image_upload(photo))
 
     messages.success(request, "Your post was updated.")
     return redirect(feed_url(post.id))
@@ -445,7 +446,7 @@ def update_avatar(request):
 
     if profile.photo:
         profile.photo.delete(save=False)  # buang foto lama supaya tidak menumpuk
-    profile.photo = photo
+    profile.photo = optimize_image_upload(photo)
     profile.save()
     messages.success(request, "Profile photo updated.")
     return redirect(profile_url)
