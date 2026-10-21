@@ -1,6 +1,7 @@
 {# Satu kartu post. Butuh variabel "post". #}
+{% load community_avatars %}
 <article class="cm-card cm-post" id="post-{{ post.id }}">
-    <span class="cm-avatar">{{ post.author.username|first|upper }}</span>
+<span class="cm-avatar">{% avatar post.author %}</span>
 
     <div class="cm-post-main">
         <header class="cm-post-head">
@@ -29,11 +30,32 @@
         <div class="cm-post-body cm-editable">{{ post.content|linebreaks }}</div>
 
         {% if post.author == user %}
-        <form class="cm-edit-form" method="post" action="{% url 'community:edit_post' post.id %}" hidden>
+        <form class="cm-edit-form" method="post" action="{% url 'community:edit_post' post.id %}"
+              enctype="multipart/form-data" hidden>
             {% csrf_token %}
             <textarea name="content" rows="3" maxlength="1000" required
                       aria-label="Edit your post">{{ post.content }}</textarea>
+
+            {# foto lama: klik untuk menandai "hapus", klik lagi untuk membatalkan #}
+            <div class="cm-edit-photos">
+                {% for photo in post.images.all %}
+                <label class="cm-photo-preview cm-edit-photo" title="Remove this photo">
+                    <input type="checkbox" name="remove_photos" value="{{ photo.id }}" hidden>
+                    <img src="{{ photo.image.url }}" alt="Photo {{ forloop.counter }} of this post">
+                    <span class="cm-edit-photo-x" aria-hidden="true"><i class="fa-solid fa-xmark"></i></span>
+                    <span class="cm-edit-photo-removed">Removed</span>
+                </label>
+                {% endfor %}
+                <div class="cm-edit-new-photos"></div>
+            </div>
+            <p class="cm-composer-hint cm-edit-hint">Tap a photo to remove it. Up to 3 photos per post.</p>
+
+            {% include 'community/_closet_picker.html' %}
+
+            <input type="file" name="photos" class="cm-edit-photo-input" accept="image/png, image/jpeg" multiple hidden>
             <div class="cm-edit-actions">
+                <button type="button" class="cm-chip cm-edit-add-photo"><i class="fa-regular fa-image"></i> Add photo</button>
+                <button type="button" class="cm-chip cm-tag-toggle" aria-expanded="false"><i class="fa-solid fa-shirt"></i> <span class="cm-tag-toggle-label">Tag closet items</span></button>                
                 {% include 'components/button.html' with btn_type="button" btn_class="tertiary" extra_class="cm-community-button cm-community-small cm-cancel-edit" label="Cancel" %}
                 {% include 'components/button.html' with btn_type="submit" btn_class="primary" extra_class="cm-community-button cm-community-small" label="Save" %}
             </div>
@@ -48,7 +70,29 @@
         </div>
         {% endif %}
 
-        {# Tag dari closet ditambahkan di sini nanti, setelah model pakaian dari Modul 1 ada. #}
+        {# pakaian dari closet yang di-tag di post ini; diklik untuk melihat detailnya #}
+        {% if post.tagged_items.all %}
+        <div class="cm-tags">
+            {% for item in post.tagged_items.all %}
+            <button type="button" class="cm-tag cm-tag-button"
+                    data-name="{{ item.name }}"
+                    data-photo="{% if item.photo %}{{ item.photo.url }}{% endif %}"
+                    data-color="{{ item.get_color_display }}"
+                    data-color-hex="{{ item.color_hex }}"
+                    data-category="{{ item.get_category_display }}"
+                    data-material="{{ item.get_material_display }}"
+                    data-styles="{{ item.styles|join:', ' }}"
+                    {% if item.user_id == user.id %}data-closet-url="{% url 'closet:show_item_detail' item.id %}"{% endif %}>
+                {% if item.photo %}
+                <img src="{{ item.photo.url }}" alt="">
+                {% else %}
+                <span class="cm-tag-dot" style="background-color: {{ item.color_hex }}"></span>
+                {% endif %}
+                {{ item.name }}
+            </button>
+            {% endfor %}
+        </div>
+        {% endif %}
 
         <div class="cm-actions">
             {% if user.is_authenticated %}
@@ -100,7 +144,7 @@
             {% if user.is_authenticated %}
             <form class="cm-reply-form" method="post" action="{% url 'community:create_comment' post.id %}">
                 {% csrf_token %}
-                <span class="cm-avatar">{{ user.username|first|upper|default:"?" }}</span>
+                <span class="cm-avatar">{% avatar user %}</span>
                 <input type="text" name="content" maxlength="500" required
                        placeholder="Write a reply..." aria-label="Write a reply">
                 {% include 'components/button.html' with btn_type="submit" btn_class="secondary" extra_class="cm-community-button" label="Reply" %}

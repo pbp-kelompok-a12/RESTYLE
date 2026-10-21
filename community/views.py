@@ -13,7 +13,9 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from community.forms import CommentForm, PostForm
-from community.models import Comment, Follow, Post, PostImage
+from closet.models import Item
+from community.models import Comment, CommunityProfile, Follow, Notification, Post, PostImage
+from community.notifications import notify_follow, notify_like, notify_reply, undo_follow, undo_like
 
 # URL halaman login aplikasi.
 LOGIN_URL = "/login/"
@@ -21,12 +23,13 @@ LOGIN_URL = "/login/"
 MAX_PHOTOS = 3
 MAX_PHOTO_SIZE = 5 * 1024 * 1024  # 5 MB
 ALLOWED_PHOTO_TYPES = ["image/jpeg", "image/png"]
+MAX_TAGS = 5
 
 def show_community(request):
     # tab yang sedang dibuka: "for-you" (semua post) atau "following".
     tab = request.GET.get("tab", "for-you")
 
-    posts = Post.objects.select_related("author")
+    posts = Post.objects.select_related("author").prefetch_related("images", "tagged_items")    
     if tab == "following":
         if not request.user.is_authenticated:
             return redirect(LOGIN_URL)
@@ -89,6 +92,11 @@ def check_photos(photos):
 
     return None
 
+def pick_tagged_items(request):
+    """ambil item closet yang dicentang, tapi hanya yang benar-benar milik user ini"""
+    item_ids = [item_id for item_id in request.POST.getlist("tagged_items") if item_id.isdigit()]
+    return Item.objects.filter(user=request.user, id__in=item_ids)
+
 @login_required(login_url=LOGIN_URL)
 @require_POST
 def create_post(request):
@@ -104,9 +112,15 @@ def create_post(request):
         messages.error(request, photo_error)
         return redirect("community:show_community")
 
+    tagged_items = pick_tagged_items(request)
+    if tagged_items.count() > MAX_TAGS:
+        messages.error(request, f"You can tag up to {MAX_TAGS} closet items per post.")
+        return redirect("community:show_community")
+    
     post = form.save(commit=False)  # belum disimpan, karena authornya belum diisi
     post.author = request.user
     post.save()
+    post.tagged_items.set(tagged_items)
 
     for photo in photos:
         PostImage.objects.create(post=post, image=photo)
@@ -135,6 +149,8 @@ def create_comment(request, post_id):
             comment.parent = parent.parent or parent
 
         comment.save()
+        notify_reply(comment)
+
     else:
         messages.error(request, "Write a reply before sending (up to 500 characters).")
 
@@ -155,9 +171,37 @@ def edit_post(request, post_id):
     form = PostForm(request.POST, instance=post)
     if not form.is_valid():
         messages.error(request, "A post can't be empty (up to 1000 characters).")
-        return redirect("community:show_community")
+        return redirect(feed_url(post.id))
+
+    # foto lama yang ditandai untuk dihapus, dan foto baru yang ditambahkan
+    remove_ids = [photo_id for photo_id in request.POST.getlist("remove_photos") if photo_id.isdigit()]
+    photos_to_remove = post.images.filter(id__in=remove_ids)
+    new_photos = request.FILES.getlist("photos")
+
+    # jumlah foto setelah diedit = foto lama - yang dihapus + foto baru
+    photo_total = post.images.count() - photos_to_remove.count() + len(new_photos)
+    if photo_total > MAX_PHOTOS:
+        messages.error(request, f"You can add up to {MAX_PHOTOS} photos per post.")
+        return redirect(feed_url(post.id))
+
+    photo_error = check_photos(new_photos)
+    if photo_error:
+        messages.error(request, photo_error)
+        return redirect(feed_url(post.id))
+
+    tagged_items = pick_tagged_items(request)
+    if tagged_items.count() > MAX_TAGS:
+        messages.error(request, f"You can tag up to {MAX_TAGS} closet items per post.")
+        return redirect(feed_url(post.id))
 
     form.save()
+    post.tagged_items.set(tagged_items)
+    photos_to_remove.delete()    
+    
+    for photo in new_photos:
+        PostImage.objects.create(post=post, image=photo)
+
+    messages.success(request, "Your post was updated.")
     return redirect(feed_url(post.id))
 
 @login_required(login_url=LOGIN_URL)
@@ -170,21 +214,6 @@ def delete_post(request, post_id):
     post.delete()
     messages.success(request, "Post deleted.")
     return redirect("community:show_community")
-
-@login_required(login_url=LOGIN_URL)
-@require_POST
-def edit_comment(request, comment_id):
-    comment = get_object_or_404(Comment, id=comment_id)
-    if comment.author != request.user:
-        return HttpResponseForbidden("You can only edit your own replies.")
-
-    form = CommentForm(request.POST, instance=comment)
-    if not form.is_valid():
-        messages.error(request, "A reply can't be empty (up to 500 characters).")
-        return redirect("community:show_community")
-
-    form.save()
-    return redirect(feed_url(comment.post_id))
 
 @login_required(login_url=LOGIN_URL)
 @require_POST
@@ -226,8 +255,11 @@ def toggle_user(relation, user):
 def toggle_post_like(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     is_liked = toggle_user(post.likes, request.user)
+    if is_liked:
+        notify_like(post, request.user)
+    else:
+        undo_like(post, request.user)
     return JsonResponse({"active": is_liked, "count": post.likes.count()})
-
 
 @login_required(login_url=LOGIN_URL)
 @require_POST
@@ -328,9 +360,67 @@ def toggle_follow(request, username):
     link = Follow.objects.filter(follower=request.user, followed=target)
     if link.exists():
         link.delete()
+        undo_follow(request.user, target)
         is_following = False
     else:
         Follow.objects.create(follower=request.user, followed=target)
+        notify_follow(request.user, target)
         is_following = True
 
     return JsonResponse({"active": is_following})
+
+@login_required(login_url=LOGIN_URL)
+def show_notifications(request):
+    notifications = request.user.notifications.select_related("actor", "post", "comment")[:50]
+    has_unread = request.user.notifications.filter(is_read=False).exists()
+    return render(
+        request,
+        "community/notifications.html",
+        {"notifications": notifications, "has_unread": has_unread},
+    )
+
+@login_required(login_url=LOGIN_URL)
+def open_notification(request, notification_id):
+    # notifikasi yang diklik ditandai sudah dibaca, lalu langsung ke post/profil terkait
+    notification = get_object_or_404(Notification, id=notification_id, recipient=request.user)
+    notification.is_read = True
+    notification.save(update_fields=["is_read"])
+    return redirect(notification.target_url)
+
+@login_required(login_url=LOGIN_URL)
+@require_POST
+def mark_notifications_read(request):
+    request.user.notifications.filter(is_read=False).update(is_read=True)
+    if request.headers.get("x-requested-with") == "fetch":
+        return JsonResponse({"ok": True})
+    return redirect("community:show_notifications")
+
+@login_required(login_url=LOGIN_URL)
+@require_POST
+def update_avatar(request):
+    profile, _ = CommunityProfile.objects.get_or_create(user=request.user)
+    profile_url = reverse("community:show_user_profile", args=[request.user.username])
+
+    if "remove" in request.POST:
+        profile.photo.delete(save=False)
+        profile.photo = ""
+        profile.save()
+        messages.success(request, "Profile photo removed.")
+        return redirect(profile_url)
+
+    photo = request.FILES.get("photo")
+    if photo is None:
+        messages.error(request, "Choose a photo first.")
+        return redirect(profile_url)
+
+    photo_error = check_photos([photo])
+    if photo_error:
+        messages.error(request, photo_error.replace("Each photo", "Your photo"))
+        return redirect(profile_url)
+
+    if profile.photo:
+        profile.photo.delete(save=False)  # buang foto lama supaya tidak menumpuk
+    profile.photo = photo
+    profile.save()
+    messages.success(request, "Profile photo updated.")
+    return redirect(profile_url)

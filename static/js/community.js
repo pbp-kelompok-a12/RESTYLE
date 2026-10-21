@@ -2,7 +2,7 @@
 
 const composer = document.querySelector("#composer");
 
-if (composer) {
+if (composer && composer.querySelector("textarea")) {    
     const textarea = composer.querySelector("textarea");
     const postButton = composer.querySelector("#post-button");
     const photoButton = composer.querySelector("#photo-button");
@@ -141,6 +141,188 @@ document.querySelectorAll(".cm-toggle-edit").forEach((button) => {
     form.querySelector(".cm-cancel-edit").addEventListener("click", () => setEditing(false));
 });
 
+// edit foto di post: tambah foto baru, tandai foto lama untuk dihapus, maksimal 3 foto
+document.querySelectorAll(".cm-edit-form").forEach((form) => {
+    const photoInput = form.querySelector(".cm-edit-photo-input");
+    if (!photoInput) {
+        return; // form edit komentar tidak punya foto
+    }
+    const addButton = form.querySelector(".cm-edit-add-photo");
+    const newPhotos = form.querySelector(".cm-edit-new-photos");
+    const hint = form.querySelector(".cm-edit-hint");
+    const saveButton = form.querySelector('button[type="submit"]');
+    const MAX_PHOTOS = 3;
+
+    // gambar ulang preview foto baru dan cek jumlah foto
+    function updatePhotos() {
+        newPhotos.innerHTML = "";
+        Array.from(photoInput.files).forEach((photo) => {
+            const item = document.createElement("div");
+            item.className = "cm-photo-preview";
+
+            const image = document.createElement("img");
+            image.src = URL.createObjectURL(photo);
+            image.alt = photo.name;
+
+            item.append(image);
+            newPhotos.append(item);
+        });
+
+        const keptPhotos = form.querySelectorAll('input[name="remove_photos"]:not(:checked)').length;
+        const total = keptPhotos + photoInput.files.length;
+        const tooMany = total > MAX_PHOTOS;
+
+        hint.textContent = tooMany
+            ? `Too many photos (${total}). Remove some so there are at most ${MAX_PHOTOS}.`
+            : "Tap a photo to remove it. Up to 3 photos per post.";
+        saveButton.disabled = tooMany;
+    }
+
+    addButton.addEventListener("click", () => photoInput.click());
+    // "change" dari input foto dan dari centang "hapus" sama-sama sampai ke form
+    form.addEventListener("change", updatePhotos);
+    // Cancel mengembalikan form ke keadaan awal
+    form.querySelector(".cm-cancel-edit").addEventListener("click", () => {
+        form.reset();
+        updatePhotos();
+    });
+});
+
+
+// foto di post: klik untuk melihat ukuran penuh, klik lagi atau tekan Escape untuk menutup
+if (document.querySelector(".cm-photos img")) {
+    const lightbox = document.createElement("dialog");
+    lightbox.className = "cm-lightbox";
+    lightbox.innerHTML = `
+        <button type="button" class="cm-lightbox-close" aria-label="Close photo">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <img alt="">`;
+    document.body.append(lightbox);
+    const lightboxImage = lightbox.querySelector("img");
+
+    document.querySelectorAll(".cm-photos img").forEach((photo) => {
+        photo.addEventListener("click", () => {
+            lightboxImage.src = photo.src;
+            lightboxImage.alt = photo.alt;
+            lightbox.showModal();
+        });
+    });
+
+    lightbox.addEventListener("click", () => lightbox.close());
+}
+
+// tag closet items: buka-tutup daftar pakaian, maksimal 5, dan tampilkan jumlah yang dipilih
+document.querySelectorAll(".cm-tag-toggle").forEach((button) => {
+    const form = button.closest("form");
+    const picker = form.querySelector(".cm-tag-picker");
+    const label = button.querySelector(".cm-tag-toggle-label");
+    const hint = picker.querySelector(".cm-tag-hint");
+    const MAX_TAGS = 5;
+
+    function updateTags() {
+        const count = form.querySelectorAll('input[name="tagged_items"]:checked').length;
+        label.textContent = count > 0 ? `Tagged (${count})` : "Tag closet items";
+    }
+
+    button.addEventListener("click", () => {
+        picker.hidden = !picker.hidden;
+        button.setAttribute("aria-expanded", String(!picker.hidden));
+    });
+
+    picker.addEventListener("change", (event) => {
+        const checked = form.querySelectorAll('input[name="tagged_items"]:checked');
+        if (checked.length > MAX_TAGS) {
+            event.target.checked = false; // batalkan centang yang ke-6
+            hint.textContent = `You can tag up to ${MAX_TAGS} items.`;
+        } else if (hint) {
+            hint.textContent = "Pick up to 5 items you're wearing.";
+        }
+        updateTags();
+    });
+
+    // Cancel di form edit mengembalikan centang ke keadaan awal
+    form.addEventListener("reset", () => setTimeout(updateTags));
+
+    updateTags();
+});
+
+// tag di post: klik untuk melihat detail pakaiannya (bisa dilihat semua orang)
+if (document.querySelector(".cm-tag-button")) {
+    const itemDialog = document.createElement("dialog");
+    itemDialog.className = "cm-item-dialog";
+    itemDialog.innerHTML = `
+        <button type="button" class="cm-item-close" aria-label="Close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <img class="cm-item-photo" alt="">
+        <span class="cm-item-swatch"></span>
+        <h3 class="cm-item-name"></h3>
+        <dl class="cm-item-info"></dl>
+        <a class="cm-item-link" href="#">Open in my closet</a>`;
+    document.body.append(itemDialog);
+
+    const photo = itemDialog.querySelector(".cm-item-photo");
+    const swatch = itemDialog.querySelector(".cm-item-swatch");
+    const info = itemDialog.querySelector(".cm-item-info");
+    const closetLink = itemDialog.querySelector(".cm-item-link");
+
+    document.querySelectorAll(".cm-tag-button").forEach((button) => {
+        button.addEventListener("click", () => {
+            const item = button.dataset; // isi dari atribut data-... di tombolnya
+
+            // pakai foto kalau ada, kalau tidak tampilkan kotak warnanya
+            photo.hidden = !item.photo;
+            photo.src = item.photo;
+            photo.alt = item.name;
+            swatch.hidden = Boolean(item.photo);
+            swatch.style.backgroundColor = item.colorHex;
+
+            itemDialog.querySelector(".cm-item-name").textContent = item.name;
+
+            info.innerHTML = "";
+            const rows = [
+                ["Category", item.category],
+                ["Color", item.color],
+                ["Material", item.material],
+                ["Style", item.styles],
+            ];
+            rows.forEach(([label, value]) => {
+                if (!value) {
+                    return; // lewati data yang kosong
+                }
+                const term = document.createElement("dt");
+                term.textContent = label;
+                const detail = document.createElement("dd");
+                detail.textContent = value;
+                info.append(term, detail);
+            });
+
+            // link ke closet hanya muncul untuk pemilik pakaiannya
+            closetLink.hidden = !item.closetUrl;
+            closetLink.href = item.closetUrl || "#";
+
+            itemDialog.showModal();
+        });
+    });
+
+    itemDialog.querySelector(".cm-item-close").addEventListener("click", () => itemDialog.close());
+    // klik di latar gelap (di luar kotak) juga menutup
+    itemDialog.addEventListener("click", (event) => {
+        if (event.target === itemDialog) {
+            itemDialog.close();
+        }
+    });
+}
+
+// foto profil: begitu foto dipilih, langsung dikirim (tanpa perlu tombol Save)
+document.querySelectorAll(".community-avatar-form input[type=file]").forEach((input) => {
+    input.addEventListener("change", () => {
+        if (input.files.length > 0) {
+            input.form.submit();
+        }
+    });
+});
 
 // Hapus: tanya dulu sebelum benar-benar menghapus
 document.querySelectorAll("form[data-confirm]").forEach((form) => {

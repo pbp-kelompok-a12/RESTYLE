@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static community_avatars %}
 
 {% block meta %}
     <title>@{{ profile_user.username }} | RE:STYLE</title>
@@ -9,10 +9,49 @@
 
 {% block content %}
 <main class="cm-page">
-    <section class="section-container cm-card community-profile-card">
+    <div class="cm-layout cm-layout-wide">
+
+        {% if profile_user == user %}
+            {% include 'community/_sidebar.html' with active='mine' %}
+        {% else %}
+            {% include 'community/_sidebar.html' %}
+        {% endif %}
+
+        <div class="cm-feed">
+    {% if messages %}
+    <div class="cm-messages">
+        {% for message in messages %}
+        <p class="cm-message cm-message-{{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <section class="section-container cm-card community-profile-card">        
         {% csrf_token %}
         <div class="community-profile-header">
-            <span class="cm-avatar community-profile-avatar">{{ profile_user.username|first|upper }}</span>
+            {% if profile_user == user %}
+            {# foto profil sendiri: klik untuk ganti foto #}
+            <div class="community-avatar-edit">
+                <form class="community-avatar-form" method="post" action="{% url 'community:update_avatar' %}"
+                      enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label class="cm-avatar community-profile-avatar community-avatar-upload" title="Change profile photo">
+                        {% avatar profile_user %}
+                        <input type="file" name="photo" accept="image/png, image/jpeg" hidden>
+                        <span class="community-avatar-camera"><i class="fa-solid fa-camera"></i></span>
+                    </label>
+                </form>
+                {% if profile_user.community_profile.photo %}
+                <form method="post" action="{% url 'community:update_avatar' %}" data-confirm="Remove your profile photo?">
+                    {% csrf_token %}
+                    <button type="submit" name="remove" value="1" class="community-avatar-remove">Remove photo</button>
+                </form>
+                {% endif %}
+            </div>
+            {% else %}
+            <span class="cm-avatar community-profile-avatar">{% avatar profile_user %}</span>
+            {% endif %} 
+
             <div class="community-profile-identity">
                 <span class="cm-badge">COMMUNITY MEMBER</span>
                 <h1>@{{ profile_user.username }}</h1>
@@ -71,5 +110,7 @@
             </div>
         {% endfor %}
     </section>
+        </div>
+    </div>
 </main>
 {% endblock content %}

@@ -823,8 +823,114 @@ body{
     object-fit: cover;
     border: 1px solid var(--color-orange-pearl-brush);
     border-radius: var(--corner-radius-12);
+    cursor: zoom-in;
 }
 
+/* foto ukuran penuh (muncul saat foto di post diklik) */
+
+.cm-lightbox{
+    max-width: none;
+    max-height: none;
+    margin: auto;
+    padding: 0;
+    overflow: visible;
+    background: transparent;
+    border: none;
+}
+
+.cm-lightbox::backdrop{
+    background-color: rgba(0, 0, 0, 0.85);
+}
+
+.cm-lightbox img{
+    display: block;
+    max-width: 92vw;
+    max-height: 92vh;
+    object-fit: contain;
+    border-radius: var(--corner-radius-12);
+    cursor: zoom-out;
+}
+
+.cm-lightbox-close{
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    background-color: var(--color-white-solid);
+    border-radius: var(--corner-radius-999);
+    color: var(--color-azure-martinique);
+    font-size: 18px;
+}
+/* edit foto di post */
+
+/* saat sedang edit, foto asli disembunyikan supaya tidak dobel dengan foto di form edit */
+.cm-post-main:has(.cm-edit-form:not([hidden])) .cm-photos,
+.cm-post-main:has(.cm-edit-form:not([hidden])) .cm-tags{    
+    display: none;
+}
+
+.cm-edit-actions .cm-tag-toggle{    
+    margin-right: auto;
+}
+
+.cm-edit-photos{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.cm-edit-new-photos{
+    display: contents;
+}
+
+.cm-edit-form .cm-composer-hint{
+    margin: 0;
+}
+
+.cm-edit-photo{
+    cursor: pointer;
+}
+
+.cm-edit-photo-x{
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    background-color: var(--color-azure-martinique);
+    border-radius: var(--corner-radius-999);
+    color: var(--color-white-solid);
+    font-size: 12px;
+}
+
+.cm-edit-photo-removed{
+    position: absolute;
+    inset: 0;
+    display: none;
+    place-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-azure-martinique);
+}
+
+/* foto yang ditandai "hapus" jadi pudar */
+.cm-edit-photo:has(input:checked) img{
+    opacity: 0.3;
+    filter: grayscale(1);
+}
+
+.cm-edit-photo:has(input:checked) .cm-edit-photo-x{
+    display: none;
+}
+
+.cm-edit-photo:has(input:checked) .cm-edit-photo-removed{
+    display: grid;
+}
 
 /*  comment n balasan  */
 
@@ -1058,4 +1164,219 @@ body{
 .cm-composer:focus-within{
     border-color: var(--color-azure-san-marino);
     box-shadow: 0 0 0 3px var(--color-azure-st-blue);
+}
+
+/* tag pakaian dari closet */
+
+.cm-tag-picker{
+    margin: 4px 0 10px 46px;
+}
+
+.cm-edit-form .cm-tag-picker{
+    margin: 0;
+}
+
+.cm-tag-picker .cm-composer-hint{
+    margin: 0 0 6px;
+}
+
+.cm-tag-picker a{
+    text-decoration: underline;
+}
+
+.cm-tag-options,
+.cm-tags{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+
+.cm-tags{
+    margin-top: 10px;
+}
+
+.cm-tag{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px 3px 4px;
+    background-color: var(--color-white-solid);
+    border: 1px solid var(--color-orange-pearl-brush);
+    border-radius: var(--corner-radius-999);
+    font-size: 12px;
+    color: var(--color-azure-martinique);
+}
+
+/* tag di post berupa tombol, jadi butuh selector yang lebih kuat dari
+   aturan reset tombol di bagian atas file (yang menghapus border & padding) */
+.cm-tags .cm-tag-button{
+    padding: 3px 10px 3px 4px;
+    background-color: var(--color-white-solid);
+    border: 1px solid var(--color-orange-pearl-brush);
+}
+
+.cm-tags .cm-tag-button:hover{
+    background-color: var(--color-orange-linen);
+}
+
+.cm-tag img,
+.cm-tag-dot{
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    object-fit: cover;
+    border: 1px solid var(--color-orange-pearl-brush);
+    border-radius: var(--corner-radius-999);
+}
+
+.cm-tag-option{
+    position: relative;
+    cursor: pointer;
+}
+
+/* kotak centangnya disembunyikan, tapi tetap bisa dipakai dengan keyboard */
+.cm-tag-option input{
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.cm-tag-option:has(input:checked){
+    background-color: var(--color-yellow-peach-yellow);
+    border-color: var(--color-azure-san-marino);
+}
+
+.cm-tag-option:has(input:focus-visible){
+    outline: 2px solid var(--color-azure-san-marino);
+}
+
+/* kotak detail pakaian (muncul saat tag di post diklik) */
+
+.cm-item-dialog{
+    width: min(360px, 92vw);
+    margin: auto;
+    padding: 20px;
+    background-color: var(--color-white-solid);
+    border: 1px solid var(--color-orange-pearl-brush);
+    border-radius: var(--corner-radius-12);
+    color: var(--color-azure-martinique);
+}
+
+.cm-item-dialog::backdrop{
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.cm-item-dialog [hidden]{
+    display: none;
+}
+
+.cm-item-close{
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    background-color: var(--color-white-solid);
+    border-radius: var(--corner-radius-999);
+}
+
+.cm-item-photo,
+.cm-item-swatch{
+    display: block;
+    width: 100%;
+    border: 1px solid var(--color-orange-pearl-brush);
+    border-radius: var(--corner-radius-12);
+}
+
+.cm-item-photo{
+    aspect-ratio: 1;
+    object-fit: cover;
+}
+
+.cm-item-swatch{
+    height: 120px;
+}
+
+.cm-item-name{
+    margin: 14px 0 10px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.cm-item-info{
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 6px 16px;
+    margin: 0;
+    font-size: 14px;
+}
+
+.cm-item-info dt{
+    color: var(--color-azure-dolphin);
+}
+
+.cm-item-info dd{
+    margin: 0;
+}
+
+.cm-item-link{
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-azure-san-marino);
+    text-decoration: underline;
+}
+
+/* foto profil (dipakai di semua lingkaran avatar) */
+
+.avatar-photo{
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;  /* tinggi selalu sama dengan lebar, jadi pasti bulat */
+    object-fit: cover;
+    border-radius: var(--corner-radius-999);
+}
+
+/* foto profil sendiri di halaman profil: bisa diklik untuk diganti */
+.community-avatar-edit{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.community-avatar-upload{
+    position: relative;
+    cursor: pointer;
+}
+
+.community-avatar-upload:hover .avatar-photo{
+    opacity: 0.85;
+}
+
+.community-avatar-camera{
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: 26px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+    background-color: var(--color-azure-san-marino);
+    border: 2px solid var(--color-white-solid);
+    border-radius: var(--corner-radius-999);
+    color: var(--color-white-solid);
+    font-size: 11px;
+}
+
+.community-avatar-remove{
+    font-size: 12px;
+    color: var(--color-azure-dolphin);
+    text-decoration: underline;
 }

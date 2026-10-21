@@ -1,6 +1,5 @@
 from django import forms
 
-from community.models import Post
 from community.models import Comment, Post
 
 

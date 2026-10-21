@@ -1,0 +1,36 @@
+{# Lonceng notifikasi di navbar + panel yang muncul saat diklik. Dipanggil lewat {% notification_menu %}. #}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/notifications.css' %}">
+
+<div class="nt-menu">
+    <button class="app-nav-bell nt-bell" type="button" aria-label="Notifications"
+            aria-expanded="false" aria-controls="nt-panel">
+        <i class="fa-regular fa-bell"></i>
+        {% if unread_count %}<span class="nt-badge" title="{{ unread_count }} unread"></span>{% endif %}
+    </button>
+
+    <section class="nt-panel" id="nt-panel" hidden>
+        <header class="nt-head">
+            <h2>Notifications</h2>
+            {% if unread_count %}
+            <form class="nt-mark-form" method="post" action="{% url 'community:mark_notifications_read' %}">
+                {% csrf_token %}
+                <button type="submit" class="nt-mark-all">Mark all as read</button>
+            </form>
+            {% endif %}
+        </header>
+
+        {% if notifications %}
+        <ul class="nt-list">
+            {% for note in notifications %}
+                {% include 'community/_notification_item.html' %}
+            {% endfor %}
+        </ul>
+        <a class="nt-see-all" href="{% url 'community:show_notifications' %}">See all notifications</a>
+        {% else %}
+            {% include 'community/_notification_empty.html' %}
+        {% endif %}
+    </section>
+</div>
+
+<script src="{% static 'js/notifications.js' %}" defer></script>

@@ -1,0 +1,217 @@
+/* notifikasi: lonceng di navbar, panelnya, dan halaman "See all notifications" */
+
+.nt-menu{
+    position: relative;
+}
+
+.nt-bell{
+    position: relative;
+}
+
+/* titik kecil di lonceng kalau ada notifikasi yang belum dibaca */
+.nt-badge{
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+    background-color: var(--color-red-cherry);
+    border: 2px solid var(--color-azure-san-marino);
+    border-radius: var(--corner-radius-999);
+}
+
+.nt-panel{
+    width: min(400px, calc(100vw - 32px));
+    background-color: var(--color-white-solid);
+    border: 1px solid var(--color-azure-martinique);
+    border-radius: var(--corner-radius-24);
+    box-shadow: 0 16px 40px rgba(58, 43, 72, 0.18);
+    overflow: hidden;
+    font-family: var(--font-family-font-1);
+    color: var(--color-azure-martinique);
+    text-align: left;
+}
+
+/* versi dropdown di bawah lonceng */
+.nt-menu .nt-panel{
+    position: absolute;
+    top: calc(100% + 20px);
+    right: -24px;
+    z-index: 1000;
+}
+
+.nt-panel[hidden]{
+    display: none;
+}
+
+.nt-head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--color-orange-pearl-brush);
+}
+
+.nt-head h2{
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.nt-mark-all{
+    padding: 0;
+    background: none;
+    border: none;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-azure-martinique);
+    cursor: pointer;
+}
+
+.nt-mark-all:hover{
+    color: var(--color-azure-san-marino);
+}
+
+.nt-list{
+    max-height: 420px;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    list-style: none;
+}
+
+.nt-item{
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--color-orange-pearl-brush);
+    color: inherit;
+    text-decoration: none;
+}
+
+.nt-item:hover{
+    background-color: var(--color-azure-martinique-6);
+}
+
+/* notifikasi yang belum dibaca diberi latar krem */
+.nt-item.is-unread{
+    background-color: var(--color-orange-linen);
+}
+
+.nt-avatar{
+    position: relative;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    background-color: var(--color-azure-martinique);
+    border-radius: var(--corner-radius-999);
+    color: var(--color-white-solid);
+    font-weight: 700;
+}
+
+.nt-icon{
+    position: absolute;
+    right: -4px;
+    bottom: -4px;
+    width: 20px;
+    height: 20px;
+    display: grid;
+    place-items: center;
+    background-color: var(--color-white-solid);
+    border: 1px solid var(--color-azure-martinique);
+    border-radius: var(--corner-radius-999);
+    color: var(--color-azure-martinique);
+    font-size: 9px;
+}
+
+.nt-icon-like{
+    background-color: var(--color-orange-dairy-cream);
+}
+
+.nt-text{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.nt-text strong{
+    font-weight: 700;
+}
+
+.nt-text small{
+    font-size: 13px;
+    color: var(--color-azure-dolphin);
+}
+
+.nt-dot{
+    width: 8px;
+    height: 8px;
+    margin-top: 6px;
+    flex-shrink: 0;
+    background-color: var(--color-azure-san-marino);
+    border-radius: var(--corner-radius-999);
+}
+
+.nt-see-all{
+    display: block;
+    padding: 14px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-azure-san-marino);
+    text-decoration: none;
+}
+
+.nt-see-all:hover{
+    text-decoration: underline;
+}
+
+.nt-empty{
+    padding: 28px 24px 32px;
+    text-align: center;
+}
+
+.nt-empty img{
+    width: 160px;
+    margin: 0 auto 12px;
+}
+
+.nt-empty h3{
+    margin: 0 0 6px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.nt-empty p{
+    max-width: 260px;
+    margin: 0 auto;
+    font-size: 14px;
+    color: var(--color-azure-dolphin);
+}
+
+/* halaman "See all notifications" */
+.nt-page{
+    width: min(640px, 100%);
+    margin: 0 auto;
+    box-shadow: none;
+}
+
+.nt-page .nt-list{
+    max-height: none;
+}
+
+@media (max-width: 768px){
+    .nt-menu .nt-panel{
+        position: fixed;
+        top: 76px;
+        right: 16px;
+    }
+}

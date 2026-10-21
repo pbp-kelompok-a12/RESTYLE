@@ -1,0 +1,24 @@
+{# Daftar pakaian dari closet user yang bisa di-tag. "post" opsional: diisi saat edit, supaya tag lama sudah tercentang. #}
+<div class="cm-tag-picker" hidden>
+    {% with items=user.closet_items.all %}
+    {% if items %}
+    <p class="cm-composer-hint cm-tag-hint">Pick up to 5 items you're wearing.</p>
+    <div class="cm-tag-options">
+        {% for item in items %}
+        <label class="cm-tag cm-tag-option">
+            <input type="checkbox" name="tagged_items" value="{{ item.id }}"
+                   {% if post and item in post.tagged_items.all %}checked{% endif %}>
+            {% if item.photo %}
+            <img src="{{ item.photo.url }}" alt="">
+            {% else %}
+            <span class="cm-tag-dot" style="background-color: {{ item.color_hex }}"></span>
+            {% endif %}
+            {{ item.name }}
+        </label>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="cm-composer-hint">Your closet is empty. <a href="{% url 'closet:add_item' %}">Add an item</a> first, then tag it here.</p>
+    {% endif %}
+    {% endwith %}
+</div>

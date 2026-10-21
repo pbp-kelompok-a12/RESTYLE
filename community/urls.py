@@ -14,8 +14,11 @@ from community.views import (
     toggle_comment_like,
     toggle_post_like,
     toggle_post_save,
-    toggle_comment_like,
     toggle_follow,
+    mark_notifications_read,
+    open_notification,
+    show_notifications,
+    update_avatar,
 )
 
 app_name = "community"
@@ -23,6 +26,9 @@ app_name = "community"
 urlpatterns = [
     path("", show_community, name="show_community"),
     path("saved/", show_saved, name="show_saved"),
+    path("notifications/", show_notifications, name="show_notifications"),
+    path("notifications/read/", mark_notifications_read, name="mark_notifications_read"),
+    path("notifications/<int:notification_id>/", open_notification, name="open_notification"),
     path(
         "profile/<str:username>/following/",
         show_follow_list,
@@ -35,6 +41,7 @@ urlpatterns = [
         {"list_type": "followers"},
         name="show_followers",
     ),
+    path("profile/photo/", update_avatar, name="update_avatar"),
     path("profile/<str:username>/", show_user_profile, name="show_user_profile"),
     path("post/create/", create_post, name="create_post"),
     path("post/<int:post_id>/edit/", edit_post, name="edit_post"),
