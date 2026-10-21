@@ -1,0 +1,61 @@
+
+{% extends 'base.html' %}
+
+{% block meta %}
+<title>Wishlist | RE:STYLE</title>
+{% endblock meta %}
+
+{% block content %}
+<main class="wishlist-page">
+    <section class="wishlist-heading">
+        <p class="eyebrow">CONSCIOUS SHOPPING</p>
+        <h1>Your <span>Wishlist.</span></h1>
+        <p>
+            Think twice before buying.
+            Check what you already own before adding something new.
+        </p>
+    </section>
+
+    <section class="wishlist-reminder">
+        <h2>Hold on a sec...</h2>
+        <p>
+            Do you already own something similar?
+            Check your Digital Closet before making a purchase.
+        </p>
+        <a href="#add-wishlist" class="wishlist-button">
+            Add to wishlist
+        </a>
+    </section>
+
+    <section id="add-wishlist" class="wishlist-form-section">
+        <h2>Add an item to your wishlist</h2>
+
+        <form id="wishlist-form">
+            <label for="item-name">Item name</label>
+            <input id="item-name" name="item-name"
+                   placeholder="e.g. White shirt" required>
+
+            <label for="item-category">Category</label>
+            <select id="item-category" name="item-category" required>
+                <option value="">Choose category</option>
+                <option value="Top">Top</option>
+                <option value="Bottom">Bottom</option>
+                <option value="Shoes">Shoes</option>
+                <option value="Outerwear">Outerwear</option>
+                <option value="Dress">Dress</option>
+                <option value="Accessories">Accessories</option>
+            </select>
+
+            <label for="item-color">Color</label>
+            <input id="item-color" name="item-color"
+                   placeholder="e.g. White" required>
+
+            <button type="submit" class="wishlist-button">
+                Add item
+            </button>
+        </form>
+
+        <div id="wishlist-items"></div>
+    </section>
+</main>
+{% endblock content %}
