@@ -1200,3 +1200,77 @@
         flex-wrap: wrap;
     }
 }
+
+/* Prevent the decorative star from covering the button */
+.wishlist-reminder {
+    gap: 32px;
+    padding-right: 40px;
+}
+
+.wishlist-reminder::after {
+    right: 125px;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.wishlist-reminder > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Keep the Add to Wishlist button above decoration */
+.wishlist-reminder .wishlist-button,
+.wishlist-reminder #open-wishlist-form {
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+}
+
+/* Center Saved Items content and give it balanced spacing */
+.saved-items-section {
+    width: 100%;
+    max-width: 1100px;
+    margin: 42px auto;
+}
+
+/* Balance search and dropdown widths */
+.wishlist-filters {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 180px 210px;
+    gap: 12px;
+    width: 100%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.wishlist-filters input,
+.wishlist-filters select {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* Responsive layout */
+@media (max-width: 700px) {
+    .wishlist-reminder {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 18px;
+        padding: 24px 20px;
+    }
+
+    .wishlist-reminder::after {
+        right: 18px;
+        top: 8px;
+    }
+
+    .wishlist-reminder .wishlist-button,
+    .wishlist-reminder #open-wishlist-form {
+        align-self: flex-start;
+    }
+
+    .wishlist-filters {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
