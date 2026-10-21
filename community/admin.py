@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from community.models import Comment, Notification, Post
+from community.models import Comment, CommunityProfile, Notification, Post
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
@@ -17,3 +17,5 @@ class CommentAdmin(admin.ModelAdmin):
 class NotificationAdmin(admin.ModelAdmin):
     list_display = ("recipient", "actor", "kind", "is_read", "created_at")
     list_filter = ("kind", "is_read")
+
+admin.site.register(CommunityProfile)

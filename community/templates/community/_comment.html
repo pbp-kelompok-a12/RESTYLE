@@ -1,6 +1,8 @@
 {# Satu komentar. Butuh variabel "comment". Balasan memakai file ini lagi. #}
+{% load community_avatars %}
+
 <div class="cm-comment {% if comment.is_author %}is-author{% endif %}">
-    <span class="cm-avatar cm-avatar-small">{{ comment.author.username|first|upper }}</span>
+    <span class="cm-avatar cm-avatar-small">{% avatar comment.author %}</span>
 
     <div class="cm-comment-main">
         <header class="cm-comment-head">

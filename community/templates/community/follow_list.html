@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static community_avatars %}
 
 {% block meta %}
     <title>{{ title }} - @{{ profile_user.username }} | RE:STYLE</title>
@@ -23,7 +23,7 @@
             {% for person in people %}
             <li class="community-follow-list-item">
                 <a class="community-follow-person" href="{% url 'community:show_user_profile' person.username %}">
-                    <span class="cm-avatar">{{ person.username|first|upper }}</span>
+                    <span class="cm-avatar">{% avatar person %}</span>
                     <span>
                         <strong>@{{ person.username }}</strong>
                         <small>RE:STYLE community member</small>

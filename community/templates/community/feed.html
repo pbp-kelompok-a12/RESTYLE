@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static community_avatars %}
 
 {% block meta %}
     <title>Community | RE:STYLE</title>
@@ -64,7 +64,7 @@
                   action="{% url 'community:create_post' %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="cm-composer-top">
-                    <span class="cm-avatar">{{ user.username|first|upper|default:"?" }}</span>
+                    <span class="cm-avatar">{% avatar user %}</span>
                     <textarea name="content" rows="1" maxlength="1000" required
                               placeholder="What are you wearing today?" aria-label="Write a post"></textarea>
                 </div>
@@ -126,7 +126,7 @@
                 <ul class="cm-stylists">
                     {% for person in stylists %}
                     <li>
-                        <span class="cm-avatar cm-avatar-small">{{ person.username|first|upper }}</span>
+                        <span class="cm-avatar cm-avatar-small">{% avatar person %}</span>
                         <div>
                             <a href="{% url 'community:show_user_profile' person.username %}">@{{ person.username }}</a>
                             <p>{{ person.post_count }} post{{ person.post_count|pluralize }}</p>
@@ -149,7 +149,7 @@
                 <ul class="cm-stylists">
                     {% for person in following_people %}
                     <li>
-                        <span class="cm-avatar cm-avatar-small">{{ person.username|first|upper }}</span>
+                        <span class="cm-avatar cm-avatar-small">{% avatar person %}</span>
                         <div>
                             <a href="{% url 'community:show_user_profile' person.username %}">@{{ person.username }}</a>
                         </div>

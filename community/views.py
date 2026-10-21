@@ -14,7 +14,7 @@ from django.views.decorators.http import require_POST
 
 from community.forms import CommentForm, PostForm
 from closet.models import Item
-from community.models import Comment, Follow, Notification, Post, PostImage
+from community.models import Comment, CommunityProfile, Follow, Notification, Post, PostImage
 from community.notifications import notify_follow, notify_like, notify_reply, undo_follow, undo_like
 
 # URL halaman login aplikasi.
@@ -394,3 +394,33 @@ def mark_notifications_read(request):
     if request.headers.get("x-requested-with") == "fetch":
         return JsonResponse({"ok": True})
     return redirect("community:show_notifications")
+
+@login_required(login_url=LOGIN_URL)
+@require_POST
+def update_avatar(request):
+    profile, _ = CommunityProfile.objects.get_or_create(user=request.user)
+    profile_url = reverse("community:show_user_profile", args=[request.user.username])
+
+    if "remove" in request.POST:
+        profile.photo.delete(save=False)
+        profile.photo = ""
+        profile.save()
+        messages.success(request, "Profile photo removed.")
+        return redirect(profile_url)
+
+    photo = request.FILES.get("photo")
+    if photo is None:
+        messages.error(request, "Choose a photo first.")
+        return redirect(profile_url)
+
+    photo_error = check_photos([photo])
+    if photo_error:
+        messages.error(request, photo_error.replace("Each photo", "Your photo"))
+        return redirect(profile_url)
+
+    if profile.photo:
+        profile.photo.delete(save=False)  # buang foto lama supaya tidak menumpuk
+    profile.photo = photo
+    profile.save()
+    messages.success(request, "Profile photo updated.")
+    return redirect(profile_url)

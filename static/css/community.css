@@ -1330,3 +1330,53 @@ body{
     color: var(--color-azure-san-marino);
     text-decoration: underline;
 }
+
+/* foto profil (dipakai di semua lingkaran avatar) */
+
+.avatar-photo{
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;  /* tinggi selalu sama dengan lebar, jadi pasti bulat */
+    object-fit: cover;
+    border-radius: var(--corner-radius-999);
+}
+
+/* foto profil sendiri di halaman profil: bisa diklik untuk diganti */
+.community-avatar-edit{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.community-avatar-upload{
+    position: relative;
+    cursor: pointer;
+}
+
+.community-avatar-upload:hover .avatar-photo{
+    opacity: 0.85;
+}
+
+.community-avatar-camera{
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: 26px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+    background-color: var(--color-azure-san-marino);
+    border: 2px solid var(--color-white-solid);
+    border-radius: var(--corner-radius-999);
+    color: var(--color-white-solid);
+    font-size: 11px;
+}
+
+.community-avatar-remove{
+    font-size: 12px;
+    color: var(--color-azure-dolphin);
+    text-decoration: underline;
+}

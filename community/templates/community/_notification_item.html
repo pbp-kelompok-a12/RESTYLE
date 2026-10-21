@@ -1,8 +1,9 @@
 {# Satu baris notifikasi. Butuh variabel "note". #}
+{% load community_avatars %}
 <li>
     <a class="nt-item {% if not note.is_read %}is-unread{% endif %}" href="{% url 'community:open_notification' note.id %}">
         <span class="nt-avatar">
-            {{ note.actor.username|first|upper }}
+            {% avatar note.actor %}
             {% if note.kind == 'like' %}
             <span class="nt-icon nt-icon-like"><i class="fa-regular fa-heart"></i></span>
             {% elif note.kind == 'follow' %}

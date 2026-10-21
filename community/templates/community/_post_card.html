@@ -1,6 +1,7 @@
 {# Satu kartu post. Butuh variabel "post". #}
+{% load community_avatars %}
 <article class="cm-card cm-post" id="post-{{ post.id }}">
-    <span class="cm-avatar">{{ post.author.username|first|upper }}</span>
+<span class="cm-avatar">{% avatar post.author %}</span>
 
     <div class="cm-post-main">
         <header class="cm-post-head">
@@ -143,7 +144,7 @@
             {% if user.is_authenticated %}
             <form class="cm-reply-form" method="post" action="{% url 'community:create_comment' post.id %}">
                 {% csrf_token %}
-                <span class="cm-avatar">{{ user.username|first|upper|default:"?" }}</span>
+                <span class="cm-avatar">{% avatar user %}</span>
                 <input type="text" name="content" maxlength="500" required
                        placeholder="Write a reply..." aria-label="Write a reply">
                 {% include 'components/button.html' with btn_type="submit" btn_class="secondary" extra_class="cm-community-button" label="Reply" %}

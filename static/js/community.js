@@ -315,6 +315,15 @@ if (document.querySelector(".cm-tag-button")) {
     });
 }
 
+// foto profil: begitu foto dipilih, langsung dikirim (tanpa perlu tombol Save)
+document.querySelectorAll(".community-avatar-form input[type=file]").forEach((input) => {
+    input.addEventListener("change", () => {
+        if (input.files.length > 0) {
+            input.form.submit();
+        }
+    });
+});
+
 // Hapus: tanya dulu sebelum benar-benar menghapus
 document.querySelectorAll("form[data-confirm]").forEach((form) => {
     form.addEventListener("submit", (event) => {

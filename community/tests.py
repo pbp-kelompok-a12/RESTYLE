@@ -5,7 +5,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
 from PIL import Image
 
-from community.models import Comment, Follow, Notification, Post, PostImage
+from community.models import Comment, CommunityProfile, Follow, Notification, Post, PostImage
 from closet.models import Item
 
 SIMPLE_STORAGES = {
@@ -374,3 +374,53 @@ class NotificationTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "@bob</strong> started following you")
+
+@override_settings(STORAGES=SIMPLE_STORAGES)
+class ProfilePhotoAndSidebarTests(TestCase):
+    def setUp(self):
+        user_model = get_user_model()
+        self.alice = user_model.objects.create_user(username="alice", password="test-password")
+        self.bob = user_model.objects.create_user(username="bob", password="test-password")
+        self.client.force_login(self.alice)
+
+    def test_user_can_upload_profile_photo(self):
+        response = self.client.post("/community/profile/photo/", {"photo": make_photo("me.png")})
+
+        self.assertRedirects(response, "/community/profile/alice/", fetch_redirect_response=False)
+        self.assertTrue(CommunityProfile.objects.get(user=self.alice).photo)
+
+    def test_non_image_file_is_rejected(self):
+        fake = SimpleUploadedFile("notes.png", b"not really an image", content_type="image/png")
+
+        self.client.post("/community/profile/photo/", {"photo": fake})
+
+        self.assertFalse(CommunityProfile.objects.filter(user=self.alice).exclude(photo="").exists())
+
+    def test_user_can_remove_profile_photo(self):
+        self.client.post("/community/profile/photo/", {"photo": make_photo("me.png")})
+
+        self.client.post("/community/profile/photo/", {"remove": "1"})
+
+        self.assertFalse(CommunityProfile.objects.get(user=self.alice).photo)
+
+    def test_photo_is_shown_in_posts_and_navbar(self):
+        self.client.post("/community/profile/photo/", {"photo": make_photo("me.png")})
+        Post.objects.create(author=self.alice, content="Hello")
+        self.client.force_login(self.bob)
+
+        response = self.client.get("/community/")
+
+        self.assertContains(response, 'class="avatar-photo"')
+
+    def test_own_profile_has_sidebar_and_photo_form(self):
+        response = self.client.get("/community/profile/alice/")
+
+        self.assertContains(response, 'class="cm-side"')
+        self.assertContains(response, 'class="cm-side-link is-active"')
+        self.assertContains(response, 'action="/community/profile/photo/"')
+
+    def test_other_profile_has_sidebar_but_no_photo_form(self):
+        response = self.client.get("/community/profile/bob/")
+
+        self.assertContains(response, 'class="cm-side"')
+        self.assertNotContains(response, 'action="/community/profile/photo/"')

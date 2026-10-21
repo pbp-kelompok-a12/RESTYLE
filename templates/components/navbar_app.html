@@ -1,6 +1,6 @@
 {# Navbar untuk user yang sudah login. Dipakai semua modul (closet, mix & match, planner, community). #}
 
-{% load community_notifications %}
+{% load community_avatars community_notifications %}
 
 {% if user.is_authenticated %}
 <header class="app-nav">
@@ -21,7 +21,7 @@
             <input type="search" name="q" placeholder="Search posts, tags, or people" aria-label="Search">
         </form>
         {% notification_menu %}        
-        <a href="{% url 'main:profile' %}" class="app-nav-avatar" aria-label="Your profile">{{ user.username|first|upper }}</a>
+        <a href="{% url 'main:profile' %}" class="app-nav-avatar" aria-label="Your profile">{% avatar user %}</a>
     </div>
 </header>
 

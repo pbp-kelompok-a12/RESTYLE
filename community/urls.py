@@ -18,6 +18,7 @@ from community.views import (
     mark_notifications_read,
     open_notification,
     show_notifications,
+    update_avatar,
 )
 
 app_name = "community"
@@ -40,6 +41,7 @@ urlpatterns = [
         {"list_type": "followers"},
         name="show_followers",
     ),
+    path("profile/photo/", update_avatar, name="update_avatar"),
     path("profile/<str:username>/", show_user_profile, name="show_user_profile"),
     path("post/create/", create_post, name="create_post"),
     path("post/<int:post_id>/edit/", edit_post, name="edit_post"),

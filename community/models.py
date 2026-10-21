@@ -200,4 +200,14 @@ class Notification(models.Model):
             return reverse("community:show_user_profile", args=[self.actor.username])
         return reverse("community:show_community") + f"#post-{self.post_id}"
     
-    
+class CommunityProfile(models.Model):
+    """data tambahan user khusus untuk community, misalnya foto profil."""
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="community_profile",
+    )
+    photo = models.ImageField(upload_to="community/avatars/", blank=True)
+
+    def __str__(self):
+        return f"Community profile of @{self.user.username}"
