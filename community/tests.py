@@ -488,6 +488,19 @@ class ModerationTests(TestCase):
         self.assertContains(response, "My linen outfit")
         self.assertContains(response, "<dd>2</dd>", html=True)
 
+    def test_admin_sees_post_and_reply_photos(self):
+        PostImage.objects.create(post=self.post, image=make_photo("spam.png"))
+        self.comment.photo = make_photo("reply.png")
+        self.comment.save()
+        self.client.force_login(self.admin)
+
+        posts = self.client.get("/community/moderation/")
+        replies = self.client.get("/community/moderation/?tab=comments")
+
+        self.assertContains(posts, 'class="cm-photos mod-photos"')
+        self.assertContains(posts, "Photo from @alice's post")
+        self.assertContains(replies, "Photo from @alice's reply")
+
     def test_admin_can_search(self):
         self.client.force_login(self.admin)
 

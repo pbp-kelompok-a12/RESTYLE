@@ -460,10 +460,10 @@ def show_moderation(request):
     query = request.GET.get("q", "").strip()
 
     if tab == "comments":
-        items = Comment.objects.select_related("author", "post")
+        items = Comment.objects.select_related("author", "post").prefetch_related("tagged_items")
     else:
         tab = "posts"
-        items = Post.objects.select_related("author").annotate(
+        items = Post.objects.select_related("author").prefetch_related("images").annotate(
             reply_count=Count("comments", distinct=True),
             like_count=Count("likes", distinct=True),
             photo_count=Count("images", distinct=True),

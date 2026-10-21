@@ -62,6 +62,23 @@
                             <span>{{ item.created_at|date:"d M Y, H:i" }}</span>
                         </p>
                         <p class="mod-content">{{ item.content|truncatechars:180 }}</p>
+
+                        {# foto kecil supaya admin bisa ikut memeriksa fotonya; diklik untuk diperbesar #}
+                        {% if tab == 'posts' and item.photo_count %}
+                        <div class="cm-photos mod-photos">
+                            {% for photo in item.images.all %}
+                            <img src="{{ photo.image.url }}" alt="Photo from @{{ item.author.username }}'s post">
+                            {% endfor %}
+                        </div>
+                        {% elif tab == 'comments' and item.photo %}
+                        <div class="cm-photos mod-photos">
+                            <img src="{{ item.photo.url }}" alt="Photo from @{{ item.author.username }}'s reply">
+                        </div>
+                        {% endif %}      
+                               
+                        {# pakaian dari closet yang di-tag; diklik untuk melihat detailnya #}
+                        {% include 'community/_tag_list.html' with items=item.tagged_items.all %}
+                        
                         <p class="mod-extra">
                             {% if tab == 'posts' %}
                             {{ item.like_count }} like{{ item.like_count|pluralize }}
