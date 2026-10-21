@@ -5,11 +5,13 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.db.models import Count, Exists, OuterRef
+from django.core.paginator import Paginator
+from django.db.models import Count, Exists, OuterRef, Q
 from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
 from community.forms import CommentForm, PostForm
@@ -157,6 +159,13 @@ def create_comment(request, post_id):
     # balik ke feed, langsung ke post yang dikomentari
     return redirect(reverse("community:show_community") + f"#post-{post.id}")
 
+def redirect_back(request, fallback):
+    """kembali ke halaman asal (dikirim lewat input "next"), kalau alamatnya aman."""
+    next_url = request.POST.get("next", "")
+    if url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+        return redirect(next_url)
+    return redirect(fallback)
+
 def feed_url(post_id):
     """Alamat feed yang langsung melompat ke satu post."""
     return reverse("community:show_community") + f"#post-{post_id}"
@@ -213,7 +222,7 @@ def delete_post(request, post_id):
 
     post.delete()
     messages.success(request, "Post deleted.")
-    return redirect("community:show_community")
+    return redirect_back(request, "community:show_community")
 
 @login_required(login_url=LOGIN_URL)
 @require_POST
@@ -239,7 +248,8 @@ def delete_comment(request, comment_id):
 
     post_id = comment.post_id
     comment.delete()
-    return redirect(feed_url(post_id))
+    messages.success(request, "Reply deleted.")
+    return redirect_back(request, feed_url(post_id))
 
 def toggle_user(relation, user):
     """Menambahkan user ke sebuah daftar (like atau saved) kalau belum ada,
@@ -424,3 +434,42 @@ def update_avatar(request):
     profile.save()
     messages.success(request, "Profile photo updated.")
     return redirect(profile_url)
+
+@login_required(login_url=LOGIN_URL)
+def show_moderation(request):
+    """halaman admin: lihat semua post/komentar, cari, lalu hapus yang melanggar."""
+    if not request.user.is_staff:
+        return HttpResponseForbidden("Only admins can open this page.")
+
+    tab = request.GET.get("tab", "posts")
+    query = request.GET.get("q", "").strip()
+
+    if tab == "comments":
+        items = Comment.objects.select_related("author", "post")
+    else:
+        tab = "posts"
+        items = Post.objects.select_related("author").annotate(
+            reply_count=Count("comments", distinct=True),
+            like_count=Count("likes", distinct=True),
+            photo_count=Count("images", distinct=True),
+        )
+
+    if query:
+        # cari di isi tulisan atau username penulisnya
+        items = items.filter(Q(content__icontains=query) | Q(author__username__icontains=query))
+
+    page = Paginator(items.order_by("-created_at"), 20).get_page(request.GET.get("page"))
+
+    one_day_ago = timezone.now() - timedelta(days=1)
+    stats = [
+        ("Posts", Post.objects.count()),
+        ("Replies", Comment.objects.count()),
+        ("New posts today", Post.objects.filter(created_at__gte=one_day_ago).count()),
+        ("Members", get_user_model().objects.count()),
+    ]
+
+    return render(
+        request,
+        "community/moderation.html",
+        {"tab": tab, "query": query, "page": page, "stats": stats},
+    )
