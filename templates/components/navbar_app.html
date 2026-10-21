@@ -16,9 +16,12 @@
     </nav>
 
     <div class="app-nav-tools">
-        <form class="app-nav-search {% if request.resolver_match.app_name == 'community' %}is-active{% endif %}" role="search" action="#" method="get">
+        <form class="app-nav-search {% if request.resolver_match.app_name == 'community' %}is-active{% endif %}" role="search" action="{% url 'community:show_search' %}" method="get">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="search" name="q" placeholder="Search posts, tags, or people" aria-label="Search">
+            <input type="search" name="q" placeholder="Search posts, tags, or people" aria-label="Search"
+                   value="{% if request.resolver_match.url_name == 'show_search' %}{{ request.GET.q }}{% endif %}" autocomplete="off">
+            <button type="button" class="sr-clear" aria-label="Clear search" hidden><i class="fa-solid fa-xmark"></i></button>
+            {% include 'community/_recent_searches.html' %}
         </form>
         {% notification_menu %}        
         <a href="{% url 'main:profile' %}" class="app-nav-avatar" aria-label="Your profile">{% avatar user %}</a>

@@ -418,6 +418,19 @@ document.querySelectorAll('a[href$="#composer"]').forEach((link) => {
     });
 });
 
+// Datang dari halaman lain dengan alamat berakhiran #composer (misalnya tombol "Ask the community"):
+// langsung gulir ke kotak tulis post dengan kursor di akhir tulisan, siap mengetik.
+// Ditunggu sampai halaman selesai dimuat, karena browser sendiri melompat ke #composer
+// di akhir pemuatan dan lompatan itu menghapus fokus yang dipasang lebih awal.
+window.addEventListener("load", () => {
+    if (window.location.hash !== "#composer" || !focusComposer()) {
+        return;
+    }
+    const textarea = document.querySelector("#composer textarea");
+    textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+    textarea.dispatchEvent(new Event("input")); // tombol Post aktif dan tinggi kotak menyesuaikan isi
+});
+
 // Follow: kirim ke server tanpa memuat ulang halaman, lalu ubah tombolnya.
 document.querySelectorAll(".cm-follow").forEach((button) => {
     button.addEventListener("click", async () => {

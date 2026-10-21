@@ -1,0 +1,130 @@
+/* pencarian: kotak search di navbar, daftar recent searches, dan halaman hasil */
+
+.app-nav-search{
+    position: relative;
+}
+
+/* tanda x untuk mengosongkan kotak search */
+.app-nav-search .sr-clear{
+    display: grid;
+    place-items: center;
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: var(--color-azure-57);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.app-nav-search .sr-clear[hidden],
+.sr-recent[hidden]{
+    display: none;
+}
+
+/* sembunyikan tanda x bawaan browser supaya tidak dobel */
+.app-nav-search input::-webkit-search-cancel-button{
+    -webkit-appearance: none;
+}
+
+.sr-recent{
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 6px 0;
+    background-color: var(--color-white-solid);
+    border: 1px solid var(--color-azure-san-marino);
+    border-radius: var(--corner-radius-16);
+    box-shadow: 0 16px 40px rgba(58, 43, 72, 0.18);
+    font-family: var(--font-family-font-1);
+    letter-spacing: normal;
+    text-align: left;
+}
+
+.sr-recent-head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-azure-san-marino);
+}
+
+.sr-recent .sr-recent-clear{
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: var(--color-azure-san-marino);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.sr-recent-list{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sr-recent-list li{
+    display: flex;
+    align-items: center;
+}
+
+.sr-recent-list a{
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    overflow: hidden;
+    color: var(--color-azure-martinique);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sr-recent-list a:hover,
+.sr-recent-list a:focus-visible{
+    background-color: var(--color-orange-linen);
+}
+
+.sr-recent .sr-recent-remove{
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    margin-right: 6px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: var(--corner-radius-999);
+    color: var(--color-azure-martinique);
+    cursor: pointer;
+}
+
+.sr-recent .sr-recent-remove:hover{
+    background-color: var(--color-orange-linen);
+}
+
+/* halaman hasil pencarian */
+.sr-title{
+    margin: 0;
+    font-family: var(--font-family-font-3);
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--color-azure-martinique);
+    overflow-wrap: anywhere;
+}
+
+.sr-people{
+    margin: 0;
+    padding: 0;
+}

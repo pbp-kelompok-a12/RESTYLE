@@ -515,3 +515,66 @@ class ModerationTests(TestCase):
         self.client.force_login(self.admin)
         self.assertContains(self.client.get("/community/"), "/community/moderation/")
 
+
+
+@override_settings(STORAGES=SIMPLE_STORAGES)
+class SearchTests(TestCase):
+    def setUp(self):
+        user_model = get_user_model()
+        self.alice = user_model.objects.create_user(username="alsashimi", password="test-password")
+        self.bob = user_model.objects.create_user(username="bob", password="test-password")
+        self.linen_post = Post.objects.create(author=self.alice, content="My new linen shirt for campus")
+        self.jeans_post = Post.objects.create(author=self.bob, content="Wide jeans all week")
+        self.url = "/community/search/"
+
+    def test_empty_query_goes_back_to_feed(self):
+        response = self.client.get(self.url, {"q": "   "})
+        self.assertRedirects(response, "/community/")
+
+    def test_finds_posts_by_content(self):
+        response = self.client.get(self.url, {"q": "LINEN"})
+        self.assertContains(response, "My new linen shirt")
+        self.assertNotContains(response, "Wide jeans")
+        self.assertContains(response, "Results for &ldquo;LINEN&rdquo;")
+
+    def test_finds_posts_by_tagged_closet_item(self):
+        item = Item.objects.create(user=self.bob, name="Kebaya brokat", category="top", color="red")
+        self.jeans_post.tagged_items.add(item)
+        response = self.client.get(self.url, {"q": "kebaya"})
+        self.assertContains(response, "Wide jeans all week")
+
+    def test_post_with_two_matching_tags_shows_once(self):
+        for name in ("Linen pants", "Linen scarf"):
+            self.linen_post.tagged_items.add(
+                Item.objects.create(user=self.alice, name=name, category="bottom", color="beige")
+            )
+        response = self.client.get(self.url, {"q": "linen"})
+        self.assertEqual(len(response.context["results"]), 1)
+
+    def test_people_tab_finds_usernames(self):
+        response = self.client.get(self.url, {"q": "alsa", "tab": "people"})
+        self.assertContains(response, "@alsashimi")
+        self.assertNotContains(response, "@bob")
+
+    def test_at_sign_opens_people_tab(self):
+        response = self.client.get(self.url, {"q": "@alsashimi"})
+        self.assertEqual(response.context["tab"], "people")
+        self.assertContains(response, "@alsashimi")
+
+    def test_no_results_shows_ask_button(self):
+        self.client.login(username="bob", password="test-password")
+        response = self.client.get(self.url, {"q": "kebaya modern"})
+        self.assertContains(response, "No results for “kebaya modern”")
+        self.assertContains(response, "/community/?ask=kebaya+modern#composer")
+
+    def test_ask_link_fills_the_composer(self):
+        self.client.login(username="bob", password="test-password")
+        response = self.client.get("/community/", {"ask": "kebaya modern"})
+        self.assertContains(response, ">kebaya modern</textarea>")
+
+    def test_navbar_search_points_to_search_page(self):
+        self.client.login(username="bob", password="test-password")
+        response = self.client.get(self.url, {"q": "linen"})
+        self.assertContains(response, 'action="/community/search/"')
+        self.assertContains(response, 'value="linen"')
+

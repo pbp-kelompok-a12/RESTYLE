@@ -1,0 +1,11 @@
+{# Daftar "Recent searches" di bawah kotak search navbar. Isinya disimpan di browser (localStorage) dan diisi oleh search.js. #}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/search.css' %}">
+<section class="sr-recent" aria-label="Recent searches" hidden>
+    <header class="sr-recent-head">
+        <span>RECENT SEARCHES</span>
+        <button type="button" class="sr-recent-clear">Clear</button>
+    </header>
+    <ul class="sr-recent-list"></ul>
+</section>
+<script src="{% static 'js/search.js' %}" defer></script>

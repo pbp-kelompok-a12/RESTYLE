@@ -66,7 +66,7 @@
                 <div class="cm-composer-top">
                     <span class="cm-avatar">{% avatar user %}</span>
                     <textarea name="content" rows="1" maxlength="1000" required
-                              placeholder="What are you wearing today?" aria-label="Write a post"></textarea>
+                                placeholder="What are you wearing today?" aria-label="Write a post">{{ request.GET.ask }}</textarea>                
                 </div>
 
                 <div class="cm-photo-previews" id="photo-previews" hidden></div>

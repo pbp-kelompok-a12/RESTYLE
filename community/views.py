@@ -11,7 +11,7 @@ from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.http import url_has_allowed_host_and_scheme
+from django.utils.http import url_has_allowed_host_and_scheme, urlencode
 from django.views.decorators.http import require_POST
 
 from community.forms import CommentForm, PostForm
@@ -473,3 +473,56 @@ def show_moderation(request):
         "community/moderation.html",
         {"tab": tab, "query": query, "page": page, "stats": stats},
     )
+
+def show_search(request):
+    """hasil pencarian dari kotak search di navbar: tab Posts atau People."""
+    query = request.GET.get("q", "").strip()
+    if not query:
+        return redirect("community:show_community")
+
+    # "@alsashimi" dicari sebagai username, jadi tanda @ dibuang dulu
+    word = query.lstrip("@") or query
+    tab = request.GET.get("tab", "people" if query.startswith("@") else "posts")
+
+    if tab == "people":
+        results = (
+            get_user_model().objects.filter(
+                Q(username__icontains=word) | Q(first_name__icontains=word) | Q(last_name__icontains=word)
+            )
+            .annotate(post_count=Count("community_posts"))
+            .order_by("-post_count", "username")
+        )
+        if request.user.is_authenticated:
+            results = results.annotate(
+                is_following=Exists(Follow.objects.filter(follower=request.user, followed_id=OuterRef("pk")))
+            )
+    else:
+        tab = "posts"
+        # cocok kalau kata itu ada di isi post, username penulis, atau item closet yang di-tag
+        results = (
+            Post.objects.filter(
+                Q(content__icontains=word)
+                | Q(author__username__icontains=word)
+                | Q(tagged_items__name__icontains=word)
+                | Q(tagged_items__material__icontains=word)
+                | Q(tagged_items__category__icontains=word)
+            )
+            .distinct()
+            .select_related("author")
+            .prefetch_related("images", "tagged_items")
+        )
+
+    # tombol "Ask the community" membuka kotak tulis post yang sudah berisi kata yang dicari
+    if request.user.is_authenticated:
+        ask_url = reverse("community:show_community") + "?" + urlencode({"ask": query}) + "#composer"
+    else:
+        ask_url = LOGIN_URL
+
+    context = {
+        "query": query,
+        "tab": tab,
+        "results": results,
+        "empty_title": f"No results for “{query}”",
+        "ask_url": ask_url,
+    }
+    return render(request, "community/search.html", context)

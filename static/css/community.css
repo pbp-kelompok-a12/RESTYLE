@@ -938,6 +938,11 @@ body{
     scroll-margin-top: 110px;
 }
 
+/* saat digulir ke kotak tulis post, jangan sampai tertutup navbar */
+.cm-composer{
+    scroll-margin-top: 130px;
+}
+
 .cm-toggle-comments[aria-expanded="true"]{
     color: var(--color-azure-san-marino);
     font-weight: 700;
