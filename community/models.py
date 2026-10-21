@@ -79,11 +79,18 @@ class Comment(models.Model):
         blank=True,
     )
     content = models.TextField(max_length=500)
+    # reply boleh membawa satu foto dan pakaian dari closet, misalnya untuk menyarankan outfit
+    photo = models.ImageField(upload_to="community/comments/", blank=True)
+    tagged_items = models.ManyToManyField(
+        "closet.Item",
+        related_name="community_comments",
+        blank=True,
+    )
     likes = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         related_name="liked_comments",
         blank=True,
-    )
+    )    
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

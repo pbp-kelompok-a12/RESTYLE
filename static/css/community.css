@@ -867,8 +867,8 @@ body{
 /* edit foto di post */
 
 /* saat sedang edit, foto asli disembunyikan supaya tidak dobel dengan foto di form edit */
-.cm-post-main:has(.cm-edit-form:not([hidden])) .cm-photos,
-.cm-post-main:has(.cm-edit-form:not([hidden])) .cm-tags{    
+.cm-post-main:has(> .cm-edit-form:not([hidden])) > .cm-photos,
+.cm-post-main:has(> .cm-edit-form:not([hidden])) > .cm-tags{
     display: none;
 }
 
@@ -947,12 +947,6 @@ body{
     color: var(--color-azure-san-marino);
     font-weight: 700;
 }
-
-.cm-reply-inline{
-    margin-top: 8px;
-    max-width: 480px;
-}
-
 
 /*  edit n hapus */
 
@@ -1831,4 +1825,186 @@ body{
     .cm-closet-grid{
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+}
+
+/* tombol "Write a reply..." di bawah post: tampilannya seperti kotak isian, tapi membuka kotak reply melayang */
+.cm-page .cm-reply-open.cm-reply-form{
+    width: 100%;
+    text-align: left;
+}
+
+.cm-reply-fake-input{
+    flex: 1;
+    min-width: 0;
+    padding: 9px 16px;
+    background-color: var(--color-orange-linen);
+    border: 1px solid var(--color-orange-pearl-brush);
+    border-radius: var(--corner-radius-999);
+    font-size: 12px;
+    color: var(--color-azure-dolphin);
+}
+
+.cm-reply-open:hover .cm-reply-fake-input{
+    border-color: var(--color-azure-polo-blue);
+}
+
+/* kotak reply melayang */
+.cm-reply-dialog{
+    width: min(560px, calc(100vw - 32px));
+    max-height: calc(100vh - 48px);
+    margin: auto;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: var(--color-white-solid);
+    border: 1px solid var(--color-azure-martinique);
+    border-radius: var(--corner-radius-24);
+    box-shadow: 0 16px 40px rgba(58, 43, 72, 0.18);
+    color: var(--color-azure-martinique);
+}
+
+.cm-reply-dialog::backdrop{
+    background-color: rgba(253, 249, 242, 0.6);
+    backdrop-filter: blur(4px);
+}
+
+.cm-reply-dialog form{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.cm-reply-dialog-head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cm-reply-dialog-head h2{
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-azure-san-marino);
+}
+
+.cm-reply-dialog .cm-reply-dialog-close{
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border-radius: var(--corner-radius-999);
+    font-size: 16px;
+}
+
+.cm-reply-dialog .cm-reply-dialog-close:hover{
+    background-color: var(--color-orange-linen);
+}
+
+/* potongan tulisan yang sedang dibalas */
+.cm-reply-quote{
+    margin: 0;
+    padding: 8px 12px;
+    background-color: var(--color-orange-linen);
+    border-left: 3px solid var(--color-azure-polo-blue);
+    border-radius: var(--corner-radius-8);
+    font-size: 13px;
+    color: var(--color-azure-dolphin);
+    overflow-wrap: anywhere;
+}
+
+.cm-reply-dialog-body{
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.cm-reply-dialog-body textarea{
+    flex: 1;
+    min-width: 0;
+    padding: 6px 0;
+    border: none;
+    outline: none;
+    resize: vertical;
+    background: transparent;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.cm-reply-dialog-body textarea::placeholder{
+    color: var(--color-azure-dolphin);
+}
+
+/* foto, peringatan, dan tag terpilih di bawah tulisan */
+.cm-reply-extras{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-left: 46px;
+}
+
+.cm-reply-extras:not(:has(.cm-reply-photo-preview:not([hidden]), .cm-reply-photo-hint:not([hidden]), .cm-tag-selected:not(:empty), .cm-closet-dialog[open])){    
+    display: none;
+}
+
+.cm-reply-extras .cm-composer-hint,
+.cm-reply-extras .cm-tag-picker{
+    margin: 0;
+}
+
+.cm-reply-extras .cm-tags{
+    margin-top: 0;
+}
+
+.cm-reply-photo-preview{
+    position: relative;
+    width: 96px;
+    height: 96px;
+}
+
+.cm-reply-photo-preview img{
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 1px solid var(--color-orange-pearl-brush);
+    border-radius: var(--corner-radius-12);
+}
+
+.cm-reply-photo-preview .cm-reply-photo-remove{
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 22px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    background-color: var(--color-azure-martinique);
+    border-radius: var(--corner-radius-999);
+    color: var(--color-white-solid);
+    font-size: 11px;
+}
+
+.cm-reply-dialog-foot{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-left: 46px;
+    padding-top: 10px;
+    border-top: 1px solid var(--color-azure-polo-blue);
+}
+
+.cm-reply-dialog-foot .cm-reply-send{
+    margin-left: auto;
+}
+
+/* foto di dalam reply lebih kecil dari foto di post */
+.cm-comment-photos{
+    margin-top: 8px;
+}
+
+.cm-comment-photos img{
+    height: 160px;
+}
+
+.cm-comment .cm-tags{
+    margin-top: 8px;
 }

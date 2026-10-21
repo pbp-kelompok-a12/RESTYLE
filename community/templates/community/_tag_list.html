@@ -1,0 +1,23 @@
+{# Daftar pakaian closet yang di-tag (di post atau reply). Butuh "items". Diklik untuk melihat detailnya. #}
+{% if items %}
+<div class="cm-tags">
+    {% for item in items %}
+    <button type="button" class="cm-tag cm-tag-button"
+            data-name="{{ item.name }}"
+            data-photo="{% if item.photo %}{{ item.photo.url }}{% endif %}"
+            data-color="{{ item.get_color_display }}"
+            data-color-hex="{{ item.color_hex }}"
+            data-category="{{ item.get_category_display }}"
+            data-material="{{ item.get_material_display }}"
+            data-styles="{{ item.styles|join:', ' }}"
+            {% if item.user_id == user.id %}data-closet-url="{% url 'closet:show_item_detail' item.id %}"{% endif %}>
+        {% if item.photo %}
+        <img src="{{ item.photo.url }}" alt="">
+        {% else %}
+        <span class="cm-tag-dot" style="background-color: {{ item.color_hex }}"></span>
+        {% endif %}
+        {{ item.name }}
+    </button>
+    {% endfor %}
+</div>
+{% endif %}

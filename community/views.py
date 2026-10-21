@@ -137,9 +137,22 @@ def create_post(request):
 def create_comment(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     form = CommentForm(request.POST)
+    back_to_post = redirect(reverse("community:show_community") + f"#post-{post.id}")
+
+    # foto (maksimal satu) dan pakaian dari closet yang ikut dikirim bersama reply
+    photo = request.FILES.get("photo")
+    photo_error = check_photos([photo]) if photo else None
+    if photo_error:
+        messages.error(request, photo_error)
+        return back_to_post
+
+    tagged_items = pick_tagged_items(request)
+    if tagged_items.count() > MAX_TAGS:
+        messages.error(request, f"You can tag up to {MAX_TAGS} closet items per reply.")
+        return back_to_post
 
     if form.is_valid():
-        comment = form.save(commit=False)
+        comment = form.save(commit=False)        
         comment.post = post
         comment.author = request.user
 
@@ -150,14 +163,16 @@ def create_comment(request, post_id):
             # supaya balasan cuma menjorok satu tingkat
             comment.parent = parent.parent or parent
 
+        if photo:
+            comment.photo = photo
         comment.save()
+        comment.tagged_items.set(tagged_items)
         notify_reply(comment)
-
     else:
         messages.error(request, "Write a reply before sending (up to 500 characters).")
 
     # balik ke feed, langsung ke post yang dikomentari
-    return redirect(reverse("community:show_community") + f"#post-{post.id}")
+    return back_to_post
 
 def redirect_back(request, fallback):
     """kembali ke halaman asal (dikirim lewat input "next"), kalau alamatnya aman."""

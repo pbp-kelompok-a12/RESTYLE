@@ -45,7 +45,7 @@
 
         <footer class="cm-closet-foot">
             <span class="cm-closet-count">0 selected · max 5</span>
-            <button type="button" class="cm-closet-done">Add to post</button>
+            <button type="button" class="cm-closet-done">{{ done_label|default:"Add to post" }}</button>        
         </footer>
         {% else %}
         <p class="cm-closet-empty">Your closet is empty. <a href="{% url 'closet:add_item' %}">Add an item</a> first, then tag it here.</p>
