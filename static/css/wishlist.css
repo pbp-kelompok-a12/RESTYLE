@@ -1,0 +1,240 @@
+
+/* ========================================
+   RE:STYLE - WISHLIST PAGE
+   ======================================== */
+
+.wishlist-page {
+    min-height: 70vh;
+    padding: 56px 7% 80px;
+    background: #fcf8f1;
+    color: #392b46;
+    font-family: inherit;
+}
+
+/* Heading */
+.wishlist-heading {
+    max-width: 760px;
+    margin: 0 auto 32px;
+    text-align: center;
+}
+
+.wishlist-heading .eyebrow {
+    margin-bottom: 12px;
+    color: #426a9e;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.wishlist-heading h1 {
+    margin: 0 0 16px;
+    color: #392b46;
+    font-size: clamp(36px, 5vw, 58px);
+    font-weight: 800;
+    line-height: 1.15;
+}
+
+.wishlist-heading h1 span {
+    color: #426a9e;
+    font-style: italic;
+}
+
+.wishlist-heading > p:last-child {
+    max-width: 560px;
+    margin: 0 auto;
+    color: #756b79;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+/* Conscious shopping reminder */
+.wishlist-reminder {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto 36px;
+    padding: 28px 32px;
+    overflow: hidden;
+    background: #f8e9a8;
+    border: 1px solid #efdfa0;
+    border-radius: 22px;
+}
+
+.wishlist-reminder::after {
+    content: "✦";
+    position: absolute;
+    top: 8px;
+    right: 28px;
+    color: #fff8d9;
+    font-size: 75px;
+    pointer-events: none;
+}
+
+.wishlist-reminder h2 {
+    position: relative;
+    z-index: 1;
+    margin: 0 0 10px;
+    color: #392b46;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.wishlist-reminder p {
+    position: relative;
+    z-index: 1;
+    max-width: 620px;
+    margin: 0 0 20px;
+    color: #57495c;
+    line-height: 1.7;
+}
+
+/* Buttons */
+.wishlist-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 13px 23px;
+    border: 0;
+    border-radius: 999px;
+    background: #426a9e;
+    color: #fff;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.wishlist-button:hover {
+    background: #304f79;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* Form card */
+.wishlist-form-section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px;
+    background: #fffdf9;
+    border: 1px solid #eee6dc;
+    border-radius: 22px;
+    box-shadow: 0 12px 35px rgba(57, 43, 70, 0.06);
+}
+
+.wishlist-form-section h2 {
+    margin: 0 0 8px;
+    color: #392b46;
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.wishlist-form-section h2::after {
+    content: "";
+    display: block;
+    width: 52px;
+    height: 4px;
+    margin-top: 14px;
+    border-radius: 4px;
+    background: #e77ca9;
+}
+
+/* Form layout */
+#wishlist-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 18px;
+    margin-top: 26px;
+}
+
+#wishlist-form label {
+    align-self: end;
+    margin-bottom: 2px;
+    color: #514357;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+#wishlist-form input,
+#wishlist-form select {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    min-height: 48px;
+    padding: 12px 14px;
+    border: 1px solid #ded5e0;
+    border-radius: 12px;
+    outline: none;
+    background: #fff;
+    color: #392b46;
+    font: inherit;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#wishlist-form input:focus,
+#wishlist-form select:focus {
+    border-color: #426a9e;
+    box-shadow: 0 0 0 3px rgba(66, 106, 158, 0.12);
+}
+
+#wishlist-form input::placeholder {
+    color: #aaa0ae;
+}
+
+#wishlist-form button {
+    justify-self: start;
+    margin-top: 12px;
+}
+
+/* Wishlist item container */
+#wishlist-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+    margin-top: 28px;
+}
+
+#wishlist-items:empty {
+    display: none;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .wishlist-page {
+        padding: 36px 5% 52px;
+    }
+
+    .wishlist-heading {
+        margin-bottom: 26px;
+    }
+
+    .wishlist-reminder,
+    .wishlist-form-section {
+        padding: 23px 20px;
+        border-radius: 17px;
+    }
+
+    .wishlist-reminder h2 {
+        font-size: 21px;
+    }
+
+    .wishlist-form-section h2 {
+        font-size: 22px;
+    }
+
+    #wishlist-form {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    #wishlist-form label {
+        margin-top: 8px;
+    }
+
+    #wishlist-form button {
+        width: 100%;
+        margin-top: 14px;
+    }
+}

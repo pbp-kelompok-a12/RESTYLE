@@ -1,9 +1,13 @@
-
 {% extends 'base.html' %}
+{% load static %}
 
 {% block meta %}
 <title>Wishlist | RE:STYLE</title>
 {% endblock meta %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/wishlist.css' %}">
+{% endblock extra_css %}
 
 {% block content %}
 <main class="wishlist-page">
