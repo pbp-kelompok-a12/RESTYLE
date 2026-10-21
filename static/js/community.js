@@ -1,5 +1,65 @@
 // kotak tulis post: tombol post, pilih foto, dan preview foto
 
+const COMMUNITY_IMAGE_LIMIT = 4 * 1024 * 1024;
+
+function compressCommunityImage(file) {
+    if (file.size <= COMMUNITY_IMAGE_LIMIT) return Promise.resolve(file);
+
+    return createImageBitmap(file).then((bitmap) => {
+        const scale = Math.min(1, 1800 / Math.max(bitmap.width, bitmap.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+        canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+        canvas.getContext("2d").drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+        bitmap.close();
+
+        function encode(quality) {
+            return new Promise((resolve, reject) => {
+                canvas.toBlob((blob) => {
+                    if (!blob) return reject(new Error("Image compression is unavailable."));
+                    if (blob.size <= COMMUNITY_IMAGE_LIMIT) return resolve(blob);
+                    if (quality <= 0.5) return reject(new Error("Image is still too large after compression."));
+                    resolve(encode(quality - 0.12));
+                }, "image/webp", quality);
+            });
+        }
+
+        return encode(0.82).then((blob) => new File(
+            [blob], file.name.replace(/\.[^.]+$/, "") + ".webp",
+            { type: "image/webp", lastModified: Date.now() }
+        ));
+    });
+}
+
+function compressCommunityForm(form) {
+    const inputs = Array.from(form.querySelectorAll('input[type="file"]'))
+        .filter((input) => input.name === "photo" || input.name === "photos");
+
+    return Promise.all(inputs.map((input) => {
+        const files = Array.from(input.files);
+        if (!files.length) return Promise.resolve();
+        return Promise.all(files.map(compressCommunityImage)).then((compressed) => {
+            const transfer = new DataTransfer();
+            compressed.forEach((file) => transfer.items.add(file));
+            input.files = transfer.files;
+        });
+    }));
+}
+
+// Kompresi dilakukan sebelum browser mengirim request ke server.
+document.querySelectorAll(".cm-composer, .cm-edit-form, .cm-reply-rich, .community-avatar-form")
+    .forEach((form) => {
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const submitButton = event.submitter;
+            if (submitButton) submitButton.disabled = true;
+            compressCommunityForm(form).then(() => form.submit()).catch(() => {
+                if (submitButton) submitButton.disabled = false;
+                alert("Could not compress the photo. Please try a smaller image.");
+            });
+        });
+    });
+
 const composer = document.querySelector("#composer");
 
 if (composer && composer.querySelector("textarea")) {    
@@ -360,7 +420,7 @@ document.querySelectorAll(".cm-reply-rich").forEach((form) => {
     const preview = form.querySelector(".cm-reply-photo-preview");
     const previewImage = preview.querySelector("img");
     const hint = form.querySelector(".cm-reply-photo-hint");
-    const MAX_SIZE = 5 * 1024 * 1024;
+    const MAX_ORIGINAL_SIZE = 25 * 1024 * 1024;
 
     function clearPhoto() {
         input.value = "";
@@ -377,8 +437,8 @@ document.querySelectorAll(".cm-reply-rich").forEach((form) => {
             clearPhoto();
             return;
         }
-        if (!["image/jpeg", "image/png"].includes(photo.type) || photo.size > MAX_SIZE) {
-            hint.textContent = "Photos must be JPG or PNG, 5 MB or smaller.";
+        if (!["image/jpeg", "image/png"].includes(photo.type) || photo.size > MAX_ORIGINAL_SIZE) {
+            hint.textContent = "Choose a JPG or PNG photo no larger than 25 MB.";
             hint.hidden = false;
             clearPhoto();
             return;
@@ -468,7 +528,9 @@ if (document.querySelector(".cm-tag-button")) {
 document.querySelectorAll(".community-avatar-form input[type=file]").forEach((input) => {
     input.addEventListener("change", () => {
         if (input.files.length > 0) {
-            input.form.submit();
+            compressCommunityForm(input.form).then(() => input.form.submit()).catch(() => {
+                alert("Could not compress the photo. Please try a smaller image.");
+            });
         }
     });
 });

@@ -60,6 +60,33 @@
             </div>
             {% endif %}
         </aside>
+        <div class="mm-canvas">
+            <div class="mm-slots">
+                {% for slot in slots %}
+                <div class="mm-slot-wrap">
+                    <span class="mm-slot-label">{{ slot.label }}</span>
+                    <div class="mm-slot{% if slot.item %} is-filled{% endif %}" data-slot="{{ slot.key }}" data-categories="{{ slot.categories }}">
+                        <input type="hidden" name="{{ slot.key }}" value="{{ slot.item.id|default:'' }}">
+                        <button type="button" class="mm-slot-add" aria-label="Pick {{ slot.label|lower }} from your closet">
+                            <i class="fa-solid fa-circle-plus"></i>
+                        </button>
+                        <div class="mm-slot-piece" {% if not slot.item %}hidden{% endif %}>
+                            <img {% if slot.item.photo %}src="{{ slot.item.photo.url }}"{% else %}hidden{% endif %} alt="{{ slot.item.name }}">
+                            <i class="mm-swatch" style="background:{{ slot.item.color_hex }}" {% if slot.item.photo %}hidden{% endif %}></i>
+                            <span class="mm-slot-name">{{ slot.item.name }}</span>
+                        </div>
+                        <button type="button" class="mm-slot-clear" aria-label="Remove {{ slot.label|lower }}" {% if not slot.item %}hidden{% endif %}>
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="mm-purchases" title="Every piece here is already in your closet">
+                <span>New purchases</span>
+                <strong>Rp{{ new_purchases }}</strong>
+            </div>
+        </div>
     </form>
 
 </section>
