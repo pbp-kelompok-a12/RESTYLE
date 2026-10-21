@@ -236,7 +236,7 @@
 
 .mm-slot {
     position: relative;
-    height: 170px;
+    height: 150px;
     background: var(--color-white-solid);
     border: 2px solid var(--color-azure-st-blue);
     border-radius: var(--corner-radius-14);

@@ -1,20 +1,17 @@
 from django.conf import settings
 from django.db import models
 
-SLOTS = ("top", "bottom", "shoes", "accessories")
+SLOTS = ("top", "bottom", "shoes", "accessories", "outerwear", "dresses")
 SLOT_LABELS = {
     "top": "Top",
     "bottom": "Bottom",
     "shoes": "Shoes",
     "accessories": "Accessories",
+    "outerwear": "Outerwear",
+    "dresses": "Dresses",
 }
 
-SLOT_CATEGORIES = {
-    "top": ["top", "dresses"],
-    "bottom": ["bottom"],
-    "shoes": ["shoes"],
-    "accessories": ["accessories", "outerwear"],
-}
+SLOT_CATEGORIES = {slot: [slot] for slot in SLOTS}
 
 def slot_for_category(category):
     for slot, categories in SLOT_CATEGORIES.items():
@@ -37,6 +34,8 @@ class Outfit(models.Model):
     bottom = models.ForeignKey("closet.Item", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
     shoes = models.ForeignKey("closet.Item", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
     accessories = models.ForeignKey("closet.Item", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    outerwear = models.ForeignKey("closet.Item", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    dresses = models.ForeignKey("closet.Item", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
