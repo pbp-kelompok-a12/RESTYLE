@@ -1,24 +1,55 @@
-{# Daftar pakaian dari closet user yang bisa di-tag. "post" opsional: diisi saat edit, supaya tag lama sudah tercentang. #}
-<div class="cm-tag-picker" hidden>
-    {% with items=user.closet_items.all %}
-    {% if items %}
-    <p class="cm-composer-hint cm-tag-hint">Pick up to 5 items you're wearing.</p>
-    <div class="cm-tag-options">
-        {% for item in items %}
-        <label class="cm-tag cm-tag-option">
-            <input type="checkbox" name="tagged_items" value="{{ item.id }}"
-                   {% if post and item in post.tagged_items.all %}checked{% endif %}>
-            {% if item.photo %}
-            <img src="{{ item.photo.url }}" alt="">
-            {% else %}
-            <span class="cm-tag-dot" style="background-color: {{ item.color_hex }}"></span>
-            {% endif %}
-            {{ item.name }}
+{# Pilih pakaian dari closet untuk di-tag. "post" opsional: diisi saat edit, supaya tag lama sudah tercentang. #}
+{# Pakaian yang terpilih tampil sebagai chip di form; daftar lengkapnya ada di pop-up "Tag from my closet". #}
+<div class="cm-tag-picker">
+    <div class="cm-tags cm-tag-selected"></div>
+
+    <dialog class="cm-closet-dialog" aria-label="Tag from my closet">
+        <header class="cm-closet-head">
+            <h2>Tag from my closet</h2>
+            <button type="button" class="cm-closet-close" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+        </header>
+
+        {% with items=user.closet_items.all %}
+        {% if items %}
+        <label class="cm-closet-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="search" placeholder="Search your closet" aria-label="Search your closet" autocomplete="off">
         </label>
-        {% endfor %}
-    </div>
-    {% else %}
-    <p class="cm-composer-hint">Your closet is empty. <a href="{% url 'closet:add_item' %}">Add an item</a> first, then tag it here.</p>
-    {% endif %}
-    {% endwith %}
+
+        <div class="cm-closet-filters" role="group" aria-label="Filter by category">
+            <button type="button" class="cm-closet-filter is-active" data-category="">All</button>
+            {% for value, label in items.0.CATEGORY_CHOICES %}
+            <button type="button" class="cm-closet-filter" data-category="{{ value }}">{{ label }}</button>
+            {% endfor %}
+        </div>
+
+        <div class="cm-closet-grid">
+            {% for item in items %}
+            <label class="cm-closet-item" data-name="{{ item.name|lower }}" data-category="{{ item.category }}">
+                <input type="checkbox" name="tagged_items" value="{{ item.id }}"
+                       data-name="{{ item.name }}" data-photo="{% if item.photo %}{{ item.photo.url }}{% endif %}" data-color="{{ item.color_hex }}"
+                       {% if post and item in post.tagged_items.all %}checked{% endif %}>
+                <span class="cm-closet-photo">
+                    {% if item.photo %}
+                    <img src="{{ item.photo.url }}" alt="" loading="lazy">
+                    {% else %}
+                    <i class="fa-solid fa-camera"></i>
+                    {% endif %}
+                    <span class="cm-closet-check"><i class="fa-solid fa-check"></i></span>
+                </span>
+                <span class="cm-closet-name">{{ item.name }}</span>
+            </label>
+            {% endfor %}
+        </div>
+        <p class="cm-closet-none" hidden>No items match your search.</p>
+
+        <footer class="cm-closet-foot">
+            <span class="cm-closet-count">0 selected · max 5</span>
+            <button type="button" class="cm-closet-done">Add to post</button>
+        </footer>
+        {% else %}
+        <p class="cm-closet-empty">Your closet is empty. <a href="{% url 'closet:add_item' %}">Add an item</a> first, then tag it here.</p>
+        {% endif %}
+        {% endwith %}
+    </dialog>
 </div>

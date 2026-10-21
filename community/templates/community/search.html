@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static community_avatars %}
+
+{% block meta %}
+    <title>Search "{{ query }}" | RE:STYLE</title>
+    <link rel="stylesheet" href="{% static 'css/community.css' %}">
+    <script src="{% static 'js/community.js' %}" defer></script>
+{% endblock meta %}
+
+{% block content %}
+<main class="cm-page">
+    <div class="cm-layout cm-layout-wide">
+
+        {% include 'community/_sidebar.html' with active='search' %}
+
+        <section class="cm-feed">
+            <h1 class="sr-title">Results for &ldquo;{{ query }}&rdquo;</h1>
+
+            <div class="cm-tabs">
+                <a href="?q={{ query|urlencode }}&amp;tab=posts" class="cm-tab {% if tab == 'posts' %}is-active{% endif %}">Posts</a>
+                <a href="?q={{ query|urlencode }}&amp;tab=people" class="cm-tab {% if tab == 'people' %}is-active{% endif %}">People</a>
+            </div>
+
+            {% if tab == 'posts' %}
+                {% for post in results %}
+                    {% include 'community/_post_card.html' %}
+                {% empty %}
+                    {% include 'community/_empty_state.html' with title=empty_title text="Check the spelling, try a shorter word, or be the first to ask about it." button_url=ask_url button_label="Ask the community" %}
+                {% endfor %}
+
+            {% else %}
+                {% if results %}
+                <form hidden>{% csrf_token %}</form>
+                <ul class="community-follow-list sr-people">
+                    {% for person in results %}
+                    <li class="community-follow-list-item">
+                        <a class="community-follow-person" href="{% url 'community:show_user_profile' person.username %}">
+                            <span class="cm-avatar">{% avatar person %}</span>
+                            <span>
+                                <strong>@{{ person.username }}</strong>
+                                <small>{{ person.post_count }} post{{ person.post_count|pluralize }}</small>
+                            </span>
+                        </a>
+                        {% if person != user %}
+                        {% url 'community:toggle_follow' person.username as follow_url %}
+                        {% if not user.is_authenticated %}{% url 'main:login' as follow_login_url %}{% endif %}
+                        {% with follow_button_class="cm-community-button cm-community-tiny cm-follow" %}
+                            {% if person.is_following %}
+                                {% with follow_button_class=follow_button_class|add:" is-active" %}
+                                    {% include 'components/button.html' with btn_class="primary" btn_type="button" extra_class=follow_button_class label="Following" label_class="cm-follow-label" data_url=follow_url data_login_url=follow_login_url %}
+                                {% endwith %}
+                            {% else %}
+                                {% include 'components/button.html' with btn_class="tertiary" btn_type="button" extra_class=follow_button_class label="Follow" label_class="cm-follow-label" data_url=follow_url data_login_url=follow_login_url %}
+                            {% endif %}
+                        {% endwith %}
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                    {% include 'community/_empty_state.html' with title=empty_title text="Check the spelling, try a shorter word, or be the first to ask about it." button_url=ask_url button_label="Ask the community" %}
+                {% endif %}
+            {% endif %}
+        </section>
+
+    </div>
+</main>
+{% endblock content %}
