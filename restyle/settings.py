@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'community',
     'planner',
     'closet',
+    'mixmatch',
 ]
 
 CLOUDINARY_STORAGE = {
