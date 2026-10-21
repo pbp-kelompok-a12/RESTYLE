@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+    <title>Mix &amp; Match | RE:STYLE</title>
+    <link rel="stylesheet" href="{% static 'css/mixmatch.css' %}">
+{% endblock meta %}
+
+{% block content %}
+<main>
+<section class="section-container mm-page">
+
+    <header class="mm-head">
+        <h1 aria-label="Mix and Match">
+            <span class="mm-mix">Mix</span>
+            <span class="mm-amp" aria-hidden="true">&amp;</span>
+            <span class="mm-match">Match</span>
+            <span class="mm-sticker">your way</span>
+        </h1>
+    </header>
+
+</section>
+</main>
+{% endblock content %}
