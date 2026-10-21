@@ -19,6 +19,7 @@ from community.views import (
     open_notification,
     show_notifications,
     update_avatar,
+    show_moderation,
 )
 
 app_name = "community"
@@ -26,6 +27,7 @@ app_name = "community"
 urlpatterns = [
     path("", show_community, name="show_community"),
     path("saved/", show_saved, name="show_saved"),
+    path("moderation/", show_moderation, name="show_moderation"),
     path("notifications/", show_notifications, name="show_notifications"),
     path("notifications/read/", mark_notifications_read, name="mark_notifications_read"),
     path("notifications/<int:notification_id>/", open_notification, name="open_notification"),

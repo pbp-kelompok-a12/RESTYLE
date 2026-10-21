@@ -424,3 +424,94 @@ class ProfilePhotoAndSidebarTests(TestCase):
 
         self.assertContains(response, 'class="cm-side"')
         self.assertNotContains(response, 'action="/community/profile/photo/"')
+
+
+@override_settings(STORAGES=SIMPLE_STORAGES)
+class ModerationTests(TestCase):
+    def setUp(self):
+        user_model = get_user_model()
+        self.admin = user_model.objects.create_user(username="admin", password="test-password", is_staff=True)
+        self.alice = user_model.objects.create_user(username="alice", password="test-password")
+        self.bob = user_model.objects.create_user(username="bob", password="test-password")
+        self.post = Post.objects.create(author=self.alice, content="Buy cheap followers here!!!")
+        self.other_post = Post.objects.create(author=self.bob, content="My linen outfit")
+        self.comment = Comment.objects.create(post=self.other_post, author=self.alice, content="Rude reply")
+
+    def test_regular_user_cannot_open_moderation(self):
+        self.client.force_login(self.alice)
+
+        response = self.client.get("/community/moderation/")
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_logged_out_visitor_is_sent_to_login(self):
+        response = self.client.get("/community/moderation/")
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_admin_sees_posts_and_stats(self):
+        self.client.force_login(self.admin)
+
+        response = self.client.get("/community/moderation/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Buy cheap followers here!!!")
+        self.assertContains(response, "My linen outfit")
+        self.assertContains(response, "<dd>2</dd>", html=True)
+
+    def test_admin_can_search(self):
+        self.client.force_login(self.admin)
+
+        response = self.client.get("/community/moderation/?q=followers")
+
+        self.assertContains(response, "Buy cheap followers here!!!")
+        self.assertNotContains(response, "My linen outfit")
+
+    def test_admin_sees_replies_tab(self):
+        self.client.force_login(self.admin)
+
+        response = self.client.get("/community/moderation/?tab=comments")
+
+        self.assertContains(response, "Rude reply")
+        self.assertContains(response, f'action="/community/comment/{self.comment.id}/delete/"')
+
+    def test_admin_can_delete_post_and_return_to_moderation(self):
+        self.client.force_login(self.admin)
+
+        response = self.client.post(
+            f"/community/post/{self.post.id}/delete/",
+            {"next": "/community/moderation/?q=followers"},
+        )
+
+        self.assertRedirects(response, "/community/moderation/?q=followers", fetch_redirect_response=False)
+        self.assertFalse(Post.objects.filter(id=self.post.id).exists())
+
+    def test_admin_can_delete_comment(self):
+        self.client.force_login(self.admin)
+
+        self.client.post(f"/community/comment/{self.comment.id}/delete/", {"next": "/community/moderation/?tab=comments"})
+
+        self.assertFalse(Comment.objects.filter(id=self.comment.id).exists())
+
+    def test_next_to_another_website_is_ignored(self):
+        self.client.force_login(self.admin)
+
+        response = self.client.post(f"/community/post/{self.post.id}/delete/", {"next": "https://evil.example.com/"})
+
+        self.assertRedirects(response, "/community/", fetch_redirect_response=False)
+
+    def test_regular_user_still_cannot_delete_others_posts(self):
+        self.client.force_login(self.bob)
+
+        response = self.client.post(f"/community/post/{self.post.id}/delete/")
+
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(Post.objects.filter(id=self.post.id).exists())
+
+    def test_sidebar_shows_moderation_only_to_admin(self):
+        self.client.force_login(self.alice)
+        self.assertNotContains(self.client.get("/community/"), "/community/moderation/")
+
+        self.client.force_login(self.admin)
+        self.assertContains(self.client.get("/community/"), "/community/moderation/")
+

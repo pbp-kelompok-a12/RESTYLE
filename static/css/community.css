@@ -1380,3 +1380,154 @@ body{
     color: var(--color-azure-dolphin);
     text-decoration: underline;
 }
+
+
+
+/* halaman moderasi (admin panel) */
+
+.mod-head{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 24px;
+}
+
+.mod-head h1{
+    margin: 4px 0 0;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.mod-head p{
+    color: var(--color-azure-dolphin);
+}
+
+.mod-stats{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin: 12px 0 0;
+}
+
+.mod-stats div{
+    padding: 12px 14px;
+    background-color: var(--color-orange-linen);
+    border: 1px solid var(--color-orange-pearl-brush);
+    border-radius: var(--corner-radius-12);
+}
+
+.mod-stats dt{
+    font-size: 12px;
+    color: var(--color-azure-dolphin);
+}
+
+.mod-stats dd{
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.mod-search{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mod-search input[type="search"]{
+    flex: 1;
+    padding: 8px 14px;
+    background-color: var(--color-white-solid);
+    border: 1px solid var(--color-azure-polo-blue);
+    border-radius: var(--corner-radius-999);
+}
+
+.mod-clear{
+    font-size: 12px;
+    color: var(--color-azure-dolphin);
+    text-decoration: underline;
+}
+
+.mod-list{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.mod-row{
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--color-orange-pearl-brush);
+}
+
+.mod-row:last-child{
+    border-bottom: none;
+}
+
+.mod-main{
+    flex: 1;
+    min-width: 0;
+}
+
+.mod-meta{
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+}
+
+.mod-meta a{
+    font-weight: 700;
+}
+
+.mod-meta span,
+.mod-extra{
+    font-size: 12px;
+    color: var(--color-azure-dolphin);
+}
+
+.mod-content{
+    margin: 2px 0 4px;
+    overflow-wrap: anywhere;
+}
+
+.mod-actions{
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+/* tombol hapus diberi warna merah supaya jelas berbahaya */
+.mod-actions .mod-delete{
+    color: var(--color-red-cherry);
+    border-color: var(--color-red-cherry) !important;
+}
+
+.mod-actions .mod-delete:hover{
+    background-color: #fdecea;
+}
+
+.mod-pages{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 12px;
+}
+
+@media (max-width: 768px){
+    .mod-stats{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mod-row{
+        flex-wrap: wrap;
+    }
+
+    .mod-actions{
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
