@@ -19,6 +19,12 @@ def optimize_image_upload(upload):
     """
     upload.seek(0)
     with Image.open(upload) as source:
+        # Closet uploads may already have been compressed in the browser to
+        # fit production request limits. Avoid decoding and encoding them again.
+        if source.format == "WEBP" and max(source.size) <= MAX_IMAGE_DIMENSION:
+            upload.seek(0)
+            return upload
+
         image = ImageOps.exif_transpose(source)
         # reducing_gap lets Pillow shrink very large phone photos in fewer
         # passes before the final high-quality resampling step.

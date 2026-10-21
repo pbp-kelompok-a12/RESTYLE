@@ -56,20 +56,59 @@
             .catch(function () { window.location.href = url; });
     }
 
+    function compressPhoto(form) {
+        var input = form.querySelector('#photo-input');
+        var file = input && input.files && input.files[0];
+        // Most pictures are already small enough; avoid needless recompression.
+        if (!file || file.size <= 4 * 1024 * 1024) return Promise.resolve();
+
+        return createImageBitmap(file).then(function (bitmap) {
+            var scale = Math.min(1, 1800 / Math.max(bitmap.width, bitmap.height));
+            var canvas = document.createElement("canvas");
+            canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+            canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+            canvas.getContext("2d").drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+            bitmap.close();
+
+            function encode(quality) {
+                return new Promise(function (resolve, reject) {
+                    canvas.toBlob(function (blob) {
+                        if (!blob) return reject(new Error("Image compression is unavailable."));
+                        if (blob.size <= 4 * 1024 * 1024) return resolve(blob);
+                        if (quality <= 0.5) return reject(new Error("Image is still too large after compression."));
+                        resolve(encode(quality - 0.12));
+                    }, "image/webp", quality);
+                });
+            }
+
+            return encode(0.82).then(function (blob) {
+                var transfer = new DataTransfer();
+                transfer.items.add(new File([blob], file.name.replace(/\.[^.]+$/, "") + ".webp", {
+                    type: "image/webp",
+                    lastModified: Date.now()
+                }));
+                input.files = transfer.files;
+            });
+        });
+    }
+
     function send(form, label) {
         var loading = window.showToast ? window.showToast("loading", label) : null;
-        fetch(form.action, {
-            method: "POST",
-            body: new FormData(form),
-            headers: { "X-Requested-With": "fetch" }
+        compressPhoto(form).then(function () {
+            return fetch(form.action, {
+                method: "POST",
+                body: new FormData(form),
+                headers: { "X-Requested-With": "fetch" }
+            });
         })
             .then(function (res) {
+                if (!res) throw new Error("Image compression failed.");
                 if (res.ok) { window.location.reload(); return; }
                 if (res.status === 400) { return res.text().then(openModal); }
                 throw new Error("failed");
             })
             .catch(function () {
-                if (window.showToast) window.showToast("error", "Something went wrong. Please try again.");
+                if (window.showToast) window.showToast("error", "Could not compress or upload the photo. Try a smaller image.");
             })
             .finally(function () {
                 if (loading && window.hideToast) window.hideToast(loading);
@@ -137,6 +176,16 @@
         if (form.hasAttribute("data-modal-form")) {
             e.preventDefault();
             send(form, "Saving...");
+            return;
+        }
+
+        if (form.matches(".cl-form") && form.querySelector("#photo-input")) {
+            e.preventDefault();
+            compressPhoto(form).then(function () {
+                form.submit();
+            }).catch(function () {
+                if (window.showToast) window.showToast("error", "Could not compress the photo. Try a smaller image.");
+            });
         }
     });
 
