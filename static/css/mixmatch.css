@@ -326,3 +326,64 @@
     font-size: 18px;
     color: var(--color-azure-san-marino);
 }
+
+/* ---------- detail outfit ---------- */
+.mm-field { display: flex; flex-direction: column; gap: 4px; border: 0; padding: 0; min-width: 0; }
+.mm-field > span, .mm-field > legend {
+    padding: 0;
+    font-size: 12px;
+    color: var(--color-azure-dolphin);
+}
+
+.mm-details input[type="text"],
+.mm-details textarea {
+    width: 100%;
+    padding: 6px 14px;
+    background: var(--color-white-solid);
+    border: 1.5px solid var(--color-azure-st-blue);
+    border-radius: var(--corner-radius-999);
+    outline: none;
+    transition: .15s ease-out;
+}
+.mm-details textarea { border-radius: var(--corner-radius-16); resize: vertical; min-height: 96px; }
+.mm-details input[type="text"]:focus,
+.mm-details textarea:focus { border-color: var(--color-azure-san-marino); }
+
+.mm-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.mm-tag { cursor: pointer; }
+.mm-tag input { position: absolute; opacity: 0; pointer-events: none; }
+.mm-tag span {
+    display: inline-block;
+    padding: 2px 12px;
+    background: var(--color-white-solid);
+    border: 1.5px solid var(--color-azure-st-blue);
+    border-radius: var(--corner-radius-999);
+    color: var(--color-azure-san-marino);
+    font-size: 12px;
+    transition: .15s ease-out;
+}
+.mm-tag:hover span { background: var(--color-azure-st-blue); }
+.mm-tag input:checked + span {
+    background: var(--color-azure-san-marino);
+    border-color: var(--color-azure-san-marino);
+    color: var(--color-white-solid);
+}
+.mm-tag input:focus-visible + span { outline: 2px solid var(--color-azure-martinique); outline-offset: 2px; }
+
+.mm-btn {
+    align-self: center;
+    width: 100%;
+    max-width: 220px;
+    padding: 9px 16px;
+    border: 0;
+    border-radius: var(--corner-radius-999);
+    font-family: var(--font-family-font-3), sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s ease-out;
+}
+.mm-btn-dark { background: var(--color-azure-martinique); color: var(--color-yellow-peach-yellow); }
+.mm-btn-dark:hover { background: var(--color-azure-dolphin); }
+.mm-btn-yellow { background: var(--color-yellow-peach-yellow); color: var(--color-azure-martinique); }
+.mm-btn-yellow:hover { background: var(--color-orange-dairy-cream); }

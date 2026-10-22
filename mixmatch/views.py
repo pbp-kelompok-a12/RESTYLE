@@ -1,7 +1,10 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.views.decorators.http import require_POST
 
 from closet.models import Item, STYLE_OPTIONS
+from mixmatch.forms import OutfitForm
 from mixmatch.models import Outfit, SLOTS, SLOT_CATEGORIES, SLOT_LABELS, slot_for_category
 
 LOGIN_URL = "/login"
@@ -48,7 +51,24 @@ def builder_context(request, form=None, outfit=None):
         "new_purchases": 0,
     }
 
-
 @login_required(login_url=LOGIN_URL)
 def show_mixmatch(request):
     return render(request, "mixmatch/mixmatch.html", builder_context(request))
+
+def report_errors(request, form):
+    for errors in form.errors.values():
+        messages.error(request, errors[0])
+        break
+
+@login_required(login_url=LOGIN_URL)
+@require_POST
+def save_outfit(request):
+    form = OutfitForm(request.POST, user=request.user)
+    if form.is_valid():
+        outfit = form.save(commit=False)
+        outfit.user = request.user
+        outfit.save()
+        messages.success(request, f'Yay! "{outfit.name}" is saved.')
+        return redirect("mixmatch:show_mixmatch")
+    report_errors(request, form)
+    return render(request, "mixmatch/mixmatch.html", builder_context(request, form=form), status=400)

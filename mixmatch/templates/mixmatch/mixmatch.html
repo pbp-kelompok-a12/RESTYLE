@@ -19,7 +19,8 @@
         </h1>
     </header>
 
-    <form method="post" id="mm-form" class="mm-builder">
+        <form method="post" id="mm-form" class="mm-builder"
+            action="{% if outfit %}{% url 'mixmatch:edit_outfit' outfit.id %}{% else %}{% url 'mixmatch:save_outfit' %}{% endif %}">
         {% csrf_token %}
         <aside class="mm-card mm-closet" aria-label="Your closet">
             <h2>Your closet</h2>
@@ -87,6 +88,29 @@
                 <strong>Rp{{ new_purchases }}</strong>
             </div>
         </div>
+        <aside class="mm-card mm-details" aria-label="Outfit details">
+            <h2>Outfit details</h2>
+            <label class="mm-field">
+                <span>Outfit name</span>
+                <input type="text" name="name" value="{{ name_value }}" maxlength="100" required autocomplete="off">
+            </label>
+            <fieldset class="mm-field">
+                <legend>Tags</legend>
+                <div class="mm-tags">
+                    {% for tag in tag_options %}
+                    <label class="mm-tag">
+                        <input type="checkbox" name="tags" value="{{ tag }}" {% if tag in selected_tags %}checked{% endif %}>
+                        <span>{{ tag }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </fieldset>
+            <label class="mm-field">
+                <span>Notes</span>
+                <textarea name="notes" rows="4" maxlength="500">{{ notes_value }}</textarea>
+            </label>
+            <button type="submit" class="mm-btn mm-btn-dark">{% if outfit %}Update outfit{% else %}Save outfit{% endif %}</button>
+        </aside>
     </form>
 
 </section>
