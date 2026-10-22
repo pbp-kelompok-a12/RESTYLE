@@ -1,6 +1,6 @@
 from django.urls import path
 from main.views import ( show_landing_page, register, login_user,  logout_user, profile_view,
-    style_quiz, profile_view
+    style_quiz, profile_view, wishlist_view
 )
 
 app_name = "main"
@@ -12,4 +12,5 @@ urlpatterns = [
     path('login/', login_user, name='login'),
     path('logout/', logout_user, name='logout'),
     path('profile/', profile_view, name="profile"),
+    path('wishlist/', wishlist_view, name='wishlist'),
 ]   

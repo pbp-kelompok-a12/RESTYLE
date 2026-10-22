@@ -106,3 +106,8 @@ def logout_user(request):
 @login_required(login_url='/login')
 def profile_view(request):
     return redirect('community:show_user_profile', username=request.user.username)
+
+
+def wishlist_view(request):
+    return render(request, "wishlist.html")
+

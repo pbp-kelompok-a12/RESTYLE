@@ -1,4 +1,5 @@
-{# Navbar untuk user yang sudah login. Dipakai semua modul (closet, mix & match, planner, community). #}
+
+{# Navbar for authenticated and guest users #}
 
 {% load community_avatars community_notifications %}
 
@@ -8,47 +9,76 @@
         <a href="{% url 'main:show_landing_page' %}">
             <img src="/static/img/brand.webp" alt="RE:STYLE logo" class="brand-nav">
         </a>
+        
         <a href="{% url 'closet:show_closet' %}" class="nav-links {% if request.resolver_match.app_name == 'closet' %}is-active{% endif %}">CLOSET</a>
+
         <a href="{% url 'mixmatch:show_mixmatch' %}" class="nav-links {% if request.resolver_match.app_name == 'mixmatch' %}is-active{% endif %}">MIX &amp; MATCH</a>
-        <a href="{% url 'planner:show_planner' %}" class="nav-links {% if request.resolver_match.app_name == 'planner' %}is-active{% endif %}">PLANNER</a>
+
+        <a href="{% url 'planner:show_planner' %}"
+           class="nav-links {% if request.resolver_match.app_name == 'planner' %}is-active{% endif %}">
+            PLANNER
+        </a>
+
+        <a href="{% url 'main:wishlist' %}"
+           class="nav-links {% if request.resolver_match.url_name == 'wishlist' %}is-active{% endif %}">
+            WISHLIST
+        </a>
+
         <a href="{% url 'community:show_community' %}"
-           class=" nav-links {% if request.resolver_match.app_name == 'community' %}is-active{% endif %}">COMMUNITY</a>
+           class="nav-links {% if request.resolver_match.app_name == 'community' %}is-active{% endif %}">
+            COMMUNITY
+        </a>
     </nav>
 
     <div class="app-nav-tools">
-        <form class="app-nav-search {% if request.resolver_match.app_name == 'community' %}is-active{% endif %}" role="search" action="{% url 'community:show_search' %}" method="get">
+        <form class="app-nav-search {% if request.resolver_match.app_name == 'community' %}is-active{% endif %}"
+              role="search" action="#" method="get">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="search" name="q" placeholder="Search posts, tags, or people" aria-label="Search"
-                   value="{% if request.resolver_match.url_name == 'show_search' %}{{ request.GET.q }}{% endif %}" autocomplete="off">
-            <button type="button" class="sr-clear" aria-label="Clear search" hidden><i class="fa-solid fa-xmark"></i></button>
-            {% include 'community/_recent_searches.html' %}
+            <input type="search" name="q"
+                   placeholder="Search posts, tags, or people"
+                   aria-label="Search">
         </form>
-        {% notification_menu %}        
-        <a href="{% url 'main:profile' %}" class="app-nav-avatar" aria-label="Your profile">{% avatar user %}</a>
+
+        <button class="app-nav-bell" type="button" aria-label="Notifications">
+            <i class="fa-regular fa-bell"></i>
+        </button>
+
+        <a href="{% url 'main:profile' %}" class="app-nav-avatar"
+           aria-label="Your profile">
+            {{ user.username|first|upper }}
+        </a>
     </div>
 </header>
 
 {% else %}
-
 <header class="app-nav">
     <nav class="app-nav-links" aria-label="Main menu">
         <a href="{% url 'main:show_landing_page' %}">
             <img src="/static/img/brand.webp" alt="RE:STYLE logo" class="brand-nav">
         </a>
-        <a href="#" class="nav-links">FEATURES</a>
-        <a href="#" class="nav-links">HOW IT WORKS</a>
-        <a href="#" class="nav-links">STORIES</a>
+
+        <a href="{% url 'main:show_landing_page' %}#features" class="nav-links">
+            FEATURES
+        </a>
+        <a href="{% url 'main:show_landing_page' %}#how-it-works" class="nav-links">
+            HOW IT WORKS
+        </a>
+        <a href="{% url 'main:show_landing_page' %}#stories" class="nav-links">
+            STORIES
+        </a>
+
         <a href="{% url 'community:show_community' %}"
-           class="nav-links {% if request.resolver_match.app_name == 'community' %}is-active{% endif %}">COMMUNITY</a>
+           class="nav-links {% if request.resolver_match.app_name == 'community' %}is-active{% endif %}">
+            COMMUNITY
+        </a>
     </nav>
 
     <div class="app-nav-tools">
         <a href="{% url 'main:login' %}" class="nav-links">SIGN IN</a>
+
         <a href="{% url 'main:style_quiz' %}">
-            {% include 'components/button.html' with btn_class="secondary" label="Try It Now!" extra_class="padding-gede"%}
+            {% include 'components/button.html' with btn_class="secondary" label="Try It Now!" extra_class="padding-gede" %}
         </a>
-            
     </div>
 </header>
-
 {% endif %}
