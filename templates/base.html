@@ -16,8 +16,12 @@
     <script src="https://cdn.jsdelivr.net/npm/marquee3000@1.0.6/marquee3k.min.js"></script>
     <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
 
-    {% block meta %} {% endblock meta %}
+    
+{% block meta %}{% endblock meta %}
+
+{% block extra_css %}{% endblock extra_css %}
 </head>
+
 
 <body>
     {% include 'components/navbar_app.html' %}

@@ -6,6 +6,12 @@
     {% url 'community:show_community' as try_url %}
 {% elif type == 'planner' %}
     {% url 'planner:show_planner' as try_url %}
+{% elif type == 'shopping' %}
+    {% if user.is_authenticated %}
+        {% url 'main:wishlist' as try_url %}
+    {% else %}
+        {% url 'main:login' as try_url %}
+    {% endif %}
 {% endif %}
 
 <article class="fc-card fc-card--{{ type }}">

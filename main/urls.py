@@ -13,5 +13,4 @@ urlpatterns = [
     path('logout/', logout_user, name='logout'),
     path('profile/', profile_view, name="profile"),
     path('wishlist/', wishlist_view, name='wishlist'),
-
 ]   

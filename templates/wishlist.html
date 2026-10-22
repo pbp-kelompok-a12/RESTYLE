@@ -1,43 +1,200 @@
 
 {% extends 'base.html' %}
+{% load static %}
 
 {% block meta %}
 <title>Wishlist | RE:STYLE</title>
 {% endblock meta %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/wishlist.css' %}">
+{% endblock extra_css %}
+
 {% block content %}
 <main class="wishlist-page">
+
     <section class="wishlist-heading">
-        <p class="eyebrow">CONSCIOUS SHOPPING</p>
         <h1>Your <span>Wishlist.</span></h1>
         <p>
-            Think twice before buying.
-            Check what you already own before adding something new.
+            Save the items you love, check what you already own,
+            and make more conscious shopping decisions.
         </p>
+    </section>
+
+    
+    <section class="wishlist-summary">
+        <article class="wishlist-summary-card wishlist-count-card">
+            <p class="summary-number" id="wishlist-count">0</p>
+            <p class="summary-label">Items in wishlist</p>
+        </article>
+
+        <article class="wishlist-summary-card wishlist-think-card">
+            <h2>Think twice.</h2>
+            <p>Before making a new purchase</p>
+        </article>
     </section>
 
     <section class="wishlist-reminder">
-        <h2>Hold on a sec...</h2>
-        <p>
-            Do you already own something similar?
-            Check your Digital Closet before making a purchase.
-        </p>
-        <a href="#add-wishlist" class="wishlist-button">
-            Add to wishlist
-        </a>
+        <div class="reminder-copy">
+            <h2>Pause before you purchase.</h2>
+            <p>
+                Before checking out, ask yourself:
+                do you already own something similar?
+            </p>
+        </div>
+
+        <button
+            type="button"
+            id="open-wishlist-form"
+            class="wishlist-button"
+            aria-controls="add-wishlist"
+            aria-expanded="false"
+        >
+            + Add to wishlist
+        </button>
     </section>
 
-    <section id="add-wishlist" class="wishlist-form-section">
-        <h2>Add an item to your wishlist</h2>
+    <section
+        id="add-wishlist"
+        class="wishlist-form-section"
+        hidden
+    >
+        <div class="form-heading">
+            <div>
+                <h2>Add an item to your wishlist</h2>
+                <p>Save the details before deciding to buy.</p>
+            </div>
+
+            <button
+                type="button"
+                id="close-wishlist-form"
+                class="close-form-button"
+                aria-label="Close form"
+            >
+                &times;
+            </button>
+        </div>
 
         <form id="wishlist-form">
-            <label for="item-name">Item name</label>
-            <input id="item-name" name="item-name"
-                   placeholder="e.g. White shirt" required>
+            <div class="form-field">
+                <label for="item-name">Item name *</label>
+                <input
+                    type="text"
+                    id="item-name"
+                    name="item-name"
+                    placeholder="e.g. White linen shirt"
+                    required
+                >
+            </div>
 
-            <label for="item-category">Category</label>
-            <select id="item-category" name="item-category" required>
-                <option value="">Choose category</option>
+            <div class="form-field">
+                <label for="item-category">Category *</label>
+                <select
+                    id="item-category"
+                    name="item-category"
+                    required
+                >
+                    <option value="">Choose category</option>
+                    <option value="Top">Top</option>
+                    <option value="Bottom">Bottom</option>
+                    <option value="Shoes">Shoes</option>
+                    <option value="Outerwear">Outerwear</option>
+                    <option value="Dress">Dress</option>
+                    <option value="Accessories">Accessories</option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="item-color">Main color *</label>
+                <select id="item-color" name="item-color" required>
+                    <option value="">Choose color</option>
+                    <option value="Black">Black</option>
+                    <option value="White">White</option>
+                    <option value="Blue">Blue</option>
+                    <option value="Brown">Brown</option>
+                    <option value="Beige">Beige</option>
+                    <option value="Grey">Grey</option>
+                    <option value="Cream">Cream</option>
+                    <option value="Green">Green</option>
+                    <option value="Pink">Pink</option>
+                    <option value="Red">Red</option>
+                    <option value="Yellow">Yellow</option>
+                    <option value="Purple">Purple</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="item-price">Estimated price (Rp)</label>
+                <input
+                    type="number"
+                    id="item-price"
+                    name="item-price"
+                    min="0"
+                    placeholder="150000"
+                >
+            </div>
+
+            <div class="form-field full-width">
+                <label for="item-link">Product link (optional)</label>
+                <input
+                    type="url"
+                    id="item-link"
+                    name="item-link"
+                    placeholder="https://..."
+                >
+            </div>
+
+            <div class="form-field full-width">
+                <label for="item-reason">Why do you want it? (optional)</label>
+                <textarea
+                    id="item-reason"
+                    name="item-reason"
+                    rows="3"
+                    placeholder="What occasion will you use it for?"
+                ></textarea>
+            </div>
+
+            <div class="wishlist-form-actions full-width">
+                <button
+                    type="button"
+                    id="clear-wishlist-form"
+                    class="secondary-button"
+                >
+                    Clear form
+                </button>
+
+                <button type="submit" class="wishlist-button">
+                    Save item
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <section class="saved-items-section">
+        <div class="saved-items-heading">
+            <div>
+                <h2>Saved items</h2>
+                <p>
+                    Find and review the items you are considering.
+                </p>
+            </div>
+
+            <span id="saved-item-count" class="items-badge">
+                0 items
+            </span>
+        </div>
+
+        <div class="wishlist-filters">
+            <input
+                type="search"
+                id="wishlist-search"
+                placeholder="⌕ Search your wishlist..."
+                aria-label="Search wishlist"
+            >
+
+            <select id="filter-category" aria-label="Filter by category">
+                <option value="">All categories</option>
                 <option value="Top">Top</option>
                 <option value="Bottom">Bottom</option>
                 <option value="Shoes">Shoes</option>
@@ -46,16 +203,31 @@
                 <option value="Accessories">Accessories</option>
             </select>
 
-            <label for="item-color">Color</label>
-            <input id="item-color" name="item-color"
-                   placeholder="e.g. White" required>
+            <select id="filter-match" aria-label="Filter by closet match">
+                <option value="all">All closet matches</option>
+                <option value="matched">Similar items owned</option>
+                <option value="unmatched">No similar item found</option>
+            </select>
+        </div>
 
-            <button type="submit" class="wishlist-button">
-                Add item
-            </button>
-        </form>
-
-        <div id="wishlist-items"></div>
+        <div id="wishlist-items" class="wishlist-items"></div>
     </section>
+
+    <section class="closet-note">
+        <div>
+            <h2>Before you buy, check your closet.</h2>
+            <p>
+                Compare your wishlist with your Digital Closet
+                to help avoid unnecessary purchases.
+            </p>
+        </div>
+
+        <a href="{% url 'main:show_landing_page' %}" class="wishlist-button">
+            Back to home &rarr;
+        </a>
+    </section>
+
 </main>
+
+<script src="{% static 'js/wishlist.js' %}" defer></script>
 {% endblock content %}
