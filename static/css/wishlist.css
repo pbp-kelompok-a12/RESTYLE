@@ -1,7 +1,5 @@
 
-/* ========================================
-   RE:STYLE - WISHLIST PAGE
-   ======================================== */
+/* RE:STYLE - WISHLIST PAGE */
 
 .wishlist-page {
     min-height: 70vh;
@@ -1297,6 +1295,7 @@
     justify-content: center;
     gap: 10px;
     background: #ffffff;
+    border-color: #f2df8a;
     box-shadow: 0 4px 14px rgba(54, 38, 64, 0.05);
 }
 
@@ -1305,7 +1304,7 @@
 }
 
 .wishlist-think-card {
-    background: #fff0a8;
+    background: #ffffff;
     border-color: #f2df8a;
 }
 
