@@ -95,6 +95,39 @@
         });
     });
 
+    /* ---------- Reset & Shuffle ---------- */
+    form.querySelector(".mm-reset").addEventListener("click", function () {
+        Object.keys(slots).forEach(function (key) { setSlot(key, null); });
+    });
+
+    form.querySelector(".mm-shuffle").addEventListener("click", function () {
+        Object.keys(slots).forEach(function (key) {
+            var options = items.filter(function (el) { return el.dataset.slot === key && !el.disabled; });
+            if (!options.length) return;
+            var current = slotInput(key).value;
+            // kalau ada pilihan lain, jangan ambil yang sama dengan yang sekarang
+            var others = options.filter(function (el) { return el.dataset.id !== current; });
+            var pool = others.length ? others : options;
+            setSlot(key, pool[Math.floor(Math.random() * pool.length)]);
+        });
+    });
+
+    /* ---------- validasi sebelum submit ---------- */
+    var error = document.getElementById("mm-error");
+
+    items.forEach(function (el) {
+        el.addEventListener("click", function () { error.hidden = true; });
+    });
+
+    form.addEventListener("submit", function (event) {
+        var filled = Object.keys(slots).some(function (key) { return slotInput(key).value !== ""; });
+        if (!filled) {
+            event.preventDefault();
+            error.hidden = false;
+            error.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    });
+
     /* ---------- konfirmasi hapus outfit tersimpan ---------- */
     document.querySelectorAll(".mm-outfit-delete").forEach(function (deleteForm) {
         deleteForm.addEventListener("submit", function (event) {

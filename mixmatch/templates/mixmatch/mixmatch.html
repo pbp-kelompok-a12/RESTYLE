@@ -65,6 +65,10 @@
             {% endif %}
         </aside>
         <div class="mm-canvas">
+            <div class="mm-toolbar">
+                <button type="button" class="mm-tool mm-shuffle"><i class="fa-solid fa-shuffle"></i> Shuffle</button>
+                <button type="button" class="mm-tool mm-reset"><i class="fa-solid fa-rotate-right"></i> Reset</button>
+            </div>
             <div class="mm-slots">
                 {% for slot in slots %}
                 <div class="mm-slot-wrap">
@@ -86,6 +90,7 @@
                 </div>
                 {% endfor %}
             </div>
+            <p class="mm-error" id="mm-error" role="alert" hidden>Pick at least one piece from your closet first.</p>
             <div class="mm-purchases" title="Every piece here is already in your closet">
                 <span>New purchases</span>
                 <strong>Rp{{ new_purchases }}</strong>

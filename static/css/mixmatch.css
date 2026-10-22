@@ -470,3 +470,46 @@
     justify-content: center;
 }
 .mm-outfit-delete button:hover { background: var(--color-red-cherry); border-color: var(--color-red-cherry); color: var(--color-white-solid); }
+
+
+/* ---------- toolbar & error ---------- */
+.mm-toolbar { display: flex; justify-content: flex-end; gap: 8px; }
+
+.mm-tool {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 14px;
+    background: var(--color-white-solid);
+    border: 1px solid var(--color-azure-st-blue);
+    border-radius: var(--corner-radius-999);
+    color: var(--color-azure-san-marino);
+    font-size: 12px;
+    cursor: pointer;
+    transition: .15s ease-out;
+}
+.mm-tool:hover { background: var(--color-azure-st-blue); }
+
+.mm-error {
+    text-align: center;
+    color: var(--color-red-cherry);
+    font-weight: 700;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 1100px) {
+    .mm-builder { grid-template-columns: 1fr; }
+    .mm-closet { order: 2; }
+    .mm-canvas { order: 1; }
+    .mm-details { order: 3; }
+    .mm-items { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+@media (max-width: 800px) {
+    .mm-page { padding-left: 20px; padding-right: 20px; }
+    .mm-mix { font-size: 40px; }
+    .mm-match { font-size: 38px; padding: 0 18px 2px; }
+    .mm-amp { width: 36px; height: 36px; font-size: 22px; }
+    .mm-slot { height: 140px; }
+    .mm-items { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
