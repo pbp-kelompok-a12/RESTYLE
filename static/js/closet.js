@@ -120,8 +120,8 @@
         openModal(
             '<div class="cl-confirm"><h2 class="cl-modal-title">Delete this item?</h2><p></p>' +
             '<div class="cl-form-actions">' +
-            '<button type="button" class="btn tertiary-btn" data-close>Cancel</button>' +
-            '<button type="button" class="btn primary-btn" data-confirm-yes>Delete</button>' +
+            '<button type="button" class="btn primary-btn" data-close>Cancel</button>' +
+            '<button type="button" class="btn tertiary-btn" data-confirm-yes>Delete</button>' +
             "</div></div>"
         );
         body.querySelector("p").textContent = '"' + name + "\" will be removed from your closet. This can't be undone.";
