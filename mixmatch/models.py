@@ -49,3 +49,7 @@ class Outfit(models.Model):
     @property
     def pieces(self):
         return [getattr(self, slot) for slot in SLOTS if getattr(self, slot) is not None]
+
+    @property
+    def slot_pieces(self):
+        return [(slot, getattr(self, slot)) for slot in SLOTS if getattr(self, slot) is not None]

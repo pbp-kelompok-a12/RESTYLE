@@ -387,3 +387,64 @@
 .mm-btn-dark:hover { background: var(--color-azure-dolphin); }
 .mm-btn-yellow { background: var(--color-yellow-peach-yellow); color: var(--color-azure-martinique); }
 .mm-btn-yellow:hover { background: var(--color-orange-dairy-cream); }
+
+/* ---------- saved outfits ---------- */
+.mm-saved { display: flex; flex-direction: column; gap: 16px; }
+.mm-saved h2 {
+    color: var(--color-azure-san-marino);
+    font-family: var(--font-family-font-3), sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+}
+.mm-saved h2 i { color: var(--color-yellow-peach-yellow); -webkit-text-stroke: 1px var(--color-azure-martinique); font-size: 20px; }
+
+.mm-saved-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.mm-outfit {
+    position: relative;
+    background: var(--color-white-solid);
+    border: 2px solid var(--color-azure-st-blue);
+    border-radius: var(--corner-radius-12);
+    transition: .15s ease-out;
+}
+.mm-outfit:hover, .mm-outfit.is-editing { border-color: var(--color-azure-san-marino); box-shadow: var(--drop-shadow); }
+
+.mm-outfit-link { display: block; padding: 16px 16px 14px; }
+
+.mm-flat {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr;
+    grid-template-rows: 1fr 1.25fr .7fr;
+    grid-template-areas:
+        "outerwear top accessories"
+        "outerwear bottom accessories"
+        ".         shoes  .";
+    gap: 4px 8px;
+    height: 250px;
+}
+.mm-p { display: flex; align-items: center; justify-content: center; min-width: 0; min-height: 0; }
+.mm-p img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(58, 43, 72, .18)); }
+.mm-p .mm-swatch { width: 70%; height: 70%; margin: 0; }
+.mm-p-top { grid-area: top; }
+.mm-p-bottom { grid-area: bottom; }
+.mm-p-shoes { grid-area: shoes; }
+.mm-p-outerwear { grid-area: outerwear; }
+.mm-p-accessories { grid-area: accessories; }
+.mm-p-dresses { grid-column: 2; grid-row: 1 / 3; }   
+.has-dress .mm-p-top, .has-dress .mm-p-bottom { display: none; }
+.mm-flat:not(:has(.mm-p-top)):not(:has(.mm-p-dresses)) .mm-p-bottom { grid-row: 1 / 3; }
+.mm-outfit-empty { grid-column: 1 / -1; align-self: center; color: var(--color-azure-dolphin); font-size: 12px; text-align: center; }
+
+.mm-outfit-name {
+    margin-top: 12px;
+    font-family: var(--font-family-font-2), sans-serif;
+    font-size: 11px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--color-azure-san-marino);
+}
+.mm-outfit-tags { font-size: 11px; color: var(--color-azure-dolphin); }

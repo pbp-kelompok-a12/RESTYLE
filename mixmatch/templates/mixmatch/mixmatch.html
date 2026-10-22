@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static mixmatch_extras %}
 
 {% block meta %}
     <title>Mix &amp; Match | RE:STYLE</title>
@@ -37,11 +37,11 @@
                 {% for item in items %}
                 <button type="button" class="mm-item"
                         data-id="{{ item.id }}" data-slot="{{ item.slot }}" data-category="{{ item.category }}"
-                        data-name="{{ item.name }}" data-photo="{% if item.photo %}{{ item.photo.url }}{% endif %}" data-color="{{ item.color_hex }}"
+                        data-name="{{ item.name }}" data-photo="{% if item.photo %}{{ item.photo.url|cutout }}{% endif %}" data-color="{{ item.color_hex }}"
                         {% if item.status != 'ready' %}disabled title="This piece is in the wash"{% endif %}>
                     <span class="mm-item-photo">
                         {% if item.photo %}
-                        <img src="{{ item.photo.url }}" alt="" loading="lazy">
+                        <img src="{{ item.photo.url|cutout }}" alt="" loading="lazy">
                         {% else %}
                         <i class="mm-swatch" style="background:{{ item.color_hex }}"></i>
                         {% endif %}
@@ -72,7 +72,7 @@
                             <i class="fa-solid fa-circle-plus"></i>
                         </button>
                         <div class="mm-slot-piece" {% if not slot.item %}hidden{% endif %}>
-                            <img {% if slot.item.photo %}src="{{ slot.item.photo.url }}"{% else %}hidden{% endif %} alt="{{ slot.item.name }}">
+                            <img {% if slot.item.photo %}src="{{ slot.item.photo.url|cutout }}"{% else %}hidden{% endif %} alt="{{ slot.item.name }}">
                             <i class="mm-swatch" style="background:{{ slot.item.color_hex }}" {% if slot.item.photo %}hidden{% endif %}></i>
                             <span class="mm-slot-name">{{ slot.item.name }}</span>
                         </div>
@@ -112,6 +112,40 @@
             <button type="submit" class="mm-btn mm-btn-dark">{% if outfit %}Update outfit{% else %}Save outfit{% endif %}</button>
         </aside>
     </form>
+    <section class="mm-saved" aria-labelledby="mm-saved-title">
+        <h2 id="mm-saved-title">Saved outfits <i class="fa-solid fa-star"></i></h2>
+        {% if saved_outfits %}
+        <div class="mm-saved-grid">
+            {% for o in saved_outfits %}
+            <article class="mm-outfit">
+                <a class="mm-outfit-link" href="#">
+                    <div class="mm-flat{% if o.dresses %} has-dress{% endif %}">
+                        {% for slot, piece in o.slot_pieces %}
+                        <span class="mm-p mm-p-{{ slot }}">
+                            {% if piece.photo %}
+                            <img src="{{ piece.photo.url|cutout }}" alt="{{ piece.name }}" loading="lazy">
+                            {% else %}
+                            <i class="mm-swatch" style="background:{{ piece.color_hex }}"></i>
+                            {% endif %}
+                        </span>
+                        {% empty %}
+                        <span class="mm-outfit-empty">Pieces were removed from your closet</span>
+                        {% endfor %}
+                    </div>
+                    <p class="mm-outfit-name">{{ o.name }}</p>
+                    {% if o.tags %}<p class="mm-outfit-tags">{{ o.tags|join:" · " }}</p>{% endif %}
+                </a>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="mm-empty">
+            <img src="{% static 'img/bunglon_hires.png' %}" alt="">
+            <h3>No saved outfits yet</h3>
+            <p>Build a look above and hit Save outfit. It will show up here.</p>
+        </div>
+        {% endif %}
+    </section>
 
 </section>
 </main>
