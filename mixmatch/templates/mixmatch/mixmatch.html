@@ -138,6 +138,10 @@
                     <p class="mm-outfit-name">{{ o.name }}</p>
                     {% if o.tags %}<p class="mm-outfit-tags">{{ o.tags|join:" · " }}</p>{% endif %}
                 </a>
+                <form method="post" action="{% url 'mixmatch:delete_outfit' o.id %}" class="mm-outfit-delete" data-confirm="{{ o.name }}">
+                    {% csrf_token %}
+                    <button type="submit" aria-label="Delete {{ o.name }}"><i class="fa-solid fa-trash"></i></button>
+                </form>
             </article>
             {% endfor %}
         </div>

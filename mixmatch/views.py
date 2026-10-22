@@ -85,3 +85,12 @@ def edit_outfit(request, outfit_id):
         report_errors(request, form)
         return render(request, "mixmatch/mixmatch.html", builder_context(request, form=form, outfit=outfit), status=400)
     return render(request, "mixmatch/mixmatch.html", builder_context(request, outfit=outfit))
+
+@login_required(login_url=LOGIN_URL)
+@require_POST
+def delete_outfit(request, outfit_id):
+    outfit = get_object_or_404(Outfit, pk=outfit_id, user=request.user)
+    name = outfit.name
+    outfit.delete()
+    messages.success(request, f'"{name}" was removed from your saved outfits.')
+    return redirect("mixmatch:show_mixmatch")

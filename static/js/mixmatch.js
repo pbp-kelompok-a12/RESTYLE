@@ -95,5 +95,14 @@
         });
     });
 
+    /* ---------- konfirmasi hapus outfit tersimpan ---------- */
+    document.querySelectorAll(".mm-outfit-delete").forEach(function (deleteForm) {
+        deleteForm.addEventListener("submit", function (event) {
+            if (!window.confirm('Delete "' + deleteForm.dataset.confirm + '" from your saved outfits?')) {
+                event.preventDefault();
+            }
+        });
+    });
+
     markPicked();
 })();

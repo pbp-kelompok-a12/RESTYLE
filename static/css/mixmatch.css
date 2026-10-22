@@ -451,3 +451,22 @@
 
 .mm-editing { color: var(--color-azure-dolphin); }
 .mm-editing a { color: var(--color-azure-san-marino); font-weight: 700; text-decoration: underline; }
+
+
+/* ---------- hapus outfit ---------- */
+.mm-outfit-delete { position: absolute; top: 8px; right: 8px; }
+.mm-outfit-delete button {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--color-white-solid);
+    border: 1px solid var(--color-azure-st-blue);
+    color: var(--color-azure-dolphin);
+    font-size: 11px;
+    cursor: pointer;
+    transition: .15s ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.mm-outfit-delete button:hover { background: var(--color-red-cherry); border-color: var(--color-red-cherry); color: var(--color-white-solid); }
