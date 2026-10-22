@@ -17,6 +17,9 @@
             <span class="mm-match">Match</span>
             <span class="mm-sticker">your way</span>
         </h1>
+        {% if outfit %}
+            <p class="mm-editing">Editing <strong>{{ outfit.name }}</strong> · <a href="{% url 'mixmatch:show_mixmatch' %}">Start a new outfit</a></p>
+        {% endif %}
     </header>
 
         <form method="post" id="mm-form" class="mm-builder"
@@ -117,8 +120,8 @@
         {% if saved_outfits %}
         <div class="mm-saved-grid">
             {% for o in saved_outfits %}
-            <article class="mm-outfit">
-                <a class="mm-outfit-link" href="#">
+            <article class="mm-outfit{% if outfit and outfit.id == o.id %} is-editing{% endif %}">
+                <a class="mm-outfit-link" href="{% url 'mixmatch:edit_outfit' o.id %}" aria-label="Open {{ o.name }} in the builder">
                     <div class="mm-flat{% if o.dresses %} has-dress{% endif %}">
                         {% for slot, piece in o.slot_pieces %}
                         <span class="mm-p mm-p-{{ slot }}">

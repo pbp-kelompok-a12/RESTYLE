@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from closet.models import Item, STYLE_OPTIONS
@@ -72,3 +72,16 @@ def save_outfit(request):
         return redirect("mixmatch:show_mixmatch")
     report_errors(request, form)
     return render(request, "mixmatch/mixmatch.html", builder_context(request, form=form), status=400)
+
+@login_required(login_url=LOGIN_URL)
+def edit_outfit(request, outfit_id):
+    outfit = get_object_or_404(Outfit, pk=outfit_id, user=request.user)
+    form = OutfitForm(request.POST or None, instance=outfit, user=request.user)
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'"{outfit.name}" was updated!')
+            return redirect("mixmatch:show_mixmatch")
+        report_errors(request, form)
+        return render(request, "mixmatch/mixmatch.html", builder_context(request, form=form, outfit=outfit), status=400)
+    return render(request, "mixmatch/mixmatch.html", builder_context(request, outfit=outfit))

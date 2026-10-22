@@ -448,3 +448,6 @@
     color: var(--color-azure-san-marino);
 }
 .mm-outfit-tags { font-size: 11px; color: var(--color-azure-dolphin); }
+
+.mm-editing { color: var(--color-azure-dolphin); }
+.mm-editing a { color: var(--color-azure-san-marino); font-weight: 700; text-decoration: underline; }
