@@ -406,6 +406,26 @@
 }
 .cl-detail-actions .tertiary-btn:hover { filter: brightness(.9); }
 
+/* tombol add floating */
+.cl-fab {
+    position: fixed;
+    right: 28px;
+    bottom: 28px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 24px;
+    border-radius: var(--corner-radius-999);
+    background: var(--color-azure-san-marino);
+    color: var(--color-white-solid);
+    font-size: 15px;
+    font-weight: 700;
+    box-shadow: var(--drop-shadow);
+    z-index: 900;
+    transition: transform .2s ease-out;
+}
+.cl-fab:hover { transform: translateY(-3px); }
+
 /* pop-up */
 .cl-overlay {
     position: fixed;
@@ -471,4 +491,6 @@
     .cl-cat { flex-shrink: 0; }
     .cl-search { flex: 1 1 100%; }
     .cl-clear { margin-left: 0; }
+    .cl-fab { right: 20px; bottom: 24px; width: 56px; height: 56px; padding: 0; justify-content: center; font-size: 22px; }
+    .cl-fab span { display: none; }
 }

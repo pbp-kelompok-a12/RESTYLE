@@ -14,7 +14,6 @@
         <h1>Welcome to your <span class="cl-highlight">closet!</span></h1>
         <div class="cl-head-actions">
             <span class="cl-count">{{ shown_count }}{% if shown_count != total_count %} of {{ total_count }}{% endif %} item{{ total_count|pluralize }}</span>
-            <a href="{% url 'closet:add_item' %}" class="btn primary-btn" data-modal><i class="fa-solid fa-plus"></i> Add item</a>
         </div>
     </header>
 
@@ -107,6 +106,8 @@
         </div>
         {% endfor %}
     </div>
+
+    <a href="{% url 'closet:add_item' %}" class="cl-fab" data-modal aria-label="Add item"><i class="fa-solid fa-plus"></i><span>Add item</span></a>
 
     <div class="cl-overlay" id="cl-overlay" hidden>
         <div class="cl-modal" role="dialog" aria-modal="true">
