@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'community',
     'planner',
     'closet',
+    'mixmatch',
 ]
 
 CLOUDINARY_STORAGE = {
@@ -61,7 +62,6 @@ STORAGES = {
     "default": {"BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage"},
     "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},  # sesuaikan dengan yang kamu pakai sekarang
 }
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
