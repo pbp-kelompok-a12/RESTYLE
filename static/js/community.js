@@ -593,6 +593,18 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
+// Token CSRF (semacam "tanda tangan" supaya server tahu permintaan ini benar dari RE:STYLE).
+// Diambil dari cookie "csrftoken". Jangan mengandalkan <input> di dalam kartu post:
+// kartu post milik orang lain tidak punya form, jadi input itu tidak ada.
+function getCsrfToken() {
+    const cookie = document.cookie.split("; ").find((row) => row.startsWith("csrftoken="));
+    if (cookie) {
+        return decodeURIComponent(cookie.split("=")[1]);
+    }
+    const input = document.querySelector("input[name=csrfmiddlewaretoken]");
+    return input ? input.value : "";
+}
+
 // Like dan Save: kirim ke server tanpa memuat ulang halaman, lalu perbarui tombolnya.
 document.querySelectorAll("button.cm-react").forEach((button) => {
     button.addEventListener("click", async () => {
@@ -601,7 +613,7 @@ document.querySelectorAll("button.cm-react").forEach((button) => {
             return;
         }
 
-        const token = button.closest(".cm-post").querySelector("input[name=csrfmiddlewaretoken]").value;
+        const token = getCsrfToken();
 
         try {
             const response = await fetch(button.dataset.url, {
@@ -675,8 +687,8 @@ document.querySelectorAll(".cm-follow").forEach((button) => {
             return;
         }
 
-        const token = document.querySelector("input[name=csrfmiddlewaretoken]").value;
-
+        const token = getCsrfToken();
+        
         try {
             const response = await fetch(button.dataset.url, {
                 method: "POST",
