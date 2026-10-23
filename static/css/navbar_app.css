@@ -116,6 +116,18 @@
     color: var(--color-azure-martinique);
     font-weight: 700;
     text-decoration: none;
+    overflow: hidden;  /* foto profil ikut terpotong bulat */
+}
+
+/* foto profil di navbar. Ditulis di sini (bukan di community.css) supaya
+   tetap bulat di semua halaman: closet, planner, landing page, dll. */
+.app-nav-avatar .avatar-photo{
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;  /* tinggi selalu sama dengan lebar */
+    object-fit: cover;
+    border-radius: var(--corner-radius-999);
 }
 
 .brand-nav{
