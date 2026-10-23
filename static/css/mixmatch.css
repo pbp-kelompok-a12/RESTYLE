@@ -1,8 +1,9 @@
+/* ---------- halaman ---------- */
 .mm-page {
     flex-direction: column;
-    gap: 28px;
-    padding-top: 160px;
-    padding-bottom: 80px;
+    gap: 36px;
+    padding-top: 150px;
+    padding-bottom: 96px;
     background: var(--color-orange-linen);
     font-family: var(--font-family-font-1);
     font-size: 14px;
@@ -17,7 +18,7 @@
 .mm-page :where(form) { margin: 0; }
 .mm-page [hidden] { display: none !important; }
 
-/* headings */
+/* ---------- judul ---------- */
 .mm-head { display: flex; flex-direction: column; gap: 8px; }
 
 .mm-head h1 {
@@ -29,11 +30,7 @@
     line-height: 1.1;
 }
 
-.mm-mix {
-    color: var(--color-azure-san-marino);
-    font-size: 56px;
-    font-weight: 700;
-}
+.mm-mix { color: var(--color-azure-san-marino); font-size: 56px; font-weight: 700; }
 
 .mm-amp {
     width: 44px;
@@ -68,32 +65,37 @@
     transform: rotate(4deg) translateY(-22px);
 }
 
+.mm-editing { color: var(--color-azure-dolphin); }
+.mm-editing a { color: var(--color-azure-san-marino); font-weight: 700; text-decoration: underline; }
+
 /* ---------- layout 3 kolom ---------- */
 .mm-builder {
     display: grid;
-    grid-template-columns: minmax(260px, 320px) minmax(0, 1fr) minmax(260px, 320px);
-    gap: 28px;
-    align-items: start;
+    grid-template-columns: minmax(250px, 310px) minmax(0, 1fr) minmax(250px, 310px);
+    gap: 24px;
+    align-items: stretch;   /* panel kiri dan kanan sama panjang */
 }
 
 .mm-card {
-    background: var(--color-white-solid);
-    border: 2px solid var(--color-azure-st-blue);
-    border-radius: 40px;
-    padding: 26px 22px;
     display: flex;
     flex-direction: column;
     gap: 14px;
+    padding: 24px 20px;
+    background: var(--color-white-solid);
+    border: 2px solid var(--color-azure-st-blue);
+    border-radius: var(--corner-radius-24);
+    box-shadow: 0 8px 24px rgba(63, 102, 153, .08);
 }
 
 .mm-card h2 {
     text-align: center;
     color: var(--color-azure-san-marino);
     font-family: var(--font-family-font-3), sans-serif;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
 }
 
+/* pengganti foto untuk pakaian yang tidak punya gambar */
 .mm-swatch {
     display: block;
     width: 56%;
@@ -107,7 +109,7 @@
 .mm-chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
 
 .mm-chip {
-    padding: 3px 12px;
+    padding: 3px 11px;
     background: var(--color-white-solid);
     border: 1px solid var(--color-azure-polo-blue);
     border-radius: var(--corner-radius-999);
@@ -129,8 +131,10 @@
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 8px;
-    max-height: 440px;
+    flex: 1 1 0;          
+    min-height: 200px;
     overflow-y: auto;
+    align-content: start;
     padding: 4px;
 }
 
@@ -139,7 +143,7 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    padding: 6px;
+    padding: 6px 6px 8px;
     background: var(--color-white-solid);
     border: 1px solid var(--color-azure-st-blue);
     border-radius: var(--corner-radius-12);
@@ -147,7 +151,7 @@
     cursor: pointer;
     transition: .15s ease-out;
 }
-.mm-item:hover:not(:disabled) { border-color: var(--color-azure-san-marino); transform: translateY(-2px); }
+.mm-item:hover:not(:disabled) { border-color: var(--color-azure-san-marino); transform: translateY(-2px); box-shadow: var(--drop-shadow); }
 .mm-item:disabled { opacity: .55; cursor: not-allowed; }
 .mm-item.is-picked { border-color: var(--color-azure-san-marino); background: var(--color-azure-st-blue); }
 
@@ -202,24 +206,27 @@
 
 .mm-none { text-align: center; color: var(--color-azure-dolphin); }
 
-/* ---------- empty state ---------- */
-.mm-empty {
-    display: flex;
-    flex-direction: column;
+/* ---------- canvas (tengah) ---------- */
+.mm-canvas { display: flex; flex-direction: column; gap: 14px; align-items: stretch; align-self: start; }
+
+.mm-toolbar { display: flex; justify-content: flex-end; gap: 8px; }
+
+.mm-tool {
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 28px 16px;
-    text-align: center;
-    color: var(--color-azure-dolphin);
+    gap: 6px;
+    padding: 5px 14px;
+    background: var(--color-white-solid);
+    border: 1px solid var(--color-azure-st-blue);
+    border-radius: var(--corner-radius-999);
+    color: var(--color-azure-san-marino);
+    font-size: 12px;
+    cursor: pointer;
+    transition: .15s ease-out;
 }
-.mm-empty img { width: 110px; height: auto; }
-.mm-empty h3 { color: var(--color-azure-san-marino); font-family: var(--font-family-font-3), sans-serif; font-size: 18px; }
-.mm-empty-small { padding: 8px 0; }
+.mm-tool:hover { background: var(--color-azure-st-blue); }
 
-/* ---------- canvas ---------- */
-.mm-canvas { display: flex; flex-direction: column; gap: 16px; align-items: stretch; }
-
-.mm-slots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; }
+.mm-slots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px 16px; }
 
 .mm-slot-wrap { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 
@@ -229,32 +236,44 @@
     border-radius: var(--corner-radius-999);
     color: var(--color-white-solid);
     font-family: var(--font-family-font-3), sans-serif;
-    font-size: 13px;
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 600;
     text-align: center;
 }
 
 .mm-slot {
     position: relative;
-    height: 150px;
+    height: 200px;
     background: var(--color-white-solid);
     border: 2px solid var(--color-azure-st-blue);
-    border-radius: var(--corner-radius-14);
+    border-radius: var(--corner-radius-24);
     overflow: hidden;
     transition: .15s ease-out;
 }
 .mm-slot:hover { border-color: var(--color-azure-san-marino); }
 
+.mm-slot:not(.is-filled) { border: 2px dashed var(--color-azure-polo-blue); }
+
 .mm-slot-add {
     position: absolute;
     inset: 0;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
     background: none;
     border: 0;
     color: var(--color-azure-st-blue);
-    font-size: 44px;
+    font-size: 40px;
     cursor: pointer;
     transition: .15s ease-out;
+}
+.mm-slot-add::after {
+    content: "Pick your item";
+    font-size: 11px;
+    color: var(--color-azure-polo-blue);
 }
 .mm-slot-add:hover { color: var(--color-azure-san-marino); }
 .mm-slot.is-filled .mm-slot-add { display: none; }
@@ -262,17 +281,23 @@
 .mm-slot-piece {
     position: absolute;
     inset: 0;
-    padding: 12px;
+    padding: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-.mm-slot-piece img { width: 100%; height: 100%; object-fit: contain; }
+.mm-slot-piece img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 6px rgba(58, 43, 72, .18));
+}
 .mm-slot-piece .mm-swatch { width: 40%; height: 70%; }
 
 .mm-slot-name {
     position: absolute;
-    width: 1px; height: 1px;
+    width: 1px;
+    height: 1px;
     overflow: hidden;
     clip: rect(0 0 0 0);
     white-space: nowrap;
@@ -280,8 +305,8 @@
 
 .mm-slot-clear {
     position: absolute;
-    top: 8px;
-    right: 8px;
+    top: 10px;
+    right: 10px;
     width: 22px;
     height: 22px;
     border-radius: 50%;
@@ -293,8 +318,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: .15s ease-out;
 }
 .mm-slot-clear:hover { background: var(--color-azure-san-marino); color: var(--color-white-solid); }
+
+.mm-error { text-align: center; color: var(--color-red-cherry); font-weight: 700; }
 
 .mm-purchases {
     align-self: flex-start;
@@ -328,17 +356,20 @@
 }
 
 /* ---------- detail outfit ---------- */
-.mm-field { display: flex; flex-direction: column; gap: 4px; border: 0; padding: 0; min-width: 0; }
+.mm-details { gap: 16px; }
+
+.mm-field { display: flex; flex-direction: column; gap: 6px; border: 0; padding: 0; min-width: 0; }
 .mm-field > span, .mm-field > legend {
     padding: 0;
     font-size: 12px;
+    font-weight: 600;
     color: var(--color-azure-dolphin);
 }
 
 .mm-details input[type="text"],
 .mm-details textarea {
     width: 100%;
-    padding: 6px 14px;
+    padding: 8px 14px;
     background: var(--color-white-solid);
     border: 1.5px solid var(--color-azure-st-blue);
     border-radius: var(--corner-radius-999);
@@ -347,7 +378,7 @@
 }
 .mm-details textarea { border-radius: var(--corner-radius-16); resize: vertical; min-height: 96px; }
 .mm-details input[type="text"]:focus,
-.mm-details textarea:focus { border-color: var(--color-azure-san-marino); }
+.mm-details textarea:focus { border-color: var(--color-azure-san-marino); box-shadow: 0 0 0 3px rgba(169, 212, 231, .45); }
 
 .mm-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .mm-tag { cursor: pointer; }
@@ -374,7 +405,7 @@
     align-self: center;
     width: 100%;
     max-width: 220px;
-    padding: 9px 16px;
+    padding: 10px 16px;
     border: 0;
     border-radius: var(--corner-radius-999);
     font-family: var(--font-family-font-3), sans-serif;
@@ -383,13 +414,15 @@
     cursor: pointer;
     transition: .2s ease-out;
 }
-.mm-btn-dark { background: var(--color-azure-martinique); color: var(--color-yellow-peach-yellow); }
+.mm-btn:hover { transform: translateY(-1px); box-shadow: var(--drop-shadow); }
+.mm-btn-dark { margin-top: auto; background: var(--color-azure-martinique); color: var(--color-yellow-peach-yellow); }
 .mm-btn-dark:hover { background: var(--color-azure-dolphin); }
 .mm-btn-yellow { background: var(--color-yellow-peach-yellow); color: var(--color-azure-martinique); }
 .mm-btn-yellow:hover { background: var(--color-orange-dairy-cream); }
 
 /* ---------- saved outfits ---------- */
-.mm-saved { display: flex; flex-direction: column; gap: 16px; }
+.mm-saved { display: flex; flex-direction: column; gap: 18px; }
+
 .mm-saved h2 {
     color: var(--color-azure-san-marino);
     font-family: var(--font-family-font-3), sans-serif;
@@ -400,7 +433,7 @@
 
 .mm-saved-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
 }
 
@@ -408,13 +441,18 @@
     position: relative;
     background: var(--color-white-solid);
     border: 2px solid var(--color-azure-st-blue);
-    border-radius: var(--corner-radius-12);
+    border-radius: var(--corner-radius-24);
+    overflow: hidden;
     transition: .15s ease-out;
 }
-.mm-outfit:hover, .mm-outfit.is-editing { border-color: var(--color-azure-san-marino); box-shadow: var(--drop-shadow); }
+.mm-outfit:hover, .mm-outfit.is-editing {
+    border-color: var(--color-azure-san-marino);
+    box-shadow: 0 8px 24px rgba(63, 102, 153, .14);
+}
 
-.mm-outfit-link { display: block; padding: 16px 16px 14px; }
+.mm-outfit-link { display: flex; flex-direction: column; gap: 4px; padding: 12px 12px 16px; }
 
+/* kartu outfit utuh */
 .mm-flat {
     display: grid;
     grid-template-columns: 1fr 1.5fr 1fr;
@@ -424,40 +462,40 @@
         "outerwear bottom accessories"
         ".         shoes  .";
     gap: 4px 8px;
-    height: 250px;
+    height: 230px;
+    margin-bottom: 8px;
+    padding: 14px 10px;
+    background: var(--color-orange-linen);
+    border-radius: var(--corner-radius-16);
 }
 .mm-p { display: flex; align-items: center; justify-content: center; min-width: 0; min-height: 0; }
-.mm-p img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(58, 43, 72, .18)); }
+.mm-p img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 3px 5px rgba(58, 43, 72, .18)); }
 .mm-p .mm-swatch { width: 70%; height: 70%; margin: 0; }
 .mm-p-top { grid-area: top; }
 .mm-p-bottom { grid-area: bottom; }
 .mm-p-shoes { grid-area: shoes; }
 .mm-p-outerwear { grid-area: outerwear; }
 .mm-p-accessories { grid-area: accessories; }
-.mm-p-dresses { grid-column: 2; grid-row: 1 / 3; }   
+.mm-p-dresses { grid-column: 2; grid-row: 1 / 3; }   /* dress menggantikan top + bottom */
 .has-dress .mm-p-top, .has-dress .mm-p-bottom { display: none; }
 .mm-flat:not(:has(.mm-p-top)):not(:has(.mm-p-dresses)) .mm-p-bottom { grid-row: 1 / 3; }
 .mm-outfit-empty { grid-column: 1 / -1; align-self: center; color: var(--color-azure-dolphin); font-size: 12px; text-align: center; }
 
 .mm-outfit-name {
-    margin-top: 12px;
-    font-family: var(--font-family-font-2), sans-serif;
-    font-size: 11px;
+    padding: 0 4px;
+    font-family: var(--font-family-font-3), sans-serif;
+    font-size: 13px;
+    font-weight: 600;
     letter-spacing: .04em;
     text-transform: uppercase;
     color: var(--color-azure-san-marino);
 }
-.mm-outfit-tags { font-size: 11px; color: var(--color-azure-dolphin); }
+.mm-outfit-tags { padding: 0 4px; font-size: 12px; color: var(--color-azure-dolphin); }
 
-.mm-editing { color: var(--color-azure-dolphin); }
-.mm-editing a { color: var(--color-azure-san-marino); font-weight: 700; text-decoration: underline; }
-
-
-/* ---------- hapus outfit ---------- */
-.mm-outfit-delete { position: absolute; top: 8px; right: 8px; }
+.mm-outfit-delete { position: absolute; top: 12px; right: 12px; }
 .mm-outfit-delete button {
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: var(--color-white-solid);
     border: 1px solid var(--color-azure-st-blue);
@@ -465,44 +503,34 @@
     font-size: 11px;
     cursor: pointer;
     transition: .15s ease-out;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 .mm-outfit-delete button:hover { background: var(--color-red-cherry); border-color: var(--color-red-cherry); color: var(--color-white-solid); }
 
-
-/* ---------- toolbar & error ---------- */
-.mm-toolbar { display: flex; justify-content: flex-end; gap: 8px; }
-
-.mm-tool {
-    display: inline-flex;
+/* ---------- empty state ---------- */
+.mm-empty {
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 6px;
-    padding: 4px 14px;
-    background: var(--color-white-solid);
-    border: 1px solid var(--color-azure-st-blue);
-    border-radius: var(--corner-radius-999);
-    color: var(--color-azure-san-marino);
-    font-size: 12px;
-    cursor: pointer;
-    transition: .15s ease-out;
-}
-.mm-tool:hover { background: var(--color-azure-st-blue); }
-
-.mm-error {
+    gap: 8px;
+    padding: 28px 16px;
     text-align: center;
-    color: var(--color-red-cherry);
-    font-weight: 700;
+    color: var(--color-azure-dolphin);
 }
+.mm-empty img { width: 110px; height: auto; }
+.mm-empty h3 { color: var(--color-azure-san-marino); font-family: var(--font-family-font-3), sans-serif; font-size: 18px; }
+.mm-empty-small { padding: 8px 0; }
 
 /* ---------- responsive ---------- */
+@media (max-width: 1320px) {
+    .mm-slots { grid-template-columns: repeat(2, minmax(0, 1fr)); }   /* layar laptop sempit: slot jadi 2 kolom */
+}
+
 @media (max-width: 1100px) {
     .mm-builder { grid-template-columns: 1fr; }
     .mm-closet { order: 2; }
     .mm-canvas { order: 1; }
     .mm-details { order: 3; }
-    .mm-items { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .mm-items { grid-template-columns: repeat(4, minmax(0, 1fr)); flex: none; max-height: 360px; }
 }
 
 @media (max-width: 800px) {
@@ -510,6 +538,7 @@
     .mm-mix { font-size: 40px; }
     .mm-match { font-size: 38px; padding: 0 18px 2px; }
     .mm-amp { width: 36px; height: 36px; font-size: 22px; }
-    .mm-slot { height: 140px; }
+    .mm-slots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .mm-slot { height: 160px; }
     .mm-items { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }

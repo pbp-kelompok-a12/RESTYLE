@@ -7,6 +7,7 @@ from closet.models import Item, STYLE_OPTIONS
 from mixmatch.forms import OutfitForm
 from mixmatch.models import Outfit, SLOTS, SLOT_CATEGORIES, SLOT_LABELS, slot_for_category
 from community.models import Post
+from community.views import MAX_TAGS
 
 LOGIN_URL = "/login"
 
@@ -63,7 +64,7 @@ def share_to_community(request, outfit):
     if outfit.tags:
         parts.append(" ".join(f"#{tag.lower()}" for tag in outfit.tags))
     post = Post.objects.create(author=request.user, content="\n\n".join(parts)[:1000])
-    post.tagged_items.set(outfit.pieces)
+    post.tagged_items.set(outfit.pieces[:MAX_TAGS])
     messages.success(request, f'"{outfit.name}" is now live in the community.')
     return redirect("community:show_community")
 
