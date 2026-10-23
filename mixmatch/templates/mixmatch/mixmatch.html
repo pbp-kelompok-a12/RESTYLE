@@ -118,6 +118,9 @@
                 <textarea name="notes" rows="4" maxlength="500">{{ notes_value }}</textarea>
             </label>
             <button type="submit" class="mm-btn mm-btn-dark">{% if outfit %}Update outfit{% else %}Save outfit{% endif %}</button>
+            <button type="submit" name="share" value="1" class="mm-btn mm-btn-yellow">
+                Share to community
+            </button>
         </aside>
     </form>
     <section class="mm-saved" aria-labelledby="mm-saved-title">

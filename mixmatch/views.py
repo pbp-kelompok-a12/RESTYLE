@@ -6,6 +6,7 @@ from django.views.decorators.http import require_POST
 from closet.models import Item, STYLE_OPTIONS
 from mixmatch.forms import OutfitForm
 from mixmatch.models import Outfit, SLOTS, SLOT_CATEGORIES, SLOT_LABELS, slot_for_category
+from community.models import Post
 
 LOGIN_URL = "/login"
 
@@ -55,6 +56,17 @@ def builder_context(request, form=None, outfit=None):
 def show_mixmatch(request):
     return render(request, "mixmatch/mixmatch.html", builder_context(request))
 
+def share_to_community(request, outfit):
+    parts = [f"My outfit: {outfit.name}"]
+    if outfit.notes:
+        parts.append(outfit.notes)
+    if outfit.tags:
+        parts.append(" ".join(f"#{tag.lower()}" for tag in outfit.tags))
+    post = Post.objects.create(author=request.user, content="\n\n".join(parts)[:1000])
+    post.tagged_items.set(outfit.pieces)
+    messages.success(request, f'"{outfit.name}" is now live in the community.')
+    return redirect("community:show_community")
+
 def report_errors(request, form):
     for errors in form.errors.values():
         messages.error(request, errors[0])
@@ -68,6 +80,8 @@ def save_outfit(request):
         outfit = form.save(commit=False)
         outfit.user = request.user
         outfit.save()
+        if request.POST.get("share") == "1":
+            return share_to_community(request, outfit)
         messages.success(request, f'Yay! "{outfit.name}" is saved.')
         return redirect("mixmatch:show_mixmatch")
     report_errors(request, form)
@@ -80,6 +94,8 @@ def edit_outfit(request, outfit_id):
     if request.method == "POST":
         if form.is_valid():
             form.save()
+            if request.POST.get("share") == "1":
+                return share_to_community(request, outfit)
             messages.success(request, f'"{outfit.name}" was updated!')
             return redirect("mixmatch:show_mixmatch")
         report_errors(request, form)
