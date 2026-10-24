@@ -11,7 +11,8 @@
 <main class="cm-page">
 
     {# ===== Banner atas ===== #}
-    <section class="cm-hero">
+    {# cm-hero--open = versi tanpa card kuning. Hapus class ini untuk kembali ke card kuning. #}
+    <section class="cm-hero cm-hero--open">
         <div class="cm-hero-text">
             <span class="cm-badge">FASHION COMMUNITY</span>
             <h1>Share <em class="cm-accent">outfit ideas</em>,<br>not shopping <em>pressure</em>.</h1>
@@ -27,10 +28,22 @@
                 {% include 'components/button.html' with href=login_url btn_class="tertiary" extra_class="cm-community-button" label="My saved ideas" %}
                 {% endif %}
             </div>
+
+            <dl class="cm-hero-stats">
+                {% for label, value in hero_stats %}
+                <div class="cm-hero-stat">
+                    <dt>{{ label }}</dt>
+                    <dd>{{ value }}</dd>
+                </div>
+                {% endfor %}
+            </dl>
         </div>
         <img class="cm-hero-img" src="{% static 'img/community/chameleon.png' %}"
              alt="A chameleon saying: share a look, ask a question, or help a friend restyle what they already own.">
     </section>
+
+    {# ===== Tepi bergerigi seperti ujung kain: penutup latar kuning pucat banner ===== #}
+    <div class="cm-scallop" aria-hidden="true"></div>
 
     {# ===== Tiga kolom: menu kiri, feed tengah, info kanan ===== #}
     <div class="cm-layout">

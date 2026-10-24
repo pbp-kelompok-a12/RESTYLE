@@ -275,10 +275,39 @@ if (document.querySelector(".cm-photos img")) {
     const lightboxImage = lightbox.querySelector("img");
 
     document.querySelectorAll(".cm-photos img").forEach((photo) => {
+        let clickTimer = null;
+
+        // klik sekali: buka foto. Ditunda sebentar supaya tidak ikut terbuka saat double-click.
         photo.addEventListener("click", () => {
-            lightboxImage.src = photo.src;
-            lightboxImage.alt = photo.alt;
-            lightbox.showModal();
+            clearTimeout(clickTimer);
+            clickTimer = setTimeout(() => {
+                lightboxImage.src = photo.src;
+                lightboxImage.alt = photo.alt;
+                lightbox.showModal();
+            }, 250);
+        });
+
+        // double-click: like post-nya (hanya menambah like, tidak membatalkan) + hati besar di foto
+        photo.addEventListener("dblclick", () => {
+            clearTimeout(clickTimer);
+            const post = photo.closest(".cm-post");
+            const likeButton = post && post.querySelector("button.cm-react:not(.cm-save)");
+            if (!likeButton) {
+                return; // belum login: tombol like berupa link ke halaman login
+            }
+
+            const photos = photo.closest(".cm-photos");
+            const heart = document.createElement("span");
+            heart.className = "cm-big-heart";
+            heart.innerHTML = '<i class="fa-solid fa-heart"></i>';
+            heart.style.left = `${photo.offsetLeft + photo.offsetWidth / 2}px`;
+            heart.style.top = `${photo.offsetTop + photo.offsetHeight / 2}px`;
+            photos.append(heart);
+            heart.addEventListener("animationend", () => heart.remove(), { once: true });
+
+            if (!likeButton.classList.contains("is-active")) {
+                likeButton.click();
+            }
         });
     });
 
@@ -752,6 +781,14 @@ function getCsrfToken() {
     return input ? input.value : "";
 }
 
+// efek kecil saat like / save berhasil: ikon memantul (dan untuk like, ada ledakan kecil)
+function celebrate(button) {
+    button.classList.remove("is-popping");
+    void button.offsetWidth; // paksa browser mengulang animasi walaupun diklik cepat berkali-kali
+    button.classList.add("is-popping");
+    button.addEventListener("animationend", () => button.classList.remove("is-popping"), { once: true });
+}
+
 // Like dan Save: kirim ke server tanpa memuat ulang halaman, lalu perbarui tombolnya.
 document.querySelectorAll("button.cm-react").forEach((button) => {
     button.addEventListener("click", async () => {
@@ -779,6 +816,10 @@ document.querySelectorAll("button.cm-react").forEach((button) => {
             const saveLabel = button.querySelector(".cm-save-label");
             if (saveLabel) {
                 saveLabel.textContent = result.active ? "Saved" : "Save";
+            }
+
+            if (result.active) {
+                celebrate(button);
             }
         } catch (error) {
             showToast("error", "Something went wrong. Please refresh the page and try again.");
