@@ -1,53 +1,17 @@
-{% extends 'base.html' %}
+{% extends 'auth_base.html' %}
 
 {% block meta %}
 <title>Register - RE:STYLE</title>
 {% endblock meta %}
 
-{% block content %}
-<div class="min-h-screen pt-28 pb-12 flex justify-center items-center bg-[#FDF9F2] px-4">
-    <div class="max-w-md w-full bg-white p-8 rounded-3xl shadow-[8px_8px_0px_0px_#3A2B48] border-2 border-[#3A2B48]">
-        <h2 class="text-2xl font-bold text-center text-[#3A2B48] mb-6">Create Your RE:STYLE Account</h2>
+{% block bubble %}Hi, new friend! ✨{% endblock %}
+{% block panel_text %}Let's build your digital closet.{% endblock %}
 
-        {% if messages %}
-            <div class="mb-4">
-                {% for message in messages %}
-                    <div class="p-3 text-sm {% if message.tags == 'success' %}text-green-700 bg-green-100{% else %}text-red-700 bg-red-100{% endif %} rounded-lg">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+{% block auth_title %}Create your account{% endblock %}
+{% block auth_subtitle %}One last step to save your style persona and start organizing.{% endblock %}
+{% block password_autocomplete %}new-password{% endblock %}
+{% block submit_label %}Create Account{% endblock %}
 
-        <form method="POST" action="" class="space-y-4">
-            {% csrf_token %}
-            
-            {% for field in form %}
-                <div>
-                    <label class="block text-sm font-semibold text-[#3A2B48] mb-1">
-                        {{ field.label }}
-                    </label>
-                    <input 
-                        type="{% if 'password' in field.name %}password{% else %}text{% endif %}" 
-                        name="{{ field.name }}" 
-                        id="{{ field.id_for_label }}"
-                        class="w-full px-4 py-2 border border-[#E8E0D2] bg-[#FDF9F2] rounded-xl focus:ring-2 focus:ring-[#3F6699] outline-none transition text-sm"
-                        required
-                    >
-                    {% if field.errors %}
-                        <p class="text-xs text-red-500 mt-1">{{ field.errors.0 }}</p>
-                    {% endif %}
-                </div>
-            {% endfor %}
-
-            <button type="submit" class="w-full py-3 bg-[#3F6699] hover:bg-[#3A2B48] text-white font-bold rounded-xl transition mt-4 shadow-md">
-                Create Account
-            </button>
-        </form>
-
-        <p class="text-xs text-center text-gray-600 mt-6">
-            Already have an account? <a href="{% url 'main:login' %}" class="text-[#3F6699] font-bold hover:underline">Sign In here</a>
-        </p>
-    </div>
-</div>
-{% endblock content %}
+{% block switch_link %}
+Already have an account? <a href="{% url 'main:login' %}">Sign in here</a>
+{% endblock %}

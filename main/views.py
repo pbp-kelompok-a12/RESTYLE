@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
 from types import SimpleNamespace
-from .models import UserProfile
+from .models import PERSONAS, UserProfile
 
 def show_landing_page(request):
     dummy_features = [
@@ -55,7 +55,12 @@ def style_quiz(request):
                 'wardrobe_goal': profile.wardrobe_goal,
             }
 
-    return render(request, 'style_quiz.html', {'quiz_data': quiz_data})
+    # data persona untuk layar hasil di akhir quiz (sama dengan yang tampil di profil)
+    personas = {
+        key: {"title": title, "description": description, "icon": icon}
+        for key, (title, description, icon) in PERSONAS.items()
+    }
+    return render(request, 'style_quiz.html', {'quiz_data': quiz_data, 'personas': personas})
 
 def register(request):
     form = UserCreationForm()

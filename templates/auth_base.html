@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{# Kerangka halaman login & register: panel bunglon di kiri, form di kanan. #}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+<main class="auth-page">
+    <div class="auth-card">
+        <aside class="auth-panel" aria-hidden="true">
+            <img src="{% static 'img/bintang.png' %}" alt="" class="auth-star auth-star--top">
+            <img src="{% static 'img/bintang.png' %}" alt="" class="auth-star auth-star--bottom">
+
+            <div class="auth-mascot">
+                <p class="auth-bubble">{% block bubble %}{% endblock %}</p>
+                <img src="{% static 'img/bunglon_hires.png' %}" alt="" class="auth-chameleon">
+            </div>
+
+            <p class="auth-panel-text">{% block panel_text %}{% endblock %}</p>
+        </aside>
+
+        <section class="auth-form-side">
+            <h1 class="auth-title">{% block auth_title %}{% endblock %}</h1>
+            <p class="auth-subtitle">{% block auth_subtitle %}{% endblock %}</p>
+
+            <form method="POST" action="" class="auth-form">
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="auth-field">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {% if 'password' in field.name %}
+                    <div class="auth-password">
+                        <input type="password" name="{{ field.name }}" id="{{ field.id_for_label }}"
+                               autocomplete="{% block password_autocomplete %}current-password{% endblock %}" required>
+                        <button type="button" class="auth-eye" aria-label="Show password" aria-pressed="false">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                    {% else %}
+                    <input type="text" name="{{ field.name }}" id="{{ field.id_for_label }}"
+                           value="{{ field.value|default_if_none:'' }}" autocomplete="username" required>
+                    {% endif %}
+                    {% if field.errors %}
+                    <p class="auth-error">{{ field.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <button type="submit" class="auth-submit">
+                    {% block submit_label %}{% endblock %}
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <p class="auth-switch">{% block switch_link %}{% endblock %}</p>
+        </section>
+    </div>
+</main>
+
+{% include 'components/toast.html' %}
+
+<script>
+    // tombol mata: tampilkan / sembunyikan password
+    document.querySelectorAll(".auth-eye").forEach((button) => {
+        button.addEventListener("click", () => {
+            const input = button.previousElementSibling;
+            const show = input.type === "password";
+            input.type = show ? "text" : "password";
+            button.setAttribute("aria-pressed", String(show));
+            button.setAttribute("aria-label", show ? "Hide password" : "Show password");
+            button.querySelector("i").className = show ? "fa-regular fa-eye-slash" : "fa-regular fa-eye";
+        });
+    });
+</script>
+{% endblock content %}
