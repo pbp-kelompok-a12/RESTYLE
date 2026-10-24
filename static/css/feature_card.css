@@ -192,3 +192,9 @@
         transition: none;
     }
 }
+/* dengan mouse, card terbuka lewat hover, jadi panahnya cuma penanda (bukan tombol yang perlu diklik) */
+@media (hover: hover) and (pointer: fine){
+    .fc-toggle{
+        cursor: default;
+    }
+}

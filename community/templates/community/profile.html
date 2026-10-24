@@ -75,15 +75,30 @@
     </section>
 
     {% if profile_user == user %}
-    <section class="section-container profile-persona-section">
-        <div class="profile-persona-badge-row">
-            <span class="profile-persona-badge">Your Style Persona</span>
-        </div>
-        <h2 class="profile-persona-title">{{ profile.style_persona|default:"The Conscious Minimalist" }}</h2>
-        <p class="profile-persona-description">
-            You prioritize versatility and functionality in your wardrobe. By maximizing mix-and-match combinations, you actively reduce textile waste and make mindful fashion choices.
-        </p>
-        <a href="{% url 'main:style_quiz' %}" class="profile-quiz-link">Retake Style Quiz</a>
+    <section class="section-container cm-card persona-card">
+        <header class="persona-head">
+            <span class="persona-icon"><i class="fa-solid {{ profile.persona.icon }}"></i></span>
+            <div class="persona-heading">
+                <span class="persona-eyebrow">Your style persona</span>
+                <h2 class="persona-title">{{ profile.persona.title }}</h2>
+            </div>
+            <a href="{% url 'main:style_quiz' %}" class="persona-retake">
+                <i class="fa-solid fa-rotate-right"></i>
+                {% if profile.quiz_answers %}Retake{% else %}Take quiz{% endif %}
+            </a>
+        </header>
+
+        <p class="persona-description">{{ profile.persona.description }}</p>
+
+        {% if profile.quiz_answers %}
+        <ul class="persona-chips">
+            {% for label, value in profile.quiz_answers %}
+            <li class="persona-chip"><span>{{ label }}</span> {{ value }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="persona-hint">Take the style quiz to get a persona that matches you.</p>
+        {% endif %}
     </section>
     {% endif %}
 

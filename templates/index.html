@@ -50,11 +50,11 @@
         </div>
     </section>
     <section class="section-container digital-closet-landing">
-        <div>
+        <div class="reveal">
             <h2 class="landing-dc-title">Meet your digital closet</h2>
             <p>Everything you own is neatly logged in one place. Here's what your Digital Closet might look like.</p>
         </div>
-        <div class="digital-closet-cont">
+        <div class="digital-closet-cont reveal">
             <img src="/static/img/besi-hanger.png" alt="" class="besi-hanger">
             {% for digital_closet in dummy_features %}
             <div class="digital-closet-card">
@@ -80,16 +80,14 @@
         </div>
     </section>
     <section class="section-container style-more">
-        <div class ="style-more__card">
+        <div class="style-more__card reveal">
             <h2 class="style-more__title">
                 Style <span class="italic-text">more</span>, shop <span class="italic-text">less</span>
             </h2>
             <p class="style-more__bio">
-                Every outfit from your own closer is a small step away from fast fashion.
+                Every outfit from your own closet is a small step away from fast fashion.
             </p>
-            <a href="#">
-                {% include 'components/button.html' with btn_class="primary" label="SEE FEATURES" icon="fa-solid fa-circle-chevron-right" extra_class="disabled-btn" %}
-            </a>
+            {% include 'components/button.html' with href="#features" btn_class="primary" label="SEE FEATURES" icon="fa-solid fa-circle-chevron-right" %}
         </div>
     </section>
 
@@ -100,9 +98,9 @@
     {% endif %}
 
     <section class="section-container features-section" id="features">
-        <h2 class="features-title">RE: STYLE FEATURES</h2>
+        <h2 class="features-title reveal">RE: STYLE FEATURES</h2>
 
-        <div class="features-grid">
+        <div class="features-grid reveal reveal-stagger">
             {% include 'components/feature_card.html' with type='closet' %}
             {% include 'components/feature_card.html' with type='mixmatch' %}
             {% include 'components/feature_card.html' with type='planner' %}
@@ -122,7 +120,177 @@
             </article>
         </div>
     </section>
-    
+
+    <section class="section-container why-section" id="why">
+        <div class="why-tag reveal">
+            <svg class="why-tag-shape" viewBox="0 0 560 130" aria-hidden="true">
+                <path d="M70 14 H536 a14 14 0 0 1 14 14 V102 a14 14 0 0 1 -14 14 H70 L10 65 Z"
+                      class="why-tag-body"/>
+                <path d="M76 26 H526 a8 8 0 0 1 8 8 V96 a8 8 0 0 1 -8 8 H76 L28 65 Z"
+                      class="why-tag-dash"/>
+                <circle cx="62" cy="65" r="9" class="why-tag-hole"/>
+            </svg>
+            <h2 class="why-title">WHY RE: STYLE?</h2>
+        </div>
+
+        <div class="why-grid reveal reveal-stagger">
+            <article class="why-card why-card--blue">
+                <div class="why-card-top">
+                    <span class="why-pill">RE-USE</span>
+                    <span class="why-number">01</span>
+                </div>
+                <h3 class="why-card-title">Old favorites, fresh looks.</h3>
+                <p class="why-card-bio">Rediscover what you own with Mix &amp; Match.</p>
+                <svg class="why-icon" viewBox="0 0 120 90" aria-hidden="true">
+                    <path d="M60 30 c0-8 6-12 11-10 c6 2 6 10 0 14 l-11 7 l-50 30 c-5 3 -3 9 3 9 h94 c6 0 8-6 3-9 l-50-30"
+                          fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </article>
+
+            <article class="why-card why-card--yellow">
+                <div class="why-card-top">
+                    <span class="why-pill">SAVE</span>
+                    <span class="why-number">02</span>
+                </div>
+                <h3 class="why-card-title">Make your money go further.</h3>
+                <p class="why-card-bio">Shopping reminders help you pause impulse buys.</p>
+                <svg class="why-icon" viewBox="0 0 120 90" aria-hidden="true">
+                    <rect x="14" y="22" width="84" height="58" rx="10" transform="rotate(-10 56 51)"
+                          fill="var(--color-white-solid)" stroke="currentColor" stroke-width="3.5"/>
+                    <path d="M70 36 h34 a6 6 0 0 1 6 6 v18 a6 6 0 0 1 -6 6 h-34 a10 10 0 0 1 0 -30 Z"
+                          fill="var(--color-orange-tumbleweed)" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/>
+                </svg>
+            </article>
+
+            <article class="why-card why-card--cream">
+                <div class="why-card-top">
+                    <span class="why-pill">ECO-MINDFUL</span>
+                    <span class="why-number">03</span>
+                </div>
+                <h3 class="why-card-title">Lighter closet, lighter footprint.</h3>
+                <p class="why-card-bio">The more you reuse, the less fast-fashion waste you create.</p>
+                <svg class="why-icon" viewBox="0 0 120 90" aria-hidden="true">
+                    <path d="M30 84 C26 50 50 16 104 8 C108 50 82 82 30 84 Z"
+                          fill="var(--color-azure-st-blue)" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/>
+                    <path d="M30 84 L92 22 M54 60 l-4 -16 M68 46 l-2 -14 M60 56 l16 2 M74 42 l14 2"
+                          fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+            </article>
+
+            <article class="why-card why-card--tan">
+                <div class="why-card-top">
+                    <span class="why-pill">TOGETHER</span>
+                    <span class="why-number">04</span>
+                </div>
+                <h3 class="why-card-title">Style together, stay mindful together.</h3>
+                <p class="why-card-bio">Share styling inspiration in Fashion Community.</p>
+                <svg class="why-icon" viewBox="0 0 120 90" aria-hidden="true">
+                    <circle cx="38" cy="30" r="13" fill="var(--color-orange-dairy-cream)" stroke="currentColor" stroke-width="3"/>
+                    <circle cx="82" cy="24" r="13" fill="var(--color-azure-st-blue)" stroke="currentColor" stroke-width="3"/>
+                    <path d="M12 88 a26 26 0 0 1 52 0 Z" fill="var(--color-white-solid)" stroke="currentColor" stroke-width="3"/>
+                    <path d="M54 88 a28 28 0 0 1 56 0 Z" fill="var(--color-azure-san-marino)" stroke="currentColor" stroke-width="3"/>
+                </svg>
+            </article>
+        </div>
+    </section>
+
+    <section class="section-container story-section" id="stories">
+        <img src="/static/img/bintang.png" alt="" class="float-decor story-star" aria-hidden="true">
+        <div class="story-media reveal reveal-left">
+            <span class="story-dot story-dot--blue" aria-hidden="true"></span>
+            <span class="story-dot story-dot--yellow" aria-hidden="true"></span>
+            {# foto belum ada: kalau file-nya tidak ditemukan, gambar disembunyikan dan latar krem yang terlihat #}
+            <div class="story-photo">
+                <img src="/static/img/our-story.webp" alt="Someone sitting in front of a packed closet with clothes on the floor"
+                     onerror="this.remove()">
+            </div>
+        </div>
+
+        <div class="story-content reveal reveal-right">
+            <p class="story-eyebrow">our story...</p>
+            <h2 class="story-title">Sound familiar?</h2>
+            <p class="story-lead">Fast fashion trends make closets fill up fast, but we usually end up wearing the same few pieces.</p>
+
+            <ol class="story-list">
+                <li class="story-item">
+                    <span class="story-number">01</span>
+                    <div>
+                        <h3>Buy first, think later.</h3>
+                        <p>Sales and trends make it easy to buy clothes we don't actually need.</p>
+                    </div>
+                </li>
+                <li class="story-item">
+                    <span class="story-number">02</span>
+                    <div>
+                        <h3>Closet is full, but nothing feels right.</h3>
+                        <p>Without a record, we forget what we own and struggle to put outfits together.</p>
+                    </div>
+                </li>
+                <li class="story-item">
+                    <span class="story-number">03</span>
+                    <div>
+                        <h3>Wait, you already own something similar.</h3>
+                        <p>New pieces that are almost identical rarely get worn, turning into textile waste and wasted money.</p>
+                    </div>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="section-container steps-section" id="how-it-works">
+        <img src="/static/img/bunga.webp" alt="" class="float-decor steps-flower-big steps-flower-big--left" aria-hidden="true">
+        <img src="/static/img/bunga.webp" alt="" class="float-decor steps-flower-big steps-flower-big--right" aria-hidden="true">
+        <h2 class="steps-title reveal">
+            <img src="/static/img/bunga.webp" alt="" class="steps-flower">
+            Three steps to a tidier closet
+            <img src="/static/img/bunga.webp" alt="" class="steps-flower">
+        </h2>
+
+        <ol class="steps-grid reveal reveal-stagger">
+            <li class="step-card step-card--blue">
+                <span class="step-pill">STEP 1</span>
+                <span class="step-number">01</span>
+                <h3 class="step-card-title">Snap and log your clothes</h3>
+                <p class="step-card-bio">Add your collection to Digital Closet, then organize by color, category, and style.</p>
+            </li>
+            <li class="step-card step-card--yellow">
+                <span class="step-pill">STEP 2</span>
+                <span class="step-number">02</span>
+                <h3 class="step-card-title">Create outfits</h3>
+                <p class="step-card-bio">Try different combinations in Mix &amp; Match and save your favorites.</p>
+            </li>
+            <li class="step-card step-card--cream">
+                <span class="step-pill">STEP 3</span>
+                <span class="step-number">03</span>
+                <h3 class="step-card-title">Plan your week</h3>
+                <p class="step-card-bio">Schedule outfits in Weekly Planner and get daily suggestions that match the weather.</p>
+            </li>
+        </ol>
+    </section>
+
+    <section class="section-container cta-section">
+        {# tepi atas bergelombang: peralihan halus dari bagian krem di atasnya #}
+        <svg class="cta-wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0 0 H1440 V38 C1320 82 1180 86 1040 58 C900 30 780 26 640 52 C500 78 360 84 220 58 C130 42 60 40 0 52 Z"/>
+        </svg>
+
+        <span class="cta-dot" style="--x: 6%;  --y: 30%; --size: 26px;" aria-hidden="true"></span>
+        <span class="cta-dot" style="--x: 12%; --y: 70%; --size: 12px;" aria-hidden="true"></span>
+        <span class="cta-dot" style="--x: 22%; --y: 46%; --size: 16px;" aria-hidden="true"></span>
+        <span class="cta-dot" style="--x: 33%; --y: 22%; --size: 10px;" aria-hidden="true"></span>
+        <span class="cta-dot" style="--x: 64%; --y: 26%; --size: 14px;" aria-hidden="true"></span>
+        <span class="cta-dot" style="--x: 78%; --y: 60%; --size: 22px;" aria-hidden="true"></span>
+        <span class="cta-dot" style="--x: 90%; --y: 34%; --size: 12px;" aria-hidden="true"></span>
+        <span class="cta-dot" style="--x: 94%; --y: 80%; --size: 30px;" aria-hidden="true"></span>
+
+        <div class="cta-content reveal">
+            <h2 class="cta-title">Start with what<br>you already own.</h2>
+            <p class="cta-bio">Organize your collection, create new outfits, and shop more mindfully with RE:STYLE.</p>
+            {% include 'components/button.html' with href=cta_url btn_class='primary' label='BUILD YOUR DIGITAL CLOSET' extra_class='cta-btn' %}
+        </div>
+    </section>
+
 </main>
+<script src="/static/js/landing.js" defer></script>
 
 {% endblock %}

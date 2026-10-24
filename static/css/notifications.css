@@ -6,6 +6,17 @@
 
 .nt-bell{
     position: relative;
+    transition: background-color .2s ease-out, color .2s ease-out;
+}
+
+.nt-bell:hover{
+    background-color: rgba(249, 234, 169, 0.18);
+}
+
+/* lonceng saat panel notifikasi sedang terbuka: terisi kuning, ikon biru */
+.nt-bell[aria-expanded="true"]{
+    background-color: var(--color-yellow-peach-yellow);
+    color: var(--color-azure-san-marino);
 }
 
 /* titik kecil di lonceng kalau ada notifikasi yang belum dibaca */

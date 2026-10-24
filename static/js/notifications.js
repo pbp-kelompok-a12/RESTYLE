@@ -9,6 +9,8 @@ if (notificationMenu) {
     function setPanelOpen(isOpen) {
         panel.hidden = !isOpen;
         bell.setAttribute("aria-expanded", String(isOpen));
+        // ikon lonceng penuh saat panel terbuka, garis saat tertutup
+        bell.querySelector("i").className = isOpen ? "fa-solid fa-bell" : "fa-regular fa-bell";
     }
 
     bell.addEventListener("click", (event) => {
