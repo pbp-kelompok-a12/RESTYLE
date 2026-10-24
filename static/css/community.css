@@ -718,28 +718,6 @@ body{
     color: inherit;
 }
 
-.cm-messages{
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.cm-message{
-    padding: 10px 14px;
-    border: 1px solid var(--color-azure-martinique);
-    border-radius: var(--corner-radius-12);
-    font-size: 13px;
-    font-weight: 600;
-}
-
-.cm-message-success{
-    background-color: var(--color-azure-st-blue);
-}
-
-.cm-message-error{
-    background-color: var(--color-orange-dairy-cream);
-}
-
 .cm-composer-top{
     align-items: flex-start;
 }
@@ -1360,6 +1338,26 @@ body{
 
 .cm-item-shop i{
     font-size: 11px;
+}
+
+/* tombol simpan ke wishlist di kotak detail pakaian */
+.cm-item-wishlist{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.cm-item-wishlist[hidden]{
+    display: none;
+}
+
+.cm-wishlist-view{
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-azure-san-marino);
+    text-decoration: underline;
 }
 
 .cm-item-link{
@@ -2037,4 +2035,71 @@ body{
 
 .cm-comment .cm-tags{
     margin-top: 8px;
+}
+
+/* kotak konfirmasi sebelum menghapus (mengikuti pop-up hapus di closet) */
+.cm-confirm-dialog{
+    position: fixed;
+    inset: 0;
+    width: min(880px, calc(100vw - 40px));
+    height: fit-content;
+    margin: auto;
+    padding: 28px;
+    background: var(--color-orange-linen);
+    border: 1px solid var(--color-azure-polo-blue);
+    border-radius: var(--corner-radius-24);
+    color: var(--color-azure-martinique);
+    text-align: center;
+}
+
+.cm-confirm-dialog::backdrop{
+    background: rgba(31, 61, 87, .45);
+}
+
+.cm-confirm-dialog form{
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.cm-confirm-close{
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: var(--color-white-solid);
+    color: var(--color-azure-san-marino);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.cm-confirm-title{
+    margin: 0 0 16px;
+    font-family: var(--font-family-font-3), sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--color-azure-san-marino);
+}
+
+.cm-confirm-actions{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.cm-confirm-actions .btn{
+    font-weight: 700;
+}
+
+.cm-confirm-actions .danger-btn:hover{
+    filter: brightness(.9);
+}
+
+@media (max-width: 768px){
+    .cm-confirm-actions{ flex-direction: column-reverse; }
+    .cm-confirm-actions .btn{ width: 100%; }
 }

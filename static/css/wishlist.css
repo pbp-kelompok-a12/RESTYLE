@@ -1343,3 +1343,98 @@
         padding: 24px;
     }
 }
+/* Tidier item cards: fixed-width cards, full-width photo, actions pinned to the bottom */
+.wishlist-page #wishlist-items {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.wishlist-page .wishlist-item-card {
+    display: flex;
+    flex-direction: column;
+    max-width: 320px;
+    padding: 14px 14px 16px;
+}
+
+.wishlist-item-photo {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    margin-bottom: 14px;
+    object-fit: cover;
+    border-radius: 12px;
+    background: #f7f1e8;
+}
+
+.wishlist-page .wishlist-item-card h3 {
+    margin: 0 4px 8px;
+    font-size: 17px;
+}
+
+.wishlist-page .wishlist-item-card p {
+    margin: 2px 4px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.wishlist-item-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: auto 4px 0;
+    padding-top: 14px;
+}
+
+.wishlist-item-actions .view-product {
+    color: #426a9e;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.wishlist-page .wishlist-item-card .remove-item {
+    margin: 0 0 0 auto;
+    padding: 7px 14px;
+    font-size: 13px;
+}
+
+/* Photo field in the add form */
+#wishlist-form input[type="file"] {
+    padding: 10px 12px;
+    cursor: pointer;
+}
+
+.item-photo-preview {
+    position: relative;
+    width: 140px;
+    margin-top: 12px;
+}
+
+.item-photo-preview[hidden] {
+    display: none;
+}
+
+.item-photo-preview img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border: 1px solid #eee6dc;
+    border-radius: 12px;
+    background: #f7f1e8;
+}
+
+.remove-photo-button {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    color: #a63e3e;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+}

@@ -60,7 +60,7 @@
                     <button type="button" class="cm-toggle-edit"><i class="fa-regular fa-pen-to-square"></i> Edit</button>
                     {% endif %}
                     <form method="post" action="{% url 'community:delete_comment' comment.id %}"
-                          data-confirm="Delete this reply? Replies under it will be deleted too.">
+                          data-confirm-title="Delete this reply?" data-confirm="Replies under it will be deleted too. This can't be undone.">
                         {% csrf_token %}
                         <button type="submit" class="cm-menu-danger"><i class="fa-regular fa-trash-can"></i> Delete</button>
                     </form>
