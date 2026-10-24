@@ -69,12 +69,20 @@ def show_community(request):
         else []
     )
 
+    # angka kecil di banner atas
+    hero_stats = [
+        ("Posts this week", Post.objects.filter(created_at__gte=one_week_ago).count()),
+        ("Members", get_user_model().objects.count()),
+        ("Outfits tagged", Post.objects.filter(tagged_items__isnull=False).distinct().count()),
+    ]
+
     context = {
         "tab": tab,
         "posts": posts,
         "popular_posts": popular_posts,
         "stylists": stylists,
         "following_people": following_people,
+        "hero_stats": hero_stats,
     }
     return render(request, "community/feed.html", context)
 

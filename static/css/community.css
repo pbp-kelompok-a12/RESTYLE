@@ -2103,3 +2103,528 @@ body{
     .cm-confirm-actions{ flex-direction: column-reverse; }
     .cm-confirm-actions .btn{ width: 100%; }
 }
+
+/* ===== animasi like & save ===== */
+.cm-react{
+    position: relative;
+}
+
+/* ikon memantul */
+.cm-react.is-popping i{
+    animation: cm-pop .45s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+@keyframes cm-pop{
+    0%   { transform: scale(1); }
+    35%  { transform: scale(1.45) rotate(-12deg); }
+    70%  { transform: scale(.9); }
+    100% { transform: scale(1); }
+}
+
+/* ledakan kecil di sekitar hati: cincin + titik-titik yang memencar */
+.cm-react:not(.cm-save).is-popping::before,
+.cm-react:not(.cm-save).is-popping::after{
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    margin: -4px 0 0 -4px;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.cm-react:not(.cm-save).is-popping::before{
+    border: 2px solid #d64545;
+    animation: cm-ring .5s ease-out forwards;
+}
+
+.cm-react:not(.cm-save).is-popping::after{
+    animation: cm-sparks .55s ease-out forwards;
+}
+
+@keyframes cm-ring{
+    from{
+        opacity: 1;
+        transform: scale(.4);
+    }
+    to{
+        opacity: 0;
+        transform: scale(4);
+    }
+}
+
+@keyframes cm-sparks{
+    from{
+        opacity: 1;
+        box-shadow:
+            0 0 0 -2px #d64545, 0 0 0 -2px var(--color-yellow-peach-yellow),
+            0 0 0 -2px var(--color-azure-57), 0 0 0 -2px #d64545,
+            0 0 0 -2px var(--color-orange-tumbleweed), 0 0 0 -2px var(--color-azure-57);
+    }
+    to{
+        opacity: 0;
+        box-shadow:
+            0 -18px 0 -2px #d64545, 16px -9px 0 -2px var(--color-yellow-peach-yellow),
+            16px 9px 0 -2px var(--color-azure-57), 0 18px 0 -2px #d64545,
+            -16px 9px 0 -2px var(--color-orange-tumbleweed), -16px -9px 0 -2px var(--color-azure-57);
+    }
+}
+
+/* double-click foto: hati besar muncul di tengah foto */
+.cm-photos{
+    position: relative;
+}
+
+.cm-big-heart{
+    position: absolute;
+    z-index: 2;
+    font-size: 72px;
+    color: var(--color-white-solid);
+    filter: drop-shadow(0 4px 12px rgba(58, 43, 72, .35));
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0);
+    animation: cm-big-heart .8s cubic-bezier(.34, 1.56, .64, 1) forwards;
+}
+
+@keyframes cm-big-heart{
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+    25%  { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+    45%  { transform: translate(-50%, -50%) scale(.95); }
+    75%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -60%) scale(1); }
+}
+
+/* ===== hero lebih hidup ===== */
+.cm-hero-stats{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 10px 0 0;
+}
+
+.cm-hero-stat{
+    display: flex;
+    flex-direction: column-reverse; /* angka di atas, label di bawah */
+    min-width: 108px;
+    padding: 10px 16px;
+    background-color: rgba(255, 255, 255, .6);
+    border: 1px solid var(--color-azure-san-marino);
+    border-radius: var(--corner-radius-16);
+}
+
+.cm-hero-stat dd{
+    margin: 0;
+    font-family: var(--font-family-font-3);
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--color-azure-san-marino);
+}
+
+.cm-hero-stat dt{
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-azure-dolphin);
+}
+
+/* bunglon di banner bergerak pelan */
+.cm-hero-img{
+    animation: cm-hero-bob 5s ease-in-out infinite;
+    transform-origin: 60% 80%;
+}
+
+@keyframes cm-hero-bob{
+    0%, 100% { transform: translateY(0) rotate(0); }
+    50%      { transform: translateY(-8px) rotate(-1.5deg); }
+}
+
+/* lingkaran hiasan di banner ikut melayang */
+.cm-hero::before{
+    animation: cm-hero-float 9s ease-in-out infinite;
+}
+
+.cm-hero::after{
+    animation: cm-hero-float 11s ease-in-out infinite reverse;
+}
+
+@keyframes cm-hero-float{
+    0%, 100% { transform: translate(0, 0); }
+    50%      { transform: translate(14px, -10px); }
+}
+
+/* ===== Popular this week: medali untuk peringkat 1-3 ===== */
+.cm-popular li{
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.cm-popular-rank{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--color-azure-martinique);
+    border-radius: var(--corner-radius-999);
+    background-color: var(--color-white-solid);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-azure-martinique);
+}
+
+.cm-popular li:nth-child(1) .cm-popular-rank{
+    background-color: #f5d76e; /* emas */
+    box-shadow: 0 0 0 3px rgba(245, 215, 110, .35);
+}
+
+.cm-popular li:nth-child(2) .cm-popular-rank{
+    background-color: #d9dde3; /* perak */
+}
+
+.cm-popular li:nth-child(3) .cm-popular-rank{
+    background-color: #e0ab7f; /* perunggu */
+}
+
+@media (max-width: 700px){
+    .cm-hero-stat{
+        min-width: 0;
+        flex: 1;
+        padding: 8px 12px;
+    }
+
+    .cm-hero-stat dd{
+        font-size: 20px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce){
+    .cm-react.is-popping i,
+    .cm-react.is-popping::before,
+    .cm-react.is-popping::after,
+    .cm-big-heart,
+    .cm-hero-img,
+    .cm-hero::before,
+    .cm-hero::after{
+        animation: none;
+    }
+}
+
+/* ===== perbaikan mobile: konten tidak tertutup navbar ===== */
+
+/* lompat ke post (#post-12 dari notifikasi / popular) atau ke kotak tulis post:
+   berhenti di bawah navbar yang fixed, bukan tertutup olehnya */
+.cm-post,
+.cm-composer{
+    scroll-margin-top: 120px;
+}
+
+@media (max-width: 900px){
+    /* di community, navbar mobile jadi 2 baris (logo + kotak search), sekitar 125px */
+    .cm-page{
+        padding-top: 150px;
+    }
+
+    .cm-post,
+    .cm-composer{
+        scroll-margin-top: 150px;
+    }
+
+    /* panel notifikasi muncul di bawah navbar 2 baris, bukan menutupi kotak search.
+       Selektor diawali body supaya menang dari notifications.css yang dimuat setelah file ini. */
+    body .nt-menu .nt-panel{
+        position: fixed;
+        top: 142px;
+        right: 16px;
+        max-height: calc(100vh - 160px);
+        overflow-y: auto;
+    }
+}
+
+@media (max-width: 768px){
+    .cm-page{
+        gap: 20px;
+        padding-bottom: 56px;
+    }
+
+    .cm-hero{
+        margin-top: 0;
+        gap: 16px;
+    }
+
+    .cm-hero h1{
+        font-size: 28px;
+    }
+
+    .cm-hero-text > p{
+        font-size: 14px;
+    }
+
+    /* tombol banner boleh turun ke baris baru kalau layar sempit */
+    .cm-hero-actions .cm-community-button{
+        flex: 1 1 auto;
+    }
+
+    .cm-hero-img{
+        max-width: 240px;
+    }
+
+    .cm-layout{
+        gap: 16px;
+        margin-top: 0;
+    }
+
+    /* menu kiri jadi deretan chip yang bisa digeser, bukan menumpuk beberapa baris */
+    .cm-side{
+        flex-wrap: nowrap;
+        gap: 6px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+    }
+
+    .cm-side::-webkit-scrollbar{
+        display: none;
+    }
+
+    .cm-side-link{
+        flex-shrink: 0;
+        padding: 7px 12px;
+        border: 1px solid var(--color-orange-pearl-brush);
+        white-space: nowrap;
+    }
+
+    .cm-side-post{
+        flex-shrink: 0;
+    }
+
+    /* foto post tidak melebihi lebar layar */
+    .cm-photos img{
+        height: auto;
+        max-height: 260px;
+        max-width: 100%;
+        object-fit: cover;
+    }
+
+    .cm-composer-actions{
+        margin-left: 0;
+    }
+}
+
+/* angka di banner: 3 kolom sama lebar, angka selalu di atas & sejajar
+   (sebelumnya label 1 baris vs 2 baris membuat angkanya turun-naik) */
+.cm-hero-stats{
+    width: 100%;
+    max-width: 460px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.cm-hero-stat{
+    min-width: 0;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 2px;
+    padding: 12px 14px;
+}
+
+.cm-hero-stat dd{
+    order: -1; /* angka di atas label, walaupun di HTML dt ditulis lebih dulu */
+}
+
+.cm-hero-stat dt{
+    line-height: 1.3;
+}
+
+@media (max-width: 768px){
+    .cm-hero-stats{
+        max-width: none;
+        gap: 8px;
+    }
+
+    .cm-hero-stat{
+        flex: none;
+        padding: 10px 12px;
+    }
+}
+
+/* ===== banner versi tanpa card (cm-hero--open) =====
+   Judul langsung di latar halaman, bunglon dengan bulatan kuning samar,
+   dan angka jadi satu baris ringkas. Hapus class cm-hero--open untuk kembali ke card kuning. */
+.cm-hero--open{
+    overflow: visible;
+    padding: 12px 0 28px;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid var(--color-orange-pearl-brush);
+    border-radius: 0;
+}
+
+.cm-hero--open::before{
+    display: none;
+}
+
+/* bulatan kuning samar di belakang bunglon, supaya tetap nyambung dengan warna RE:STYLE */
+.cm-hero--open::after{
+    top: 50%;
+    right: 4%;
+    width: 300px;
+    height: 300px;
+    margin-top: -150px;
+    background-color: var(--color-yellow-peach-yellow);
+    opacity: .7;
+}
+
+.cm-hero--open .cm-hero-text{
+    max-width: 640px;
+    gap: 14px;
+}
+
+.cm-hero--open h1{
+    font-size: 46px;
+}
+
+.cm-hero--open .cm-hero-text > p{
+    color: var(--color-azure-dolphin);
+}
+
+.cm-hero--open .cm-hero-img{
+    width: 34%;
+    max-width: 380px;
+}
+
+/* angka: satu baris teks dengan pemisah titik, bukan kotak */
+.cm-hero--open .cm-hero-stats{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 0;
+    max-width: none;
+    margin-top: 6px;
+}
+
+.cm-hero--open .cm-hero-stat{
+    flex-direction: row;
+    align-items: baseline;
+    gap: 6px;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+}
+
+.cm-hero--open .cm-hero-stat + .cm-hero-stat::before{
+    content: "·";
+    order: -2; /* titik paling depan, sebelum angka (angka pakai order -1) */
+    margin: 0 12px;
+    color: var(--color-azure-polo-blue);
+    font-weight: 700;
+}
+
+.cm-hero--open .cm-hero-stat dd{
+    font-size: 18px;
+}
+
+.cm-hero--open .cm-hero-stat dt{
+    font-size: 13px;
+    font-weight: 500;
+}
+
+@media (max-width: 768px){
+    .cm-hero--open{
+        padding: 0 0 20px;
+    }
+
+    .cm-hero--open h1{
+        font-size: 30px;
+    }
+
+    /* di HP bunglon & bulatan disembunyikan supaya feed cepat terlihat */
+    .cm-hero--open .cm-hero-img,
+    .cm-hero--open::after{
+        display: none;
+    }
+
+    .cm-hero--open .cm-hero-stat{
+        flex: none;
+        padding: 0;
+    }
+
+    .cm-hero--open .cm-hero-stat + .cm-hero-stat::before{
+        margin: 0 8px;
+    }
+
+    .cm-hero--open .cm-hero-stat dd{
+        font-size: 16px;
+    }
+
+    .cm-hero--open .cm-hero-stat dt{
+        font-size: 12px;
+    }
+}
+
+/* ===== banner berlatar kuning pucat selebar layar, ditutup tepi bergerigi seperti ujung kain ===== */
+.cm-page{
+    --cm-hero-tint: #fbf2d2; /* kuning sangat pucat, di antara linen dan peach yellow */
+}
+
+/* latar diperlebar ke kiri, kanan, dan atas (sampai belakang navbar) lewat box-shadow + clip-path,
+   jadi tidak menimbulkan scroll ke samping */
+.cm-hero--open{
+    padding: 24px 0 28px;
+    border-bottom: none;
+    background-color: var(--cm-hero-tint);
+    box-shadow: 0 0 0 100vmax var(--cm-hero-tint);
+    clip-path: inset(-100vmax -100vmax 0 -100vmax);
+}
+
+/* bulatan di belakang bunglon sedikit lebih tegas karena latarnya sudah kekuningan */
+.cm-hero--open::after{
+    opacity: 1;
+}
+
+/* deretan setengah lingkaran selebar layar, menempel tepat di bawah banner */
+.cm-scallop{
+    width: 100vw;
+    height: 16px;
+    margin: -32px 0 0 calc(50% - 50vw); /* -32px = menutup jarak (gap) .cm-page */
+    background: radial-gradient(circle at 50% 0, var(--cm-hero-tint) 11px, transparent 11.5px) 0 0 / 26px 16px repeat-x;
+    filter: drop-shadow(0 2px 0 var(--color-orange-pearl-brush));
+}
+
+/* elemen selebar layar (100vw) tidak boleh memunculkan scroll ke samping */
+body:has(.cm-scallop){
+    overflow-x: clip;
+}
+
+@media (max-width: 768px){
+    .cm-hero--open{
+        padding: 16px 0 20px;
+    }
+
+    .cm-scallop{
+        height: 12px;
+        margin-top: -20px; /* gap .cm-page di HP */
+        background-size: 20px 12px;
+        background-image: radial-gradient(circle at 50% 0, var(--cm-hero-tint) 8px, transparent 8.5px);
+    }
+}
+
+/* banner versi tanpa card di HP: semua isi rata tengah */
+@media (max-width: 768px){
+    .cm-hero--open{
+        align-items: center;
+    }
+
+    .cm-hero--open .cm-hero-text{
+        align-items: center;
+        text-align: center;
+    }
+
+    .cm-hero--open .cm-hero-actions,
+    .cm-hero--open .cm-hero-stats{
+        justify-content: center;
+    }
+}
