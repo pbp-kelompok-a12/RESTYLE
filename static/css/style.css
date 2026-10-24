@@ -1662,9 +1662,10 @@ body{
     transform: rotate(-10deg) scale(1.12);
 }
 
-/* tag "WHY RE: STYLE?" berayun pelan, seperti tag baju yang tergantung */
-.why-tag-shape{
-    transform-origin: 10% 50%;
+/* tag "WHY RE: STYLE?" (bentuk + tulisan) berayun pelan, seperti tag baju yang tergantung */
+.why-tag-swing{
+    position: relative;
+    transform-origin: 10% 50%; /* poros di sekitar lubang tag */
     animation: tag-sway 5s ease-in-out infinite;
 }
 
@@ -1760,7 +1761,7 @@ body{
 @media (prefers-reduced-motion: reduce){
     .float-decor,
     .cta-dot,
-    .why-tag-shape,
+    .why-tag-swing,
     .digital-closet-card:hover{
         animation: none;
     }

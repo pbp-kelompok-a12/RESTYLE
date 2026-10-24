@@ -1,27 +1,35 @@
 {% load static %}
 
+{% url 'main:show_landing_page' as home_url %}
+
 <footer class="site-footer">
     <div class="footer-main">
         <div class="footer-brand">
-            <img src="{% static '/img/brand.webp' %}" alt="RE:STYLE" class="footer-logo">
+            <a href="{{ home_url }}" aria-label="RE:STYLE home">
+                <img src="{% static 'img/brand.webp' %}" alt="RE:STYLE" class="footer-logo">
+            </a>
             <p class="footer-tagline">A digital closet for more mindful style.</p>
         </div>
 
         <nav class="footer-col" aria-label="Features">
             <h3 class="footer-heading">Features</h3>
             <ul>
-                <li><a href="#">Digital Closet</a></li>
-                <li><a href="#">Mix &amp; Match</a></li>
+                <li><a href="{% url 'closet:show_closet' %}">Digital Closet</a></li>
+                <li><a href="{% url 'mixmatch:show_mixmatch' %}">Mix &amp; Match</a></li>
                 <li><a href="{% url 'planner:show_planner' %}">Weekly Planner</a></li>
+                <li><a href="{% url 'main:wishlist' %}">Wishlist</a></li>
+                <li><a href="{% url 'community:show_community' %}">Fashion Community</a></li>
             </ul>
         </nav>
 
+        {# bagian-bagian di landing page #}
         <nav class="footer-col" aria-label="About">
             <h3 class="footer-heading">About</h3>
             <ul>
-                <li><a href="#">Our story</a></li>
-                <li><a href="#">How it works</a></li>
-                <li><a href="#">Community</a></li>
+                <li><a href="{{ home_url }}#stories">Our story</a></li>
+                <li><a href="{{ home_url }}#why">Why RE:STYLE</a></li>
+                <li><a href="{{ home_url }}#how-it-works">How it works</a></li>
+                <li><a href="{% url 'main:style_quiz' %}">Style quiz</a></li>
             </ul>
         </nav>
 
@@ -29,7 +37,7 @@
             <h3 class="footer-heading">Contact</h3>
             <ul>
                 <li><a href="mailto:email@restyle.id">email@restyle.id</a></li>
-                <li><a href="#">@re.style</a></li>
+                <li><span class="footer-handle">@re.style</span></li>
             </ul>
         </div>
     </div>

@@ -1,0 +1,12 @@
+{# Satu kartu pilihan di style quiz. Butuh: name, value, label, icon, hint, current (jawaban tersimpan). #}
+<label class="quiz-option">
+    <input type="radio" name="{{ name }}" value="{{ value }}" required {% if current == value %}checked{% endif %}>
+    <span class="quiz-option-body">
+        <span class="quiz-option-icon"><i class="fa-solid {{ icon }}"></i></span>
+        <span class="quiz-option-text">
+            <strong>{{ label }}</strong>
+            <small>{{ hint }}</small>
+        </span>
+        <span class="quiz-option-check" aria-hidden="true"><i class="fa-solid fa-check"></i></span>
+    </span>
+</label>
