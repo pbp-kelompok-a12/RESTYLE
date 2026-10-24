@@ -1038,3 +1038,1131 @@ body{
         font-size: 11px;
     }
 }
+
+/* Why RE:STYLE section */
+.why-section{
+    flex-direction: column;
+    align-items: center;
+    padding: 72px 0 0;
+    background-color: var(--color-orange-linen);
+}
+
+/* label berbentuk tag gantungan baju */
+.why-tag{
+    position: relative;
+    width: min(460px, 86%);
+    margin-bottom: 56px;
+    transform: rotate(-6deg);
+}
+
+.why-tag-shape{
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    filter: drop-shadow(6px 6px 0 var(--color-azure-san-marino));
+}
+
+.why-tag-body{
+    fill: var(--color-yellow-peach-yellow);
+    stroke: var(--color-azure-san-marino);
+    stroke-width: 4;
+    stroke-linejoin: round;
+}
+
+.why-tag-dash{
+    fill: none;
+    stroke: var(--color-azure-san-marino);
+    stroke-width: 2;
+    stroke-dasharray: 8 6;
+    stroke-linejoin: round;
+}
+
+.why-tag-hole{
+    fill: var(--color-orange-linen);
+    stroke: var(--color-azure-san-marino);
+    stroke-width: 3;
+}
+
+.why-title{
+    position: absolute;
+    inset: 0 0 0 12%;
+    display: grid;
+    place-items: center;
+    margin: 0;
+    font-family: var(--font-family-font-3);
+    font-size: clamp(24px, 4vw, 38px);
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: var(--color-azure-polo-blue);
+    -webkit-text-stroke: 3px var(--color-azure-san-marino);
+    paint-order: stroke fill;
+    white-space: nowrap;
+}
+
+.why-grid{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: var(--container-border);
+}
+
+.why-card{
+    position: relative;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 28px 28px 140px;
+    color: var(--color-azure-martinique);
+    overflow: hidden;
+}
+
+.why-card + .why-card{
+    border-left: var(--container-border);
+}
+
+.why-card--blue{ background-color: var(--color-azure-st-blue); }
+.why-card--yellow{ background-color: var(--color-yellow-peach-yellow); }
+.why-card--cream{ background-color: var(--color-orange-dairy-cream); }
+.why-card--tan{ background-color: var(--color-orange-tumbleweed); }
+
+.why-card-top{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.why-pill{
+    padding: 6px 14px;
+    background-color: var(--color-white-solid);
+    border: var(--container-border);
+    border-radius: var(--corner-radius-999);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.why-number{
+    font-family: var(--font-family-font-3);
+    font-size: 20px;
+}
+
+.why-card-title{
+    margin: 0;
+    font-family: var(--font-family-font-3);
+    font-size: clamp(26px, 2.6vw, 36px);
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+.why-card-bio{
+    margin: 0;
+    font-size: clamp(14px, 1.2vw, 17px);
+    line-height: 1.55;
+    color: var(--color-azure-dolphin);
+}
+
+.why-icon{
+    position: absolute;
+    right: 16px;
+    bottom: 12px;
+    width: 130px;
+    height: auto;
+    color: var(--color-azure-martinique);
+}
+
+@media (max-width: 1100px){
+    .why-grid{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .why-card:nth-child(3){
+        border-left: none;
+    }
+
+    .why-card:nth-child(n + 3){
+        border-top: var(--container-border);
+    }
+}
+
+@media (max-width: 700px){
+    .why-section{
+        padding-top: 48px;
+    }
+
+    .why-grid{
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .why-card + .why-card{
+        border-left: none;
+        border-top: var(--container-border);
+    }
+
+    .why-card{
+        min-height: 300px;
+    }
+}
+
+/* sambungan Features -> Why tanpa garis, supaya mengalir */
+.features-section{
+    border-bottom: none;
+}
+
+.why-section{
+    border-top: none;
+}
+
+/* Sound familiar? -> Three steps: latar sama, jadi tanpa garis */
+.story-section{
+    border-bottom: none;
+}
+
+.steps-section{
+    border-top: none;
+    border-bottom: none;
+}
+
+/* Sound familiar? (our story) section */
+.story-section{
+    align-items: center;
+    justify-content: center;
+    gap: 72px;
+    padding: 80px 120px;
+    background-color: var(--color-orange-linen);
+    scroll-margin-top: 100px;
+}
+
+.story-media{
+    position: relative;
+    flex: 0 0 auto;
+    width: min(420px, 36%);
+    padding: 0 0 0 32px;
+}
+
+/* foto dengan bagian atas melengkung seperti pintu lemari */
+.story-photo{
+    aspect-ratio: 7 / 8;
+    overflow: hidden;
+    border: var(--container-border);
+    /* lengkungan atas setengah lingkaran: radius vertikal = setengah lebar (50% / (8/7) = 43.75%) */
+    border-radius: 50% 50% var(--corner-radius-24) var(--corner-radius-24) / 43.75% 43.75% var(--corner-radius-24) var(--corner-radius-24);
+    background: linear-gradient(160deg, var(--color-orange-dairy-cream), var(--color-orange-pearl-brush));
+}
+
+.story-photo img{
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.story-dot{
+    position: absolute;
+    left: 0;
+    width: 44px;
+    height: 44px;
+    border: var(--container-border);
+    border-radius: var(--corner-radius-999);
+}
+
+.story-dot--blue{
+    top: 16%;
+    background-color: var(--color-azure-st-blue);
+}
+
+.story-dot--yellow{
+    top: calc(16% + 48px);
+    background-color: var(--color-yellow-peach-yellow);
+}
+
+.story-content{
+    flex: 1;
+    max-width: 600px;
+    color: var(--color-azure-martinique);
+}
+
+.story-eyebrow{
+    margin: 0 0 6px;
+    font-family: var(--font-family-font-3);
+    font-size: 18px;
+    color: var(--color-azure-san-marino);
+}
+
+.story-title{
+    margin: 0 0 14px;
+    font-family: var(--font-family-font-3);
+    font-size: clamp(30px, 3.2vw, 42px);
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.story-lead{
+    margin: 0;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--color-azure-dolphin);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--color-azure-dolphin);
+}
+
+.story-list{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.story-item{
+    display: flex;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--color-orange-pearl-brush);
+}
+
+.story-item:last-child{
+    border-bottom: none;
+}
+
+.story-number{
+    font-family: var(--font-family-font-3);
+    font-size: 17px;
+    color: var(--color-azure-san-marino);
+}
+
+.story-item h3{
+    margin: 0 0 4px;
+    font-family: var(--font-family-font-3);
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.story-item p{
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--color-azure-dolphin);
+}
+
+@media (max-width: 1100px){
+    .story-section{
+        gap: 40px;
+        padding: 64px 48px;
+    }
+}
+
+@media (max-width: 800px){
+    .story-section{
+        flex-direction: column;
+        align-items: stretch;
+        padding: 48px 20px;
+    }
+
+    .story-media{
+        width: min(360px, 100%);
+        margin: 0 auto;
+    }
+}
+
+/* Three steps (how it works) section */
+.steps-section{
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    padding: 72px 120px 88px;
+    background-color: var(--color-orange-linen);
+    scroll-margin-top: 100px;
+}
+
+.steps-title{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0;
+    font-family: var(--font-family-font-3);
+    font-size: clamp(22px, 2.4vw, 30px);
+    font-weight: 600;
+    text-align: center;
+    color: var(--color-azure-martinique);
+}
+
+.steps-flower{
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.steps-grid{
+    width: 100%;
+    max-width: 1100px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.step-card{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 28px 28px 36px;
+    border: var(--container-border);
+    border-radius: var(--corner-radius-24);
+    box-shadow: 8px 8px 0 var(--color-orange-pearl-brush);
+    text-align: center;
+    color: var(--color-azure-martinique);
+    transition: transform .2s ease-out, box-shadow .2s ease-out;
+}
+
+.step-card:hover{
+    transform: translate(-3px, -3px);
+    box-shadow: 11px 11px 0 var(--color-orange-pearl-brush);
+}
+
+.step-card--blue{ background-color: var(--color-azure-st-blue); }
+.step-card--yellow{ background-color: var(--color-yellow-peach-yellow); }
+.step-card--cream{ background-color: var(--color-orange-dairy-cream); }
+
+.step-pill{
+    padding: 5px 14px;
+    background-color: var(--color-white-solid);
+    border: var(--container-border);
+    border-radius: var(--corner-radius-999);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.step-number{
+    font-family: var(--font-family-font-3);
+    font-size: clamp(48px, 5vw, 64px);
+    font-weight: 300;
+    line-height: 1;
+}
+
+.step-card-title{
+    margin: 4px 0 0;
+    font-family: var(--font-family-font-3);
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.step-card-bio{
+    max-width: 280px;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--color-azure-dolphin);
+}
+
+@media (max-width: 1100px){
+    .steps-section{
+        padding: 64px 48px 72px;
+    }
+}
+
+@media (max-width: 800px){
+    .steps-section{
+        padding: 48px 20px 56px;
+    }
+
+    .steps-grid{
+        grid-template-columns: minmax(0, 1fr);
+        max-width: 420px;
+    }
+}
+
+/* Start with what you already own (CTA) section */
+.cta-section{
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    padding: 150px 80px 110px;
+    border-top: none;
+    background-color: var(--color-yellow-peach-yellow);
+    overflow: hidden;
+    text-align: center;
+}
+
+/* gelombang di atas: warnanya sama dengan bagian krem sebelumnya */
+.cta-wave{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 90px;
+    fill: var(--color-orange-linen);
+}
+
+.cta-dot{
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: var(--size);
+    height: var(--size);
+    background-color: var(--color-white-solid);
+    border-radius: var(--corner-radius-999);
+    opacity: 0.9;
+}
+
+.cta-content{
+    position: relative; /* di atas titik-titik */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    max-width: 640px;
+}
+
+.cta-title{
+    margin: 0;
+    font-family: var(--font-family-font-3);
+    font-size: clamp(32px, 4.4vw, 54px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--color-azure-martinique);
+}
+
+.cta-bio{
+    max-width: 480px;
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--color-azure-martinique);
+}
+
+.cta-content .cta-btn{
+    margin-top: 8px;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+@media (max-width: 700px){
+    .cta-section{
+        padding: 110px 20px 80px;
+    }
+
+    .cta-wave{
+        height: 50px;
+    }
+}
+
+/* animasi muncul saat di-scroll (dipasang oleh static/js/landing.js) */
+.reveal-ready .reveal{
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity .7s ease-out, transform .7s ease-out;
+}
+
+.reveal-ready .reveal.is-visible{
+    opacity: 1;
+    transform: none;
+}
+
+/* elemen yang sudah punya transform sendiri: geser lewat translate supaya tidak bentrok */
+.reveal-ready .features-title.reveal{
+    transform: skewX(-10deg) translateY(32px);
+}
+
+.reveal-ready .features-title.reveal.is-visible{
+    transform: skewX(-10deg);
+}
+
+.reveal-ready .why-tag.reveal{
+    transform: rotate(-6deg) translateY(32px);
+}
+
+.reveal-ready .why-tag.reveal.is-visible{
+    transform: rotate(-6deg);
+}
+
+/* kartu di dalam grid muncul bergiliran. Pakai animation (bukan transition)
+   supaya setelah selesai, efek hover kartu tetap jalan seperti biasa. */
+.reveal-ready .reveal-stagger{
+    opacity: 1;
+    transform: none;
+}
+
+.reveal-ready .reveal-stagger:not(.is-visible) > *{
+    opacity: 0;
+}
+
+.reveal-ready .reveal-stagger.is-visible > *{
+    animation: reveal-up .6s ease-out backwards;
+}
+
+.reveal-ready .reveal-stagger.is-visible > :nth-child(2){ animation-delay: .1s; }
+.reveal-ready .reveal-stagger.is-visible > :nth-child(3){ animation-delay: .2s; }
+.reveal-ready .reveal-stagger.is-visible > :nth-child(4){ animation-delay: .3s; }
+.reveal-ready .reveal-stagger.is-visible > :nth-child(5){ animation-delay: .4s; }
+.reveal-ready .reveal-stagger.is-visible > :nth-child(6){ animation-delay: .5s; }
+
+@keyframes reveal-up{
+    from{
+        opacity: 0;
+        transform: translateY(32px);
+    }
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* variasi arah muncul: dari kiri / kanan */
+.reveal-ready .reveal-left{
+    transform: translateX(-48px);
+}
+
+.reveal-ready .reveal-right{
+    transform: translateX(48px);
+}
+
+.reveal-ready .reveal-left.is-visible,
+.reveal-ready .reveal-right.is-visible{
+    transform: none;
+}
+
+/* ===== detail kecil per bagian supaya tidak monoton ===== */
+
+/* Meet your digital closet: kartu berayun seperti baju di gantungan saat disorot */
+.digital-closet-card{
+    transform-origin: 50% 0;
+}
+
+.digital-closet-card:hover{
+    animation: hanger-swing 1.1s ease-in-out;
+}
+
+@keyframes hanger-swing{
+    0%   { transform: rotate(0); }
+    20%  { transform: rotate(4deg); }
+    45%  { transform: rotate(-3deg); }
+    70%  { transform: rotate(1.5deg); }
+    100% { transform: rotate(0); }
+}
+
+/* Why RE:STYLE: ikon bergoyang dan kartu sedikit terang saat disorot */
+.why-card{
+    transition: filter .25s ease-out;
+}
+
+.why-card:hover{
+    filter: brightness(1.04);
+}
+
+.why-icon{
+    transition: transform .35s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.why-card:hover .why-icon{
+    transform: rotate(-10deg) scale(1.12);
+}
+
+/* tag "WHY RE: STYLE?" berayun pelan, seperti tag baju yang tergantung */
+.why-tag-shape{
+    transform-origin: 10% 50%;
+    animation: tag-sway 5s ease-in-out infinite;
+}
+
+@keyframes tag-sway{
+    0%, 100% { transform: rotate(0); }
+    50%      { transform: rotate(2.5deg); }
+}
+
+/* Sound familiar?: bintang melayang + poin cerita bergeser saat disorot */
+.story-section{
+    position: relative;
+    overflow: hidden;
+}
+
+.story-star{
+    position: absolute;
+    top: 48px;
+    right: 6%;
+    width: 72px;
+    opacity: .8;
+}
+
+.story-item{
+    transition: transform .25s ease-out;
+}
+
+.story-item:hover{
+    transform: translateX(8px);
+}
+
+.story-number{
+    transition: color .25s ease-out;
+}
+
+.story-item:hover .story-number{
+    color: var(--color-orange-tumbleweed);
+}
+
+/* Three steps: bunga besar melayang di kedua sisi */
+.steps-section{
+    position: relative;
+    overflow: hidden;
+}
+
+.steps-flower-big{
+    position: absolute;
+    width: 56px;
+    opacity: .55;
+}
+
+.steps-flower-big--left{
+    top: 22%;
+    left: 5%;
+}
+
+.steps-flower-big--right{
+    bottom: 18%;
+    right: 5%;
+    width: 40px;
+    animation-delay: -2s;
+}
+
+/* gerakan melayang pelan untuk dekorasi */
+.float-decor{
+    animation: float-bob 6s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes float-bob{
+    0%, 100% { transform: translateY(0) rotate(0); }
+    50%      { transform: translateY(-14px) rotate(12deg); }
+}
+
+/* CTA: titik-titik putih ikut melayang dengan tempo berbeda */
+.cta-dot{
+    animation: float-bob 7s ease-in-out infinite;
+}
+
+.cta-dot:nth-of-type(2n){ animation-duration: 9s; animation-delay: -3s; }
+.cta-dot:nth-of-type(3n){ animation-duration: 5.5s; animation-delay: -1.5s; }
+
+@media (max-width: 800px){
+    .story-star{
+        width: 48px;
+        top: 24px;
+    }
+
+    .steps-flower-big{
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce){
+    .float-decor,
+    .cta-dot,
+    .why-tag-shape,
+    .digital-closet-card:hover{
+        animation: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce){
+    .reveal-ready .reveal,
+    .reveal-ready .reveal-stagger > *{
+        opacity: 1;
+        transform: none;
+        transition: none;
+        animation: none;
+    }
+}
+
+/* ===== perbaikan tampilan mobile landing page ===== */
+@media (max-width: 768px){
+    /* hero: kurangi ruang kosong di atas dan rata tengah */
+    .hero{
+        gap: 0;
+        padding: 104px 20px 48px;
+    }
+
+    .hero-img{
+        justify-content: center;
+    }
+
+    .hero-bunglon{
+        width: 82%;
+    }
+
+    .bubble-hero{
+        width: 34vw;
+        left: 82%;
+    }
+
+    .hero-content{
+        padding: 8px 0 0;
+        overflow: visible;
+    }
+
+    .main-hero-content{
+        align-items: center;
+        text-align: center;
+    }
+
+    .hero-btn{
+        justify-content: center;
+    }
+
+    .main-hero-content{
+        gap: 24px;
+    }
+
+    .title{
+        margin: 0 0 16px;
+        font-size: 34px;
+        line-height: 1.25;
+    }
+
+    .bio{
+        line-height: 1.65;
+    }
+
+    .hero-btn{
+        margin-top: 4px;
+    }
+
+    /* judul "Meet your digital closet": stroke lebih tipis supaya huruf tidak gemuk */
+    .digital-closet-landing{
+        padding: 56px 0;
+        gap: 8px;
+    }
+
+    .digital-closet-landing > div:first-child{
+        padding: 0 20px;
+    }
+
+    .landing-dc-title{
+        font-size: 28px;
+        letter-spacing: 1px;
+        -webkit-text-stroke-width: 2.5px;
+        margin-bottom: 12px;
+    }
+
+    .digital-closet-landing p{
+        font-size: 14px;
+    }
+
+    /* digital closet: jadi rak yang bisa digeser ke samping */
+    .digital-closet-cont{
+        justify-content: flex-start;
+        gap: 0;
+        padding: 40px 20px 12px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-padding: 0 20px;
+        scrollbar-width: none;
+    }
+
+    .digital-closet-cont::-webkit-scrollbar{
+        display: none;
+    }
+
+    /* batang gantungan dibentuk dari garis di atas tiap kartu, jadi ikut tergeser */
+    .besi-hanger{
+        display: none;
+    }
+
+    .digital-closet-card{
+        flex: 0 0 168px;
+        padding: 20px 10px 8px;
+        scroll-snap-align: start;
+    }
+
+    .digital-closet-card::before{
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background-color: var(--color-azure-martinique);
+    }
+
+    .digital-closet-card:first-of-type::before{
+        left: 10px;
+        border-radius: 4px 0 0 4px;
+    }
+
+    .digital-closet-card:last-of-type::before{
+        right: 10px;
+        border-radius: 0 4px 4px 0;
+    }
+
+    .hanger{
+        width: 52px;
+    }
+
+    .digital-closet-img{
+        padding: 14px;
+    }
+
+    .digital-closet-img img{
+        width: 100%;
+    }
+
+    .digital-closet-text{
+        margin: 12px 0;
+    }
+
+    .digital-closet-card h2{
+        font-size: 16px;
+    }
+
+    .wardrobe-status-btn{
+        white-space: nowrap;
+        font-size: 12px;
+    }
+}
+
+/* kartu baju tidak berayun di mobile / layar sentuh (ketukan dianggap hover, jadi terlihat aneh) */
+@media (max-width: 768px), (hover: none){
+    .digital-closet-card:hover{
+        animation: none;
+    }
+}
+
+/* kartu Style Persona di profil: serasi dengan kartu profil di atasnya */
+.persona-card.section-container{
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 24px 28px;
+    border-color: var(--color-azure-san-marino);
+    box-shadow: 5px 5px 0 var(--color-azure-st-blue);
+    color: var(--color-azure-martinique);
+}
+
+.persona-head{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.persona-icon{
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    background-color: var(--color-yellow-peach-yellow);
+    border: var(--container-border);
+    border-radius: var(--corner-radius-16);
+    font-size: 22px;
+    color: var(--color-azure-san-marino);
+    transform: rotate(-6deg);
+}
+
+.persona-heading{
+    flex: 1;
+    min-width: 0;
+}
+
+.persona-eyebrow{
+    display: block;
+    margin-bottom: 2px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--color-azure-dolphin);
+}
+
+.persona-title{
+    margin: 0;
+    font-family: var(--font-family-font-3);
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.persona-retake{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    padding: 7px 14px;
+    border: 1px solid var(--color-azure-san-marino);
+    border-radius: var(--corner-radius-999);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-azure-san-marino);
+    text-decoration: none;
+    transition: background-color .2s ease-out;
+}
+
+.persona-retake:hover{
+    background-color: var(--color-azure-st-blue);
+}
+
+.persona-description{
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--color-azure-dolphin);
+}
+
+.persona-chips{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.persona-chip{
+    padding: 6px 12px;
+    background-color: var(--color-orange-linen);
+    border: 1px solid var(--color-orange-pearl-brush);
+    border-radius: var(--corner-radius-999);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.persona-chip span{
+    margin-right: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    color: var(--color-azure-57);
+}
+
+.persona-hint{
+    margin: 0;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--color-azure-dolphin);
+}
+
+@media (max-width: 480px){
+    .persona-card.section-container{
+        padding: 20px;
+    }
+
+    .persona-head{
+        flex-wrap: wrap;
+    }
+
+    .persona-retake{
+        order: 3;
+    }
+
+    .persona-title{
+        font-size: 19px;
+    }
+}
+
+/* lompatan ke anchor (#features, #how-it-works, dll.) bergulir halus */
+html{
+    scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce){
+    html{
+        scroll-behavior: auto;
+    }
+}
+
+/* ===== intro hero: jalan sekali saat halaman dibuka ===== */
+
+/* teks muncul bergantian dari bawah */
+.hero .sub-title,
+.hero .title,
+.hero .bio,
+.hero a.hero-btn{
+    animation: hero-rise .8s cubic-bezier(.22, 1, .36, 1) backwards;
+}
+
+.hero .sub-title{ animation-delay: .15s; }
+.hero .title{ animation-delay: .3s; }
+.hero .bio{ animation-delay: .5s; }
+.hero a.hero-btn{ animation-delay: .7s; }
+
+@keyframes hero-rise{
+    from{
+        opacity: 0;
+        transform: translateY(28px);
+    }
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* bunglon masuk, lalu naik-turun pelan seperti bernapas */
+.hero-bunglon{
+    animation:
+        hero-pop-in .9s cubic-bezier(.34, 1.56, .64, 1) backwards,
+        hero-breathe 4.5s ease-in-out .9s infinite;
+}
+
+@keyframes hero-pop-in{
+    from{
+        opacity: 0;
+        transform: scale(.85) translateY(20px);
+    }
+    to{
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes hero-breathe{
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-10px); }
+}
+
+/* balon "Hm... I know that feeling" muncul memantul setelah bunglon */
+.bubble-hero{
+    transform-origin: 0% 100%;
+    animation: hero-bubble 0.6s cubic-bezier(.34, 1.56, .64, 1) 1s backwards;
+}
+
+@keyframes hero-bubble{
+    from{
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0);
+    }
+    to{
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* bintang di belakang berkelip pelan */
+.hero-star{
+    animation: hero-twinkle 5s ease-in-out infinite;
+}
+
+@keyframes hero-twinkle{
+    0%, 100%{
+        opacity: .45;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50%{
+        opacity: .65;
+        transform: translate(-50%, -50%) scale(1.04);
+    }
+}
+
+@media (prefers-reduced-motion: reduce){
+    .hero .sub-title,
+    .hero .title,
+    .hero .bio,
+    .hero a.hero-btn,
+    .hero-bunglon,
+    .bubble-hero,
+    .hero-star{
+        animation: none;
+    }
+}

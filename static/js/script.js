@@ -1,4 +1,6 @@
-Marquee3k.init();
+// Tunggu font (Poppins) selesai dimuat dulu: kalau marquee diukur pakai font cadangan
+// yang lebih sempit, tulisannya akan saling menimpa setelah font aslinya muncul.
+(document.fonts ? document.fonts.ready : Promise.resolve()).then(() => Marquee3k.init());
 
 const navToggle = document.querySelector(".nav-toggle");
 const siteHeader = document.querySelector(".site-header");
