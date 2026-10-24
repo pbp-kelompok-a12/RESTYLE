@@ -17,6 +17,13 @@
     transform: translateX(-50%);
 }
 
+.app-nav-brand {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin-right: -16px;
+}
+
 .app-nav-links{
     display: flex;
     align-items: center;
@@ -46,6 +53,10 @@
 
 .is-active{
     display: flex!important;
+}
+
+.nav-signin-mobile{
+    display: none;
 }
 
 .app-nav-tools{
@@ -134,29 +145,101 @@
     height: 30px;
 }
 
+.app-nav-toggle {
+    display: none;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    place-items: center;
+    background: transparent;
+    border: 1px solid var(--color-yellow-peach-yellow);
+    border-radius: var(--corner-radius-999);
+    color: var(--color-yellow-peach-yellow);
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color .2s ease-out, color .2s ease-out;
+}
+
+.app-nav-toggle:hover,
+.app-nav.nav-open .app-nav-toggle {
+    background: var(--color-yellow-peach-yellow);
+    color: var(--color-azure-san-marino);
+}
+
 @media (max-width: 900px) {
     .app-nav{
-        width: 100%;
-        margin-top: 8px;
-        padding: 12px 16px;
+        width: calc(100% - 24px);
+        margin-top: 0;
+        top: 10px;
+        padding: 10px 16px;
         border-radius: var(--corner-radius-24);
         flex-wrap: wrap;
-        gap: 12px;
-        top: 8px;
+        align-items: center;
+        gap: 8px 10px;
     }
 
-    .app-nav-links{
-        order: 2;
-        width: 100%;
-        overflow-x: auto;
+    .app-nav-brand{
+        order: 1;
+        margin-right: auto;
     }
 
     .app-nav-tools{
-        order: 1;
-        gap: 12px;
+        display: contents;
     }
 
-    .app-nav-search{
+    .app-nav-tools > *{
+        order: 2;
+    }
+
+    .app-nav-tools > .app-nav-search{
+        order: 4;
+        flex: 1 1 100%;
         max-width: none;
+        min-width: 0;
+    }
+
+    .nav-signin-desktop{
+        display: none;
+    }
+
+    .app-nav-toggle{
+        order: 3;
+        display: grid;
+    }
+
+    .app-nav-links{
+        order: 5;
+        width: 100%;
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(255, 255, 255, .25);
+        max-height: calc(100vh - 160px);
+        overflow-y: auto;
+    }
+
+    .app-nav.nav-open .app-nav-links{
+        display: flex;
+    }
+
+    .nav-signin-mobile{
+        display: block;
+    }
+
+    .nav-links{
+        padding: 12px 16px;
+        font-size: 13px;
+    }
+
+    .app-nav-bell{
+        width: 36px;
+        height: 36px;
+    }
+
+    .app-nav-avatar{
+        width: 38px;
+        height: 38px;
     }
 }

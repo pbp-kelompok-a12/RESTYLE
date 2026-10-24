@@ -5,10 +5,11 @@
 
 {% if user.is_authenticated %}
 <header class="app-nav">
-    <nav class="app-nav-links" aria-label="Main menu">
-        <a href="{% url 'main:show_landing_page' %}">
-            <img src="/static/img/brand.webp" alt="RE:STYLE logo" class="brand-nav">
-        </a>
+    <a href="{% url 'main:show_landing_page' %}" class="app-nav-brand">
+        <img src="/static/img/brand.webp" alt="RE:STYLE logo" class="brand-nav">
+    </a>
+
+    <nav class="app-nav-links" id="app-nav-links" aria-label="Main menu">
         
         <a href="{% url 'closet:show_closet' %}" class="nav-links {% if request.resolver_match.app_name == 'closet' %}is-active{% endif %}">CLOSET</a>
 
@@ -51,14 +52,19 @@
             {% avatar user %}
         </a>
     </div>
+
+    <button type="button" class="app-nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="app-nav-links">
+        <i class="fa-solid fa-bars"></i>
+    </button>
 </header>
 
 {% else %}
 <header class="app-nav">
-    <nav class="app-nav-links" aria-label="Main menu">
-        <a href="{% url 'main:show_landing_page' %}">
-            <img src="/static/img/brand.webp" alt="RE:STYLE logo" class="brand-nav">
-        </a>
+    <a href="{% url 'main:show_landing_page' %}" class="app-nav-brand">
+        <img src="/static/img/brand.webp" alt="RE:STYLE logo" class="brand-nav">
+    </a>
+
+    <nav class="app-nav-links" id="app-nav-links" aria-label="Main menu">
 
         <a href="{% url 'main:show_landing_page' %}#features" class="nav-links">
             FEATURES
@@ -74,14 +80,20 @@
            class="nav-links {% if request.resolver_match.app_name == 'community' %}is-active{% endif %}">
             COMMUNITY
         </a>
+
+        <a href="{% url 'main:login' %}" class="nav-links nav-signin-mobile">SIGN IN</a>
     </nav>
 
     <div class="app-nav-tools">
-        <a href="{% url 'main:login' %}" class="nav-links">SIGN IN</a>
+        <a href="{% url 'main:login' %}" class="nav-links nav-signin-desktop">SIGN IN</a>
 
         <a href="{% url 'main:style_quiz' %}">
             {% include 'components/button.html' with btn_class="secondary" label="Try It Now!" extra_class="padding-gede" %}
         </a>
     </div>
+
+    <button type="button" class="app-nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="app-nav-links">
+        <i class="fa-solid fa-bars"></i>
+    </button>
 </header>
 {% endif %}
