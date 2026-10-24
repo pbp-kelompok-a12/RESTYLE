@@ -43,6 +43,62 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("item-name")?.focus();
     });
 
+    // Item photo: shrunk in the browser first, since the wishlist lives in localStorage
+    // (about 5 MB per browser), then kept as a data URL.
+    const photoInput = document.getElementById("item-photo");
+    const photoPreview = document.getElementById("item-photo-preview");
+    const removePhotoButton = document.getElementById("remove-item-photo");
+    const MAX_PHOTO_SIDE = 600;
+    let photoData = "";
+
+    function clearPhoto() {
+        photoData = "";
+        if (photoInput) photoInput.value = "";
+        if (photoPreview) {
+            photoPreview.hidden = true;
+            photoPreview.querySelector("img").src = "";
+        }
+    }
+
+    function shrinkPhoto(file) {
+        return createImageBitmap(file).then(bitmap => {
+            const scale = Math.min(1, MAX_PHOTO_SIDE / Math.max(bitmap.width, bitmap.height));
+            const canvas = document.createElement("canvas");
+            canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+            canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+            const context = canvas.getContext("2d");
+            context.fillStyle = "#ffffff"; // transparent PNGs get a white background
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+            bitmap.close?.();
+            return canvas.toDataURL("image/jpeg", 0.75);
+        });
+    }
+
+    photoInput?.addEventListener("change", () => {
+        const file = photoInput.files[0];
+        if (!file) {
+            clearPhoto();
+            return;
+        }
+        if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+            clearPhoto();
+            window.showToast?.("error", "Choose a JPG, PNG, or WebP photo.");
+            return;
+        }
+        shrinkPhoto(file).then(dataUrl => {
+            photoData = dataUrl;
+            photoPreview.querySelector("img").src = dataUrl;
+            photoPreview.hidden = false;
+        }).catch(() => {
+            clearPhoto();
+            window.showToast?.("error", "Could not read that photo. Try another image.");
+        });
+    });
+
+    removePhotoButton?.addEventListener("click", clearPhoto);
+    form.addEventListener("reset", clearPhoto);
+
     closeForm();
 
     const storageKey = "restyle_wishlist_demo";
@@ -131,6 +187,15 @@ document.addEventListener("DOMContentLoaded", () => {
             const card = document.createElement("article");
             card.className = "wishlist-item-card";
 
+            // Photo uploaded in the form, or the closet photo for items saved from Community.
+            if (/^(\/|https?:\/\/|data:image\/)/i.test(item.photo || "")) {
+                const image = document.createElement("img");
+                image.className = "wishlist-item-photo";
+                image.src = item.photo;
+                image.alt = item.name;
+                card.appendChild(image);
+            }
+
             const title = document.createElement("h3");
             title.textContent = item.name;
             card.appendChild(title);
@@ -151,6 +216,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 card.appendChild(paragraph);
             });
 
+            // Keep the product link and Remove button on one row at the bottom.
+            const actions = document.createElement("div");
+            actions.className = "wishlist-item-actions";
+
             if (item.link) {
                 try {
                     const url = new URL(item.link);
@@ -160,8 +229,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         link.href = url.href;
                         link.target = "_blank";
                         link.rel = "noopener noreferrer";
+                        link.className = "view-product";
                         link.textContent = "View product";
-                        card.appendChild(link);
+                        actions.appendChild(link);
                     }
                 } catch (error) {
                     // Ignore invalid product URLs.
@@ -178,14 +248,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 saveAndRender();
             });
 
-            card.appendChild(removeButton);
+            actions.appendChild(removeButton);
+            card.appendChild(actions);
             container.appendChild(card);
         });
     }
 
     function saveAndRender() {
-        localStorage.setItem(storageKey, JSON.stringify(items));
+        try {
+            localStorage.setItem(storageKey, JSON.stringify(items));
+        } catch (error) {
+            renderItems();
+            return false; // usually the browser storage is full
+        }
         renderItems();
+        return true;
     }
 
     form.addEventListener("submit", event => {
@@ -210,12 +287,18 @@ document.addEventListener("DOMContentLoaded", () => {
             color,
             price,
             link,
-            reason
+            reason,
+            photo: photoData
         });
 
-        saveAndRender();
+        if (!saveAndRender()) {
+            items.pop();
+            window.showToast?.("error", "Your wishlist storage is full. Remove some items or use a smaller photo.");
+            return;
+        }
         form.reset();
         closeForm();
+        window.showToast?.("success", "Added to your wishlist.");
     });
 
     search?.addEventListener("input", renderItems);

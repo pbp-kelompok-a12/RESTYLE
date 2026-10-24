@@ -456,6 +456,63 @@ document.querySelectorAll(".cm-reply-rich").forEach((form) => {
 });
 
 
+// Wishlist masih disimpan di localStorage oleh halaman wishlist (static/js/wishlist.js),
+// jadi pakai key dan bentuk data yang sama supaya item dari community ikut muncul di sana.
+const WISHLIST_KEY = "restyle_wishlist_demo";
+
+function readWishlist() {
+    try {
+        const items = JSON.parse(localStorage.getItem(WISHLIST_KEY) || "[]");
+        return Array.isArray(items) ? items : [];
+    } catch (error) {
+        return [];
+    }
+}
+
+function writeWishlist(items) {
+    try {
+        localStorage.setItem(WISHLIST_KEY, JSON.stringify(items));
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+// ubah data pakaian closet ke bentuk item wishlist
+// (nama kategori dan warna disamakan dengan pilihan di form wishlist)
+function toWishlistEntry(item) {
+    const category = item.category === "Dresses" ? "Dress" : item.category;
+    const color = item.color === "Gray" ? "Grey" : item.color;
+    return {
+        id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        sourceItemId: item.itemId,
+        name: item.name,
+        photo: item.photo || "",
+        category,
+        color,
+        price: item.priceRaw,
+        link: /^https?:\/\//i.test(item.link || "") ? item.link : "",
+        reason: "Spotted in the Community.",
+    };
+}
+
+// item wishlist yang disimpan sebelum ada foto: lengkapi fotonya dari tag yang ada di halaman ini
+(function fillWishlistPhotos() {
+    const items = readWishlist();
+    let changed = false;
+    document.querySelectorAll(".cm-tag-button[data-photo]").forEach((button) => {
+        items.forEach((entry) => {
+            if (!entry.photo && button.dataset.photo && entry.sourceItemId === button.dataset.itemId) {
+                entry.photo = button.dataset.photo;
+                changed = true;
+            }
+        });
+    });
+    if (changed) {
+        writeWishlist(items);
+    }
+})();
+
 // tag di post: klik untuk melihat detail pakaiannya (bisa dilihat semua orang)
 if (document.querySelector(".cm-tag-button")) {
     const itemDialog = document.createElement("dialog");
@@ -468,6 +525,12 @@ if (document.querySelector(".cm-tag-button")) {
         <span class="cm-item-swatch"></span>
         <h3 class="cm-item-name"></h3>
         <dl class="cm-item-info"></dl>
+        <div class="cm-item-wishlist">
+            <button type="button" class="btn secondary-btn cm-community-button cm-community-small cm-wishlist-toggle">
+                <i class="fa-regular fa-heart"></i> <span class="cm-wishlist-label">Add to wishlist</span>
+            </button>
+            <a class="cm-wishlist-view" href="#" hidden>View wishlist</a>
+        </div>
         <a class="cm-item-link" href="#">Open in my closet</a>`;
     document.body.append(itemDialog);
 
@@ -475,10 +538,48 @@ if (document.querySelector(".cm-tag-button")) {
     const swatch = itemDialog.querySelector(".cm-item-swatch");
     const info = itemDialog.querySelector(".cm-item-info");
     const closetLink = itemDialog.querySelector(".cm-item-link");
+    const wishlistBox = itemDialog.querySelector(".cm-item-wishlist");
+    const wishlistButton = itemDialog.querySelector(".cm-wishlist-toggle");
+    const wishlistView = itemDialog.querySelector(".cm-wishlist-view");
+    let shownItem = null; // pakaian yang sedang dibuka di kotak detail
+
+    // update tampilan tombol wishlist sesuai sudah disimpan atau belum
+    function showWishlistState() {
+        const items = readWishlist();
+        const entry = items.find((saved) => saved.sourceItemId === shownItem.itemId);
+        const saved = Boolean(entry);
+        // item yang disimpan sebelum ada foto: lengkapi fotonya sekarang
+        if (entry && !entry.photo && shownItem.photo) {
+            entry.photo = shownItem.photo;
+            writeWishlist(items);
+        }
+        wishlistButton.classList.toggle("primary-btn", saved);
+        wishlistButton.classList.toggle("secondary-btn", !saved);
+        wishlistButton.querySelector("i").className = saved ? "fa-solid fa-heart" : "fa-regular fa-heart";
+        wishlistButton.querySelector(".cm-wishlist-label").textContent = saved ? "In your wishlist" : "Add to wishlist";
+        wishlistView.hidden = !saved;
+    }
+
+    wishlistButton.addEventListener("click", () => {
+        const items = readWishlist();
+        const index = items.findIndex((entry) => entry.sourceItemId === shownItem.itemId);
+        if (index === -1) {
+            items.push(toWishlistEntry(shownItem));
+        } else {
+            items.splice(index, 1);
+        }
+        if (!writeWishlist(items)) {
+            showToast("error", "Could not update your wishlist. Please try again.");
+            return;
+        }
+        showToast("success", index === -1 ? "Added to your wishlist." : "Removed from your wishlist.");
+        showWishlistState();
+    });
 
     document.querySelectorAll(".cm-tag-button").forEach((button) => {
         button.addEventListener("click", () => {
             const item = button.dataset; // isi dari atribut data-... di tombolnya
+            shownItem = item;
 
             // pakai foto kalau ada, kalau tidak tampilkan kotak warnanya
             photo.hidden = !item.photo;
@@ -527,6 +628,13 @@ if (document.querySelector(".cm-tag-button")) {
             // link ke closet hanya muncul untuk pemilik pakaiannya
             closetLink.hidden = !item.closetUrl;
             closetLink.href = item.closetUrl || "#";
+
+            // pakaian milik sendiri sudah ada di closet, jadi tidak perlu masuk wishlist
+            wishlistBox.hidden = Boolean(item.closetUrl);
+            if (!item.closetUrl) {
+                wishlistView.href = button.closest(".cm-tags").dataset.wishlistUrl;
+                showWishlistState();
+            }
 
             itemDialog.showModal();
         });

@@ -146,6 +146,27 @@
             </div>
 
             <div class="form-field full-width">
+                <label for="item-photo">Item photo (optional)</label>
+                <input
+                    type="file"
+                    id="item-photo"
+                    name="item-photo"
+                    accept="image/png, image/jpeg, image/webp"
+                >
+                <div id="item-photo-preview" class="item-photo-preview" hidden>
+                    <img src="" alt="Selected item photo">
+                    <button
+                        type="button"
+                        id="remove-item-photo"
+                        class="remove-photo-button"
+                        aria-label="Remove photo"
+                    >
+                        &times;
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-field full-width">
                 <label for="item-reason">Why do you want it? (optional)</label>
                 <textarea
                     id="item-reason"
@@ -229,5 +250,6 @@
 
 </main>
 
+{% include 'components/toast.html' %}
 <script src="{% static 'js/wishlist.js' %}" defer></script>
 {% endblock content %}

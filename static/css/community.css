@@ -1340,6 +1340,26 @@ body{
     font-size: 11px;
 }
 
+/* tombol simpan ke wishlist di kotak detail pakaian */
+.cm-item-wishlist{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.cm-item-wishlist[hidden]{
+    display: none;
+}
+
+.cm-wishlist-view{
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-azure-san-marino);
+    text-decoration: underline;
+}
+
 .cm-item-link{
     display: inline-block;
     margin-top: 14px;
