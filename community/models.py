@@ -144,10 +144,12 @@ class Notification(models.Model):
     REPLY = "reply"
     LIKE = "like"
     FOLLOW = "follow"
+    MENTION = "mention"
     KIND_CHOICES = [
         (REPLY, "Reply"),
         (LIKE, "Like"),
         (FOLLOW, "Follow"),
+        (MENTION, "Mention"),
     ]
 
     # yang menerima notifikasi
@@ -196,6 +198,12 @@ class Notification(models.Model):
             if others:
                 return f"and {others} other{'s' if others > 1 else ''} liked your post"
             return "liked your post"
+        if self.kind == self.MENTION:
+            # disebut di reply (ada comment) atau di post-nya sendiri
+            text = self.comment.content if self.comment_id else self.post.content
+            preview = text if len(text) <= 40 else text[:40] + "…"
+            where = "a reply" if self.comment_id else "a post"
+            return f"mentioned you in {where}: “{preview}”"
         target = "your post" if self.recipient_id == self.post.author_id else "your comment"
         preview = self.comment.content if len(self.comment.content) <= 40 else self.comment.content[:40] + "…"
         return f"replied to {target}: “{preview}”"

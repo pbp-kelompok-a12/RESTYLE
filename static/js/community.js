@@ -899,3 +899,153 @@ document.querySelectorAll(".cm-follow").forEach((button) => {
         }
     });
 });
+
+// Tag username: saat mengetik @ di kotak tulis post / reply / edit, muncul saran username.
+// Panah atas-bawah untuk memilih, Enter atau Tab untuk memasukkan, Escape untuk menutup.
+(function () {
+    const textareas = document.querySelectorAll(".cm-page textarea[name='content'], .cm-reply-dialog textarea[name='content']");
+    if (!textareas.length) return;
+
+    const SUGGEST_URL = "/community/mentions/"; // community:mention_suggestions
+    const TOKEN_RE = /(^|[^\w@])@([\w.+-]{0,30})$/; // @kata tepat sebelum kursor
+    const cache = new Map();
+
+    const menu = document.createElement("ul");
+    menu.className = "cm-mention-menu";
+    menu.setAttribute("role", "listbox");
+    menu.hidden = true;
+
+    let activeTextarea = null;
+    let results = [];
+    let selected = 0;
+    let timer = null;
+
+    function close() {
+        menu.hidden = true;
+        results = [];
+    }
+
+    function currentToken(textarea) {
+        const before = textarea.value.slice(0, textarea.selectionStart);
+        const match = before.match(TOKEN_RE);
+        return match ? { query: match[2], start: before.length - match[2].length - 1 } : null;
+    }
+
+    function render() {
+        menu.innerHTML = "";
+        results.forEach((user, index) => {
+            const item = document.createElement("li");
+            item.setAttribute("role", "option");
+            item.className = index === selected ? "is-selected" : "";
+            item.setAttribute("aria-selected", String(index === selected));
+
+            const avatar = document.createElement("span");
+            avatar.className = "cm-avatar cm-avatar-small";
+            if (user.photo) {
+                const img = document.createElement("img");
+                img.className = "avatar-photo";
+                img.src = user.photo;
+                img.alt = "";
+                avatar.append(img);
+            } else {
+                avatar.textContent = user.username.slice(0, 1).toUpperCase();
+            }
+
+            const name = document.createElement("span");
+            name.textContent = "@" + user.username;
+
+            item.append(avatar, name);
+            // mousedown (bukan click) supaya kotak tulis tidak kehilangan fokus dulu
+            item.addEventListener("mousedown", (event) => {
+                event.preventDefault();
+                choose(index);
+            });
+            menu.append(item);
+        });
+    }
+
+    function show() {
+        if (!results.length) {
+            close();
+            return;
+        }
+        // di dalam dialog reply, daftar harus ikut di dalam dialog supaya tidak tertutup
+        const host = activeTextarea.closest("dialog") || document.body;
+        if (menu.parentElement !== host) host.append(menu);
+
+        const box = activeTextarea.getBoundingClientRect();
+        menu.style.left = `${box.left}px`;
+        menu.style.top = `${box.bottom + 6}px`;
+        menu.style.minWidth = `${Math.min(box.width, 280)}px`;
+        render();
+        menu.hidden = false;
+    }
+
+    function choose(index) {
+        const user = results[index];
+        const token = user && currentToken(activeTextarea);
+        if (!token) return;
+        const value = activeTextarea.value;
+        const insert = "@" + user.username + " ";
+        activeTextarea.value = value.slice(0, token.start) + insert + value.slice(activeTextarea.selectionStart);
+        const caret = token.start + insert.length;
+        activeTextarea.setSelectionRange(caret, caret);
+        activeTextarea.dispatchEvent(new Event("input", { bubbles: true })); // tombol Post ikut aktif
+        close();
+    }
+
+    async function suggest(textarea) {
+        const token = currentToken(textarea);
+        if (!token) {
+            close();
+            return;
+        }
+        activeTextarea = textarea;
+        const key = token.query.toLowerCase();
+        try {
+            if (!cache.has(key)) {
+                const response = await fetch(`${SUGGEST_URL}?q=${encodeURIComponent(token.query)}`);
+                if (!response.ok) throw new Error("Request failed");
+                cache.set(key, (await response.json()).results);
+            }
+            // kalau pengguna sudah mengetik lebih jauh selama menunggu, abaikan hasil lama ini
+            const latest = currentToken(textarea);
+            if (!latest || latest.query.toLowerCase() !== key) return;
+            results = cache.get(key);
+            selected = 0;
+            show();
+        } catch (error) {
+            close();
+        }
+    }
+
+    textareas.forEach((textarea) => {
+        textarea.addEventListener("input", (event) => {
+            if (!event.isTrusted) return; // input buatan choose() tidak perlu memicu saran lagi
+            clearTimeout(timer);
+            timer = setTimeout(() => suggest(textarea), 150);
+        });
+
+        textarea.addEventListener("keydown", (event) => {
+            if (menu.hidden || activeTextarea !== textarea) return;
+            if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+                event.preventDefault();
+                const step = event.key === "ArrowDown" ? 1 : -1;
+                selected = (selected + step + results.length) % results.length;
+                render();
+            } else if (event.key === "Enter" || event.key === "Tab") {
+                event.preventDefault();
+                choose(selected);
+            } else if (event.key === "Escape") {
+                event.preventDefault();
+                event.stopPropagation(); // jangan sampai ikut menutup dialog reply
+                close();
+            }
+        });
+
+        textarea.addEventListener("blur", () => setTimeout(close, 100));
+    });
+
+    window.addEventListener("resize", close);
+    window.addEventListener("scroll", close); // scroll halaman saja, bukan scroll di dalam kotak tulis
+})();

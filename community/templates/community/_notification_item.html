@@ -8,6 +8,8 @@
             <span class="nt-icon nt-icon-like"><i class="fa-regular fa-heart"></i></span>
             {% elif note.kind == 'follow' %}
             <span class="nt-icon"><i class="fa-solid fa-user-plus"></i></span>
+            {% elif note.kind == 'mention' %}
+            <span class="nt-icon nt-icon-mention"><i class="fa-solid fa-at"></i></span>
             {% endif %}
         </span>
         <span class="nt-text">

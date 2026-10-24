@@ -21,6 +21,7 @@ from community.views import (
     update_avatar,
     show_moderation,
     show_search,
+    mention_suggestions,
 )
 
 app_name = "community"
@@ -29,6 +30,7 @@ urlpatterns = [
     path("", show_community, name="show_community"),
     path("saved/", show_saved, name="show_saved"),
     path("search/", show_search, name="show_search"),
+    path("mentions/", mention_suggestions, name="mention_suggestions"),
     path("moderation/", show_moderation, name="show_moderation"),
     path("notifications/", show_notifications, name="show_notifications"),
     path("notifications/read/", mark_notifications_read, name="mark_notifications_read"),
