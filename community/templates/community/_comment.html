@@ -1,5 +1,5 @@
 {# Satu komentar. Butuh variabel "comment". Balasan memakai file ini lagi. #}
-{% load community_avatars %}
+{% load community_avatars community_mentions %}
 
 <div class="cm-comment {% if comment.is_author %}is-author{% endif %}">
     <span class="cm-avatar cm-avatar-small">{% avatar comment.author %}</span>
@@ -10,7 +10,7 @@
             <span class="cm-time">{{ comment.time_ago }}</span>
         </header>
 
-        <p class="cm-bubble cm-editable">{{ comment.content }}</p>
+        <p class="cm-bubble cm-editable">{{ comment.content|mentions }}</p>
 
         {# foto dan pakaian closet yang disarankan di reply ini #}
         {% if comment.photo %}

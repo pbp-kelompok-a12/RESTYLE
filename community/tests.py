@@ -755,3 +755,75 @@ class ReplyPhotoAndTagTests(TestCase):
         response = self.client.get("/community/")
 
         self.assertNotContains(response, "cm-reply-dialog")
+
+
+@override_settings(STORAGES=SIMPLE_STORAGES)
+class MentionTests(TestCase):
+    def setUp(self):
+        user_model = get_user_model()
+        self.alice = user_model.objects.create_user(username="alice", password="test-password")
+        self.bob = user_model.objects.create_user(username="bob", password="test-password")
+        self.carol = user_model.objects.create_user(username="carol", password="test-password")
+        self.client.force_login(self.alice)
+
+    def mentions_for(self, user):
+        return Notification.objects.filter(recipient=user, kind=Notification.MENTION)
+
+    def test_mention_in_post_notifies_that_user(self):
+        self.client.post("/community/post/create/", {"content": "Outfit check @bob, what do you think?"})
+
+        notification = self.mentions_for(self.bob).get()
+        self.assertEqual(notification.actor, self.alice)
+        self.assertIn("mentioned you in a post", notification.message)
+        self.assertFalse(self.mentions_for(self.carol).exists())
+
+    def test_mentioning_yourself_or_unknown_users_sends_nothing(self):
+        self.client.post("/community/post/create/", {"content": "Me @alice and @nobody"})
+
+        self.assertFalse(Notification.objects.filter(kind=Notification.MENTION).exists())
+
+    def test_email_addresses_are_not_mentions(self):
+        self.client.post("/community/post/create/", {"content": "Mail me at hi@bob.com"})
+
+        self.assertFalse(self.mentions_for(self.bob).exists())
+
+    def test_editing_only_notifies_newly_mentioned_users(self):
+        self.client.post("/community/post/create/", {"content": "Hi @bob"})
+        post = Post.objects.get()
+
+        self.client.post(f"/community/post/{post.id}/edit/", {"content": "Hi @bob and @carol"})
+
+        self.assertEqual(self.mentions_for(self.bob).count(), 1)
+        self.assertEqual(self.mentions_for(self.carol).count(), 1)
+
+    def test_post_author_mentioned_in_a_reply_gets_one_notification(self):
+        post = Post.objects.create(author=self.bob, content="Which shoes?")
+
+        self.client.post(f"/community/post/{post.id}/comment/", {"content": "@bob the white ones, cc @carol"})
+
+        self.assertEqual(Notification.objects.filter(recipient=self.bob).count(), 1)  # reply saja
+        self.assertIn("mentioned you in a reply", self.mentions_for(self.carol).get().message)
+
+    def test_mentions_link_to_profiles(self):
+        Post.objects.create(author=self.alice, content="Thanks @bob. And @nobody <b>hi</b>")
+
+        response = self.client.get("/community/")
+
+        self.assertContains(response, '<a class="cm-mention" href="/community/profile/bob/">@bob</a>.')
+        self.assertContains(response, "@nobody")
+        self.assertNotContains(response, 'href="/community/profile/nobody/"')
+        self.assertContains(response, "&lt;b&gt;hi&lt;/b&gt;")
+
+    def test_suggestions_match_usernames_and_skip_yourself(self):
+        response = self.client.get("/community/mentions/?q=b")
+
+        usernames = [user["username"] for user in response.json()["results"]]
+        self.assertEqual(usernames[0], "bob")
+        self.assertNotIn("alice", usernames)
+
+    def test_suggestions_need_login(self):
+        self.client.logout()
+
+        response = self.client.get("/community/mentions/?q=b")
+
+        self.assertEqual(response.status_code, 302)

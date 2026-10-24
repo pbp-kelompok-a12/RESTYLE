@@ -3,11 +3,13 @@ Dipanggil dari views.py setiap ada balasan, like, atau follow."""
 
 from django.utils import timezone
 
+from community.mentions import mentioned_users
 from community.models import Notification
 
 
 def notify_reply(comment):
-    """kabari pemilik post (dan pemilik komentar yang dibalas) bahwa ada balasan baru."""
+    """kabari pemilik post (dan pemilik komentar yang dibalas) bahwa ada balasan baru.
+    Mengembalikan siapa saja yang sudah dikabari, supaya tidak dapat notifikasi mention dobel."""
     recipients = {comment.post.author}
     if comment.parent:
         recipients.add(comment.parent.author)
@@ -21,6 +23,7 @@ def notify_reply(comment):
             post=comment.post,
             comment=comment,
         )
+    return recipients
 
 
 def notify_like(post, liker):
@@ -64,3 +67,21 @@ def undo_follow(follower, followed):
         actor=follower,
         kind=Notification.FOLLOW,
     ).delete()
+
+def notify_mentions(actor, post, comment=None, old_text="", skip=()):
+    """kabari orang yang di-tag (@username) di post atau reply.
+    old_text: isi sebelum diedit, supaya yang sudah di-tag dari awal tidak dikabari lagi.
+    skip: user yang sudah dapat notifikasi lain untuk tulisan yang sama (misalnya reply)."""
+    text = comment.content if comment else post.content
+    already = {user.id for user in mentioned_users(old_text)} | {user.id for user in skip}
+
+    for user in mentioned_users(text):
+        if user.id == actor.id or user.id in already:
+            continue
+        Notification.objects.create(
+            recipient=user,
+            actor=actor,
+            kind=Notification.MENTION,
+            post=post,
+            comment=comment,
+        )

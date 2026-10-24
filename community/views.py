@@ -17,7 +17,14 @@ from django.views.decorators.http import require_POST
 from community.forms import CommentForm, PostForm
 from closet.models import Item
 from community.models import Comment, CommunityProfile, Follow, Notification, Post, PostImage
-from community.notifications import notify_follow, notify_like, notify_reply, undo_follow, undo_like
+from community.notifications import (
+    notify_follow,
+    notify_like,
+    notify_mentions,
+    notify_reply,
+    undo_follow,
+    undo_like,
+)
 from restyle.image_processing import optimize_image_upload
 
 # URL halaman login aplikasi.
@@ -136,6 +143,7 @@ def create_post(request):
     for photo in photos:
         PostImage.objects.create(post=post, image=optimize_image_upload(photo))
 
+    notify_mentions(request.user, post)
     messages.success(request, "Your post is live.")
     return redirect("community:show_community")
 
@@ -176,7 +184,8 @@ def create_comment(request, post_id):
             comment.photo = optimize_image_upload(photo)
         comment.save()
         comment.tagged_items.set(tagged_items)
-        notify_reply(comment)
+        replied = notify_reply(comment)
+        notify_mentions(request.user, post, comment=comment, skip=replied)
     else:
         messages.error(request, "Write a reply before sending (up to 500 characters).")
 
@@ -201,6 +210,7 @@ def edit_post(request, post_id):
     if post.author != request.user:
         return HttpResponseForbidden("You can only edit your own posts.")
 
+    old_content = post.content  # disimpan dulu: form.is_valid() langsung mengubah isi post
     form = PostForm(request.POST, instance=post)
     if not form.is_valid():
         messages.error(request, "A post can't be empty (up to 1000 characters).")
@@ -234,6 +244,7 @@ def edit_post(request, post_id):
     for photo in new_photos:
         PostImage.objects.create(post=post, image=optimize_image_upload(photo))
 
+    notify_mentions(request.user, post, old_text=old_content)
     messages.success(request, "Your post was updated.")
     return redirect(feed_url(post.id))
 
@@ -255,12 +266,14 @@ def edit_comment(request, comment_id):
     if comment.author != request.user:
         return HttpResponseForbidden("You can only edit your own replies.")
 
+    old_content = comment.content  # disimpan dulu: form.is_valid() langsung mengubah isi reply
     form = CommentForm(request.POST, instance=comment)
     if not form.is_valid():
         messages.error(request, "A reply can't be empty (up to 500 characters).")
         return redirect("community:show_community")
 
     form.save()
+    notify_mentions(request.user, comment.post, comment=comment, old_text=old_content)
     messages.success(request, "Your reply was updated.")
     return redirect(feed_url(comment.post_id))
 
@@ -486,17 +499,18 @@ def show_moderation(request):
     page = Paginator(items.order_by("-created_at"), 20).get_page(request.GET.get("page"))
 
     one_day_ago = timezone.now() - timedelta(days=1)
+    # (label, angka, ikon Font Awesome)
     stats = [
-        ("Posts", Post.objects.count()),
-        ("Replies", Comment.objects.count()),
-        ("New posts today", Post.objects.filter(created_at__gte=one_day_ago).count()),
-        ("Members", get_user_model().objects.count()),
+        ("Posts", Post.objects.count(), "fa-regular fa-images"),
+        ("Replies", Comment.objects.count(), "fa-regular fa-comments"),
+        ("New posts today", Post.objects.filter(created_at__gte=one_day_ago).count(), "fa-solid fa-bolt"),
+        ("Members", get_user_model().objects.count(), "fa-solid fa-user-group"),
     ]
 
     return render(
         request,
         "community/moderation.html",
-        {"tab": tab, "query": query, "page": page, "stats": stats},
+        {"tab": tab, "query": query, "page": page, "stats": stats, "one_day_ago": one_day_ago},
     )
 
 def show_search(request):
@@ -551,3 +565,22 @@ def show_search(request):
         "ask_url": ask_url,
     }
     return render(request, "community/search.html", context)
+
+
+@login_required(login_url=LOGIN_URL)
+def mention_suggestions(request):
+    """saran username saat mengetik @ di kotak tulis: yang depannya cocok dulu, maksimal 6."""
+    query = request.GET.get("q", "").strip().lstrip("@")
+    users = get_user_model().objects.exclude(id=request.user.id).select_related("community_profile")
+    if query:
+        users = users.filter(username__icontains=query)
+    users = sorted(users[:30], key=lambda user: (not user.username.lower().startswith(query.lower()), user.username.lower()))[:6]
+
+    results = []
+    for user in users:
+        profile = getattr(user, "community_profile", None)
+        results.append({
+            "username": user.username,
+            "photo": profile.photo.url if profile and profile.photo else "",
+        })
+    return JsonResponse({"results": results})

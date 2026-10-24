@@ -529,7 +529,6 @@ body{
     gap: 14px;
     margin: 14px 0 0 -26px;
     padding-left: 24px;
-    border-left: 2px solid var(--color-orange-pearl-brush);
 }
 
 .cm-more{
@@ -1423,71 +1422,228 @@ body{
 
 /* halaman moderasi (admin panel) */
 
+/* ===== halaman Moderation (admin) ===== */
+
+/* header: judul biasa di latar halaman, dengan ikon perisai kecil */
 .mod-head{
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     gap: 6px;
-    padding: 24px;
+    padding: 4px 0 0;
+    color: var(--color-azure-martinique);
+}
+
+.mod-head-top{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mod-shield{
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    background-color: var(--color-yellow-peach-yellow);
+    border: 1px solid var(--color-azure-martinique);
+    border-radius: var(--corner-radius-12);
+    font-size: 17px;
+    color: var(--color-azure-martinique);
+    transform: rotate(-6deg);
+}
+
+.mod-badge{
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    color: var(--color-azure-san-marino);
 }
 
 .mod-head h1{
-    margin: 4px 0 0;
-    font-size: 28px;
+    margin: 0;
+    font-family: var(--font-family-font-3);
+    font-size: 30px;
     font-weight: 700;
+    line-height: 1.1;
 }
 
 .mod-head p{
+    max-width: 560px;
     color: var(--color-azure-dolphin);
 }
 
+/* statistik: kotak berwarna dengan ikon (palet sama dengan kartu Why di landing page) */
 .mod-stats{
     width: 100%;
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 12px;
-    margin: 12px 0 0;
-}
-
-.mod-stats div{
-    padding: 12px 14px;
-    background-color: var(--color-orange-linen);
-    border: 1px solid var(--color-orange-pearl-brush);
-    border-radius: var(--corner-radius-12);
-}
-
-.mod-stats dt{
-    font-size: 12px;
-    color: var(--color-azure-dolphin);
-}
-
-.mod-stats dd{
     margin: 0;
-    font-size: 22px;
+}
+
+.mod-stat{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 16px;
+    border: 1px solid var(--color-azure-martinique);
+    border-radius: var(--corner-radius-16);
+    box-shadow: 3px 3px 0 var(--color-azure-martinique);
+}
+
+.mod-stat:nth-child(1){ background-color: var(--color-azure-st-blue); }
+.mod-stat:nth-child(2){ background-color: var(--color-yellow-peach-yellow); }
+.mod-stat:nth-child(3){ background-color: var(--color-orange-dairy-cream); }
+.mod-stat:nth-child(4){ background-color: var(--color-orange-tumbleweed); }
+
+.mod-stat-icon{
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 8px;
+    background-color: var(--color-white-solid);
+    border: 1px solid var(--color-azure-martinique);
+    border-radius: var(--corner-radius-999);
+    font-size: 13px;
+}
+
+.mod-stat dd{
+    order: -1; /* angka di atas label (setelah ikon) */
+    margin: 0;
+    font-family: var(--font-family-font-3);
+    font-size: 28px;
     font-weight: 700;
+    line-height: 1.1;
+}
+
+.mod-stat .mod-stat-icon{
+    order: -2;
+}
+
+.mod-stat dt{
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-azure-martinique);
+}
+
+/* tab + search dalam satu baris */
+.mod-toolbar{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.mod-tabs{
+    display: inline-flex;
+    gap: 4px;
+    padding: 4px;
+    background-color: var(--color-white-solid);
+    border: 1px solid var(--color-orange-pearl-brush);
+    border-radius: var(--corner-radius-999);
+}
+
+.mod-tab{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: var(--corner-radius-999);
+    font-weight: 600;
+    color: var(--color-azure-dolphin);
+    transition: background-color .2s ease-out, color .2s ease-out;
+}
+
+.mod-tab:hover{
+    background-color: var(--color-azure-martinique-6);
+}
+
+.mod-tab span{
+    min-width: 22px;
+    padding: 1px 7px;
+    background-color: var(--color-orange-linen);
+    border-radius: var(--corner-radius-999);
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.mod-tab.is-active{
+    background-color: var(--color-azure-martinique);
+    color: var(--color-white-solid);
+}
+
+.mod-tab.is-active span{
+    background-color: var(--color-yellow-peach-yellow);
+    color: var(--color-azure-martinique);
 }
 
 .mod-search{
+    flex: 1;
+    min-width: 240px;
     display: flex;
     align-items: center;
     gap: 8px;
+    padding: 4px 4px 4px 16px;
+    background-color: var(--color-white-solid);
+    border: 1px solid var(--color-azure-polo-blue);
+    border-radius: var(--corner-radius-999);
+    transition: border-color .2s ease-out, box-shadow .2s ease-out;
+}
+
+.mod-search:focus-within{
+    border-color: var(--color-azure-san-marino);
+    box-shadow: 0 0 0 3px var(--color-azure-st-blue);
+}
+
+.mod-search > i{
+    color: var(--color-azure-dolphin);
 }
 
 .mod-search input[type="search"]{
     flex: 1;
-    padding: 8px 14px;
-    background-color: var(--color-white-solid);
-    border: 1px solid var(--color-azure-polo-blue);
-    border-radius: var(--corner-radius-999);
+    min-width: 0;
+    padding: 6px 0;
+    background: transparent;
+    border: none;
+    outline: none;
 }
 
 .mod-clear{
-    font-size: 12px;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border-radius: var(--corner-radius-999);
     color: var(--color-azure-dolphin);
-    text-decoration: underline;
 }
 
+.mod-clear:hover{
+    background-color: var(--color-azure-martinique-6);
+}
+
+.mod-search .mod-search-button{
+    padding: 7px 16px;
+    background-color: var(--color-azure-san-marino);
+    border-radius: var(--corner-radius-999);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-white-solid);
+}
+
+.mod-result-note{
+    font-size: 13px;
+    color: var(--color-azure-dolphin);
+}
+
+/* daftar: tiap post / reply jadi kartu sendiri */
 .mod-list{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -1496,13 +1652,18 @@ body{
 .mod-row{
     display: flex;
     align-items: flex-start;
-    gap: 12px;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--color-orange-pearl-brush);
+    gap: 14px;
+    padding: 18px 20px;
+    background-color: var(--color-white-solid);
+    border: 1px solid var(--color-orange-pearl-brush);
+    border-radius: var(--corner-radius-16);
+    transition: border-color .2s ease-out, box-shadow .2s ease-out, transform .2s ease-out;
 }
 
-.mod-row:last-child{
-    border-bottom: none;
+.mod-row:hover{
+    border-color: var(--color-azure-polo-blue);
+    box-shadow: 0 6px 18px rgba(58, 43, 72, .08);
+    transform: translateY(-1px);
 }
 
 .mod-main{
@@ -1512,25 +1673,48 @@ body{
 
 .mod-meta{
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
-    align-items: baseline;
+    align-items: center;
 }
 
 .mod-meta a{
     font-weight: 700;
 }
 
-.mod-meta span,
-.mod-extra{
+.mod-meta span{
     font-size: 12px;
     color: var(--color-azure-dolphin);
 }
 
+.mod-meta .mod-new{
+    padding: 1px 8px;
+    background-color: var(--color-green-eco-leaf);
+    border-radius: var(--corner-radius-999);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    color: var(--color-azure-martinique);
+}
+
 .mod-content{
-    margin: 2px 0 4px;
+    margin: 4px 0 6px;
+    font-size: 15px;
     overflow-wrap: anywhere;
 }
 
+.mod-extra{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--color-azure-dolphin);
+}
+
+.mod-extra i{
+    margin-right: 3px;
+}
 
 /* foto kecil di daftar moderation */
 .cm-photos.mod-photos{
@@ -1555,14 +1739,33 @@ body{
     flex-shrink: 0;
 }
 
-/* tombol hapus diberi warna merah supaya jelas berbahaya */
-.mod-actions .mod-delete{
-    color: var(--color-red-cherry);
-    border-color: var(--color-red-cherry) !important;
+.mod-action{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border: 1px solid var(--color-azure-polo-blue);
+    border-radius: var(--corner-radius-999);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-azure-san-marino);
+    transition: background-color .2s ease-out, color .2s ease-out;
 }
 
-.mod-actions .mod-delete:hover{
-    background-color: #fdecea;
+.mod-action.mod-view:hover{
+    background-color: var(--color-azure-st-blue);
+}
+
+/* tombol hapus merah supaya jelas berbahaya */
+.cm-page .mod-action.mod-delete{
+    border: 1px solid var(--color-red-cherry);
+    padding: 7px 14px;
+    color: var(--color-red-cherry);
+}
+
+.cm-page .mod-action.mod-delete:hover{
+    background-color: var(--color-red-cherry);
+    color: var(--color-white-solid);
 }
 
 .mod-pages{
@@ -1574,12 +1777,40 @@ body{
 }
 
 @media (max-width: 768px){
+    .mod-head h1{
+        font-size: 24px;
+    }
+
     .mod-stats{
         grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .mod-stat{
+        padding: 12px;
+    }
+
+    .mod-stat dd{
+        font-size: 22px;
+    }
+
+    .mod-tabs{
+        width: 100%;
+    }
+
+    .mod-tab{
+        flex: 1;
+        justify-content: center;
+    }
+
+    .mod-search{
+        min-width: 0;
+        width: 100%;
     }
 
     .mod-row{
         flex-wrap: wrap;
+        padding: 16px;
     }
 
     .mod-actions{
@@ -1931,8 +2162,8 @@ body{
     margin: 0;
     padding: 8px 12px;
     background-color: var(--color-orange-linen);
-    border-left: 3px solid var(--color-azure-polo-blue);
-    border-radius: var(--corner-radius-8);
+    border: 1px solid var(--color-orange-pearl-brush);
+    border-radius: var(--corner-radius-12);
     font-size: 13px;
     color: var(--color-azure-dolphin);
     overflow-wrap: anywhere;
@@ -2627,4 +2858,60 @@ body:has(.cm-scallop){
     .cm-hero--open .cm-hero-stats{
         justify-content: center;
     }
+}
+
+/* ===== tag username (@mention) ===== */
+
+/* @username di post / reply jadi link biru */
+.cm-mention{
+    font-weight: 700;
+    color: var(--color-azure-san-marino);
+}
+
+.cm-mention:hover{
+    text-decoration: underline;
+}
+
+/* daftar saran username saat mengetik @ */
+.cm-mention-menu{
+    position: fixed;
+    z-index: 3000;
+    max-width: 320px;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    background-color: var(--color-white-solid);
+    border: 1px solid var(--color-azure-martinique);
+    border-radius: var(--corner-radius-16);
+    box-shadow: 0 12px 28px rgba(58, 43, 72, .18);
+    font-family: var(--font-family-font-1);
+    font-size: 14px;
+    color: var(--color-azure-martinique);
+}
+
+.cm-mention-menu[hidden]{
+    display: none;
+}
+
+.cm-mention-menu li{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 10px;
+    border-radius: var(--corner-radius-12);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cm-mention-menu li:hover,
+.cm-mention-menu li.is-selected{
+    background-color: var(--color-orange-linen);
+}
+
+.cm-mention-menu li.is-selected{
+    background-color: var(--color-azure-st-blue);
+}
+
+.cm-mention-menu .cm-avatar{
+    overflow: hidden;
 }

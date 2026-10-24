@@ -226,3 +226,6 @@
         right: 16px;
     }
 }
+.nt-icon-mention{
+    background-color: var(--color-azure-st-blue);
+}

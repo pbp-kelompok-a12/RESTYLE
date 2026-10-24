@@ -1,5 +1,5 @@
 {# Satu kartu post. Butuh variabel "post". #}
-{% load community_avatars %}
+{% load community_avatars community_mentions %}
 <article class="cm-card cm-post" id="post-{{ post.id }}">
 <span class="cm-avatar">{% avatar post.author %}</span>
 
@@ -27,7 +27,7 @@
             {% endif %}        
         </header>
 
-        <div class="cm-post-body cm-editable">{{ post.content|linebreaks }}</div>
+        <div class="cm-post-body cm-editable">{{ post.content|mentions|linebreaks }}</div>
 
         {% if post.author == user %}
         <form class="cm-edit-form" method="post" action="{% url 'community:edit_post' post.id %}"

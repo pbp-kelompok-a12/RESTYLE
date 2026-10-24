@@ -14,36 +14,54 @@
         {% include 'community/_sidebar.html' with active='moderation' %}
 
         <section class="cm-feed">
-            <div class="cm-card mod-head">
-                <span class="cm-badge">ADMIN PANEL</span>
-                <h1>Moderation</h1>
-                <p>Review what people share and remove posts or replies that break the community rules.</p>
-
-                <dl class="mod-stats">
-                    {% for label, value in stats %}
+            <div class="mod-head">
+                <div class="mod-head-top">
+                    <span class="mod-shield" aria-hidden="true"><i class="fa-solid fa-shield-halved"></i></span>
                     <div>
-                        <dt>{{ label }}</dt>
-                        <dd>{{ value }}</dd>
+                        <span class="mod-badge">ADMIN PANEL</span>
+                        <h1>Moderation</h1>
                     </div>
-                    {% endfor %}
-                </dl>
+                </div>
             </div>
 
-            <div class="cm-tabs">
-                <a href="?tab=posts" class="cm-tab {% if tab == 'posts' %}is-active{% endif %}">Posts</a>
-                <a href="?tab=comments" class="cm-tab {% if tab == 'comments' %}is-active{% endif %}">Replies</a>
+            <dl class="mod-stats">
+                {% for label, value, icon in stats %}
+                <div class="mod-stat">
+                    <span class="mod-stat-icon" aria-hidden="true"><i class="{{ icon }}"></i></span>
+                    <dt>{{ label }}</dt>
+                    <dd>{{ value }}</dd>
+                </div>
+                {% endfor %}
+            </dl>
+
+            <div class="mod-toolbar">
+                <nav class="mod-tabs" aria-label="Content type">
+                    <a href="?tab=posts" class="mod-tab {% if tab == 'posts' %}is-active{% endif %}"
+                       {% if tab == 'posts' %}aria-current="page"{% endif %}>
+                        <i class="fa-regular fa-images"></i> Posts <span>{{ stats.0.1 }}</span>
+                    </a>
+                    <a href="?tab=comments" class="mod-tab {% if tab == 'comments' %}is-active{% endif %}"
+                       {% if tab == 'comments' %}aria-current="page"{% endif %}>
+                        <i class="fa-regular fa-comments"></i> Replies <span>{{ stats.1.1 }}</span>
+                    </a>
+                </nav>
+
+                <form class="mod-search" method="get" role="search">
+                    <input type="hidden" name="tab" value="{{ tab }}">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input type="search" name="q" value="{{ query }}"
+                           placeholder="Search by text or username" aria-label="Search">
+                    {% if query %}<a href="?tab={{ tab }}" class="mod-clear" aria-label="Clear search"><i class="fa-solid fa-xmark"></i></a>{% endif %}
+                    <button type="submit" class="mod-search-button">Search</button>
+                </form>
             </div>
 
-            <form class="mod-search" method="get" role="search">
-                <input type="hidden" name="tab" value="{{ tab }}">
-                <input type="search" name="q" value="{{ query }}"
-                       placeholder="Search by text or username" aria-label="Search">
-                <button type="submit" class="cm-chip">Search</button>
-                {% if query %}<a href="?tab={{ tab }}" class="mod-clear">Clear</a>{% endif %}
-            </form>
+            {% if query %}
+            <p class="mod-result-note">Showing results for <strong>“{{ query }}”</strong></p>
+            {% endif %}
 
             {% if page.object_list %}
-            <ul class="cm-card mod-list">
+            <ul class="mod-list">
                 {% for item in page.object_list %}
                 <li class="mod-row">
                     <span class="cm-avatar">{% avatar item.author %}</span>
@@ -52,6 +70,7 @@
                         <p class="mod-meta">
                             <a href="{% url 'community:show_user_profile' item.author.username %}">@{{ item.author.username }}</a>
                             <span>{{ item.created_at|date:"d M Y, H:i" }}</span>
+                            {% if item.created_at >= one_day_ago %}<span class="mod-new">NEW</span>{% endif %}
                         </p>
                         <p class="mod-content">{{ item.content|truncatechars:180 }}</p>
 
@@ -73,17 +92,19 @@
                         
                         <p class="mod-extra">
                             {% if tab == 'posts' %}
-                            {{ item.like_count }} like{{ item.like_count|pluralize }}
-                            · {{ item.reply_count }} repl{{ item.reply_count|pluralize:"y,ies" }}
-                            {% if item.photo_count %}· {{ item.photo_count }} photo{{ item.photo_count|pluralize }}{% endif %}
+                            <span><i class="fa-regular fa-heart"></i> {{ item.like_count }}</span>
+                            <span><i class="fa-regular fa-comment"></i> {{ item.reply_count }}</span>
+                            {% if item.photo_count %}<span><i class="fa-regular fa-image"></i> {{ item.photo_count }}</span>{% endif %}
                             {% else %}
-                            on @{{ item.post.author.username }}'s post: "{{ item.post.content|truncatechars:50 }}"
+                            <span><i class="fa-solid fa-reply"></i> on @{{ item.post.author.username }}'s post: “{{ item.post.content|truncatechars:50 }}”</span>
                             {% endif %}
                         </p>
                     </div>
 
                     <div class="mod-actions">
-                        <a class="cm-chip" href="{% url 'community:show_community' %}#post-{% if tab == 'posts' %}{{ item.id }}{% else %}{{ item.post_id }}{% endif %}">View</a>
+                        <a class="mod-action mod-view" href="{% url 'community:show_community' %}#post-{% if tab == 'posts' %}{{ item.id }}{% else %}{{ item.post_id }}{% endif %}">
+                            <i class="fa-regular fa-eye"></i> View
+                        </a>
                         {% if tab == 'posts' %}
                         <form method="post" action="{% url 'community:delete_post' item.id %}"
                               data-confirm-title="Delete this post?" data-confirm="This post by @{{ item.author.username }} and its photos and replies will be deleted. This can't be undone.">
@@ -93,7 +114,7 @@
                         {% endif %}
                             {% csrf_token %}
                             <input type="hidden" name="next" value="{{ request.get_full_path }}">
-                            <button type="submit" class="cm-chip mod-delete">Delete</button>
+                            <button type="submit" class="mod-action mod-delete"><i class="fa-regular fa-trash-can"></i> Delete</button>
                         </form>
                     </div>
                 </li>
