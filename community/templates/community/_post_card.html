@@ -18,7 +18,7 @@
                     <button type="button" class="cm-toggle-edit"><i class="fa-regular fa-pen-to-square"></i> Edit</button>
                     {% endif %}
                     <form method="post" action="{% url 'community:delete_post' post.id %}"
-                          data-confirm="Delete this post? This can't be undone.">
+                          data-confirm-title="Delete this post?" data-confirm="This post will be removed from the community. This can't be undone.">
                         {% csrf_token %}
                         <button type="submit" class="cm-menu-danger"><i class="fa-regular fa-trash-can"></i> Delete</button>
                     </form>

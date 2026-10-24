@@ -29,14 +29,6 @@
                 </dl>
             </div>
 
-            {% if messages %}
-            <div class="cm-messages">
-                {% for message in messages %}
-                <p class="cm-message cm-message-{{ message.tags }}">{{ message }}</p>
-                {% endfor %}
-            </div>
-            {% endif %}
-
             <div class="cm-tabs">
                 <a href="?tab=posts" class="cm-tab {% if tab == 'posts' %}is-active{% endif %}">Posts</a>
                 <a href="?tab=comments" class="cm-tab {% if tab == 'comments' %}is-active{% endif %}">Replies</a>
@@ -94,10 +86,10 @@
                         <a class="cm-chip" href="{% url 'community:show_community' %}#post-{% if tab == 'posts' %}{{ item.id }}{% else %}{{ item.post_id }}{% endif %}">View</a>
                         {% if tab == 'posts' %}
                         <form method="post" action="{% url 'community:delete_post' item.id %}"
-                              data-confirm="Delete this post by @{{ item.author.username }}? Its photos and replies will be deleted too.">
+                              data-confirm-title="Delete this post?" data-confirm="This post by @{{ item.author.username }} and its photos and replies will be deleted. This can't be undone.">
                         {% else %}
                         <form method="post" action="{% url 'community:delete_comment' item.id %}"
-                              data-confirm="Delete this reply by @{{ item.author.username }}?">
+                              data-confirm-title="Delete this reply?" data-confirm="This reply by @{{ item.author.username }} will be deleted. This can't be undone.">
                         {% endif %}
                             {% csrf_token %}
                             <input type="hidden" name="next" value="{{ request.get_full_path }}">
@@ -131,4 +123,5 @@
 
     </div>
 </main>
+{% include 'components/toast.html' %}
 {% endblock content %}

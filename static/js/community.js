@@ -55,7 +55,7 @@ document.querySelectorAll(".cm-composer, .cm-edit-form, .cm-reply-rich, .communi
             if (submitButton) submitButton.disabled = true;
             compressCommunityForm(form).then(() => form.submit()).catch(() => {
                 if (submitButton) submitButton.disabled = false;
-                alert("Could not compress the photo. Please try a smaller image.");
+                showToast("error", "Could not compress the photo. Please try a smaller image.");
             });
         });
     });
@@ -546,20 +546,59 @@ document.querySelectorAll(".community-avatar-form input[type=file]").forEach((in
     input.addEventListener("change", () => {
         if (input.files.length > 0) {
             compressCommunityForm(input.form).then(() => input.form.submit()).catch(() => {
-                alert("Could not compress the photo. Please try a smaller image.");
+                showToast("error", "Could not compress the photo. Please try a smaller image.");
             });
         }
     });
 });
 
-// Hapus: tanya dulu sebelum benar-benar menghapus
-document.querySelectorAll("form[data-confirm]").forEach((form) => {
-    form.addEventListener("submit", (event) => {
-        if (!confirm(form.dataset.confirm)) {
+// Hapus: tanya dulu lewat kotak konfirmasi sebelum benar-benar menghapus
+const confirmForms = document.querySelectorAll("form[data-confirm]");
+if (confirmForms.length > 0) {
+    const confirmDialog = document.createElement("dialog");
+    confirmDialog.className = "cm-confirm-dialog";
+    confirmDialog.innerHTML = `
+        <form method="dialog">
+            <button type="submit" value="cancel" class="cm-confirm-close" aria-label="Close">&times;</button>
+            <h2 class="cm-confirm-title"></h2>
+            <p class="cm-confirm-text"></p>
+            <div class="cm-confirm-actions">
+                <button type="submit" value="cancel" class="btn primary-btn">Cancel</button>
+                <button type="submit" value="yes" class="btn danger-btn cm-confirm-yes"></button>
+            </div>
+        </form>`;
+    document.body.appendChild(confirmDialog);
+
+    let pending = null; // form dan tombol yang menunggu jawaban
+
+    confirmForms.forEach((form) => {
+        form.addEventListener("submit", (event) => {
+            if (form.dataset.confirmed) return; // sudah disetujui, biarkan terkirim
             event.preventDefault();
-        }
+            pending = { form, submitter: event.submitter };
+            confirmDialog.querySelector(".cm-confirm-title").textContent = form.dataset.confirmTitle || "Are you sure?";
+            confirmDialog.querySelector(".cm-confirm-text").textContent = form.dataset.confirm;
+            confirmDialog.querySelector(".cm-confirm-yes").textContent = form.dataset.confirmLabel || "Delete";
+            confirmDialog.returnValue = "";
+            confirmDialog.showModal();
+            document.body.style.overflow = "hidden"; // halaman di belakang tidak ikut ter-scroll
+        });
     });
-});
+
+    confirmDialog.addEventListener("click", (event) => {
+        if (event.target === confirmDialog) confirmDialog.close(); // klik di area gelap di luar kotak
+    });
+
+    confirmDialog.addEventListener("close", () => {
+        document.body.style.overflow = "";
+        if (confirmDialog.returnValue === "yes" && pending) {
+            // requestSubmit supaya nilai tombol (mis. name="remove") ikut terkirim
+            pending.form.dataset.confirmed = "1";
+            pending.form.requestSubmit(pending.submitter);
+        }
+        pending = null;
+    });
+}
 
 
 // Menu titik tiga: buka-tutup, dan tutup otomatis saat klik di luar atau tekan Escape.
@@ -634,7 +673,7 @@ document.querySelectorAll("button.cm-react").forEach((button) => {
                 saveLabel.textContent = result.active ? "Saved" : "Save";
             }
         } catch (error) {
-            alert("Something went wrong. Please refresh the page and try again.");
+            showToast("error", "Something went wrong. Please refresh the page and try again.");
         }
     });
 });
@@ -707,7 +746,7 @@ document.querySelectorAll(".cm-follow").forEach((button) => {
                 followersCount.textContent = String(count + (result.active ? 1 : -1));
             }
         } catch (error) {
-            alert("Something went wrong. Please refresh the page and try again.");
+            showToast("error", "Something went wrong. Please refresh the page and try again.");
         }
     });
 });

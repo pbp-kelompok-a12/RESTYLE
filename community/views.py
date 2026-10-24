@@ -253,6 +253,7 @@ def edit_comment(request, comment_id):
         return redirect("community:show_community")
 
     form.save()
+    messages.success(request, "Your reply was updated.")
     return redirect(feed_url(comment.post_id))
 
 @login_required(login_url=LOGIN_URL)

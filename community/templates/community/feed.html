@@ -50,14 +50,6 @@
                 {% endif %}
             </div>
 
-            {% if messages %}
-            <div class="cm-messages">
-                {% for message in messages %}
-                <p class="cm-message cm-message-{{ message.tags }}">{{ message }}</p>
-                {% endfor %}
-            </div>
-            {% endif %}
-
             {# Kotak tulis post #}
             {% if user.is_authenticated %}
             <form class="cm-card cm-composer" id="composer" method="post"
@@ -165,4 +157,5 @@
     </div>
     {% include 'community/_reply_dialog.html' %}
 </main>
+{% include 'components/toast.html' %}
 {% endblock content %}
