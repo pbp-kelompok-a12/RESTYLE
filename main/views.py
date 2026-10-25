@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
 from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 from types import SimpleNamespace
 from .models import PERSONAS, UserProfile, WishlistItem
 from closet.models import Item as ClosetItem
@@ -123,7 +124,6 @@ def profile_view(request):
 @login_required
 def wishlist_view(request):
     wishlist_items = WishlistItem.objects.filter(user=request.user).order_by('-id')
-    
     closet_items = ClosetItem.objects.filter(user=request.user)
     closet_set = set((item.category.lower(), item.color.lower()) for item in closet_items)
     
@@ -180,3 +180,54 @@ def add_wishlist_item(request):
             return JsonResponse({"status": "success"}, status=200)
 
         return redirect("main:wishlist")
+
+
+@login_required
+def get_wishlist_detail(request, item_id):
+    item = get_object_or_404(WishlistItem, pk=item_id, user=request.user)
+    data = {
+        "id": item.id,
+        "name": item.name,
+        "category": item.category,
+        "color": item.color,
+        "color_hex": COLOR_HEX_MAP.get(item.color.capitalize(), "#3F6699"),
+        "material": item.material or "-",
+        "brand": item.brand or "-",
+        "link": item.link or "",
+        "price": f"Rp {item.price:,.0f}".replace(",", ".") if item.price else "Rp 0",
+        "raw_price": item.price,
+        "photo_url": item.photo.url if item.photo else "",
+        "style_tag": item.style_tag or "-",
+    }
+    return JsonResponse(data)
+
+
+@login_required
+def edit_wishlist_item(request, item_id):
+    item = get_object_or_404(WishlistItem, pk=item_id, user=request.user)
+    if request.method == "POST":
+        item.name = request.POST.get("name", item.name)
+        item.category = request.POST.get("category", item.category)
+        item.color = request.POST.get("color", item.color)
+        item.material = request.POST.get("material", "")
+        item.brand = request.POST.get("brand", "")
+        item.link = request.POST.get("link", "")
+        item.price = request.POST.get("price") or 0
+
+        if request.FILES.get("photo"):
+            item.photo = request.FILES.get("photo")
+
+        style_tags = request.POST.getlist("style_tags")
+        if style_tags:
+            item.style_tag = style_tags[0]
+
+        item.save()
+        return JsonResponse({"status": "success"})
+
+
+@login_required
+@require_POST
+def delete_wishlist_item(request, item_id):
+    item = get_object_or_404(WishlistItem, pk=item_id, user=request.user)
+    item.delete()
+    return JsonResponse({"status": "success"})

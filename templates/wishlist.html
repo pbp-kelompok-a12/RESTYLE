@@ -32,7 +32,7 @@
                     <p>We found {{ closest_matches_count }} similar items in your Digital Closet.</p>
                 </div>
             </div>
-            <button type="button" class="btn-primary-blue">View matching items</button>
+            <button type="button" id="btn-view-matching" class="btn-primary-blue">View matching items</button>
         {% else %}
             <div class="banner-content">
                 <img src="{% static 'img/bunglon_hires.png' %}" alt="Bunglon ReStyle" class="banner-chameleon">
@@ -155,21 +155,29 @@
     <!-- 5. GRID PRODUCT CARDS -->
     <section id="wishlist-items" class="wishlist-items-grid" {% if not wishlist_items %}style="display: none;"{% endif %}>
         {% for item in wishlist_items %}
-            <div class="product-card" data-category="{{ item.category }}" data-color="{{ item.color }}" data-name="{{ item.name }}">
+            <div class="product-card" data-id="{{ item.id }}" data-category="{{ item.category }}" data-color="{{ item.color }}" data-name="{{ item.name }}" data-has-match="{% if item.has_match %}true{% else %}false{% endif %}">
                 {% if item.has_match %}
                     <span class="badge-status similar">Similar Item Found</span>
                 {% else %}
                     <span class="badge-status no-similar">No Similar Item Found</span>
                 {% endif %}
                 
-                <div class="product-card-menu">•••</div>
+                <!-- DROPDOWN MENU TITIK TIGA -->
+                <div class="product-card-menu-wrapper">
+                    <button type="button" class="product-card-menu" aria-label="Options">•••</button>
+                    <div class="menu-dropdown hidden">
+                        <button type="button" class="dropdown-item view-action" data-id="{{ item.id }}">View</button>
+                        <button type="button" class="dropdown-item edit-action" data-id="{{ item.id }}">Edit</button>
+                        <button type="button" class="dropdown-item delete-action" data-id="{{ item.id }}" data-name="{{ item.name }}">Delete</button>
+                    </div>
+                </div>
 
-                <div class="product-card-img-wrapper">
+                <div class="product-card-img-wrapper view-action" data-id="{{ item.id }}" style="cursor: pointer;">
                     <img src="{% if item.photo %}{{ item.photo.url }}{% else %}{% static 'img/bunglon_hires.png' %}{% endif %}" alt="{{ item.name }}">
                 </div>
 
                 <div class="product-card-body">
-                    <h3>{{ item.name }}</h3>
+                    <h3 class="view-action" data-id="{{ item.id }}" style="cursor: pointer;">{{ item.name }}</h3>
                     <div class="product-card-tags">
                         <span class="product-tag-pill">{{ item.category }}</span>
                         <span class="product-tag-pill">
@@ -192,12 +200,12 @@
         <button type="button" class="btn-primary-blue">+ Add to wishlist</button>
     </section>
 
-    <!-- 7. POP-UP MODAL ADD NEW ITEM -->
+    <!-- 7. POP-UP MODAL ADD / EDIT ITEM -->
     <div id="add-wishlist" class="cl-overlay" hidden>
         <div class="cl-modal wishlist-modal-card">
             <button type="button" id="close-wishlist-form" class="cl-modal-close" aria-label="Close form">&times;</button>
             
-            <h1 class="wishlist-modal-title">Add new item</h1>
+            <h1 class="wishlist-modal-title" id="form-modal-title">Add new item</h1>
 
             <form id="wishlist-form" method="POST" action="{% url 'main:add_wishlist_item' %}" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -206,7 +214,7 @@
                 <div class="cl-section">
                     <label class="cl-label">Photo <em class="req-star">*</em></label>
                     <label for="item-photo" class="cl-dropzone">
-                        <input type="file" id="item-photo" name="photo" accept="image/*" hidden required>
+                        <input type="file" id="item-photo" name="photo" accept="image/*" hidden>
                         <div id="photo-placeholder" class="dropzone-placeholder">
                             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3F6699" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
@@ -261,7 +269,6 @@
                         </div>
                     </div>
 
-                    <!-- LENGKAP 12 MATERIAL SAMA DENGAN CLOSET -->
                     <div class="cl-field">
                         <label for="item-material">Material</label>
                         <select id="item-material" name="material">
@@ -285,7 +292,6 @@
                 <!-- SECTION 3: STYLE & WEATHER -->
                 <div class="cl-section">
                     <h2>Style & weather</h2>
-                    
                     <div class="cl-field">
                         <label class="cl-label">Style tags</label>
                         <div class="cl-opts">
@@ -299,34 +305,11 @@
                             <label class="cl-opt"><input type="checkbox" name="style_tags" value="Vintage"><span>Vintage</span></label>
                         </div>
                     </div>
-
-                    <div class="cl-field">
-                        <label class="cl-label">Season</label>
-                        <div class="cl-opts">
-                            <label class="cl-opt"><input type="checkbox" name="seasons" value="Spring"><span>Spring</span></label>
-                            <label class="cl-opt"><input type="checkbox" name="seasons" value="Summer"><span>Summer</span></label>
-                            <label class="cl-opt"><input type="checkbox" name="seasons" value="Autumn"><span>Autumn</span></label>
-                            <label class="cl-opt"><input type="checkbox" name="seasons" value="Winter"><span>Winter</span></label>
-                            <label class="cl-opt"><input type="checkbox" name="seasons" value="All year round"><span>All year round</span></label>
-                        </div>
-                    </div>
-
-                    <div class="cl-field">
-                        <label class="cl-label">Weather</label>
-                        <div class="cl-opts">
-                            <label class="cl-opt"><input type="checkbox" name="weather" value="Hot"><span>Hot</span></label>
-                            <label class="cl-opt"><input type="checkbox" name="weather" value="Stormy"><span>Stormy</span></label>
-                            <label class="cl-opt"><input type="checkbox" name="weather" value="Cool"><span>Cool</span></label>
-                            <label class="cl-opt"><input type="checkbox" name="weather" value="Moderate"><span>Moderate</span></label>
-                            <label class="cl-opt"><input type="checkbox" name="weather" value="Rainy"><span>Rainy</span></label>
-                        </div>
-                    </div>
                 </div>
 
-                <!-- SECTION 4: PURCHASE INFO -->
+                <!-- SECTION 4: PURCHASE INFO (TANPA DATE PURCHASED) -->
                 <div class="cl-section">
                     <h2>Purchase info</h2>
-                    
                     <div class="cl-field">
                         <label for="item-brand">Store / brand</label>
                         <input type="text" id="item-brand" name="brand" placeholder="e.g. Uniqlo">
@@ -337,15 +320,9 @@
                         <input type="url" id="item-link" name="link" placeholder="https://...">
                     </div>
 
-                    <div class="cl-row">
-                        <div class="cl-field">
-                            <label for="item-date">Date purchased</label>
-                            <input type="date" id="item-date" name="date_purchased">
-                        </div>
-                        <div class="cl-field">
-                            <label for="item-price">Price (Rp)</label>
-                            <input type="number" id="item-price" name="price" placeholder="0" min="0">
-                        </div>
+                    <div class="cl-field">
+                        <label for="item-price">Price (Rp)</label>
+                        <input type="number" id="item-price" name="price" placeholder="0" min="0">
                     </div>
                 </div>
 
@@ -356,6 +333,69 @@
                 </div>
 
             </form>
+        </div>
+    </div>
+
+    <!-- 8. DETAIL VIEW MODAL -->
+    <div id="view-detail-modal" class="cl-overlay" hidden>
+        <div class="cl-modal detail-modal-card">
+            <button type="button" id="close-detail-modal" class="cl-modal-close" aria-label="Close">&times;</button>
+            <div class="detail-modal-body">
+                <div class="detail-img-box">
+                    <img id="detail-photo" src="" alt="Product Photo">
+                </div>
+                <div class="detail-info-box">
+                    <h2 id="detail-title">Item Name</h2>
+                    
+                    <div class="detail-tags-row">
+                        <span id="detail-category-pill" class="product-tag-pill">Category</span>
+                        <span id="detail-color-pill" class="product-tag-pill">
+                            <i id="detail-color-dot" class="color-dot"></i> <span id="detail-color-text">Color</span>
+                        </span>
+                    </div>
+
+                    <div class="detail-grid">
+                        <div class="detail-field">
+                            <span class="detail-label">MATERIAL</span>
+                            <span id="detail-material" class="detail-val">-</span>
+                        </div>
+                        <div class="detail-field">
+                            <span class="detail-label">STORE / BRAND</span>
+                            <span id="detail-brand" class="detail-val">-</span>
+                        </div>
+                        <div class="detail-field">
+                            <span class="detail-label">PRICE</span>
+                            <span id="detail-price" class="detail-val">Rp 0</span>
+                        </div>
+                        <div class="detail-field">
+                            <span class="detail-label">PURCHASE LINK</span>
+                            <span id="detail-link" class="detail-val">-</span>
+                        </div>
+                        <div class="detail-field">
+                            <span class="detail-label">STYLE</span>
+                            <span id="detail-style" class="detail-val">-</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-actions-row">
+                        <button type="button" id="btn-edit-from-view" class="btn btn-primary-blue">Edit</button>
+                        <button type="button" id="btn-delete-from-view" class="btn btn-cancel">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 9. DELETE CONFIRMATION MODAL -->
+    <div id="delete-modal" class="cl-overlay" hidden>
+        <div class="cl-modal confirm-delete-modal">
+            <button type="button" id="close-delete-modal" class="cl-modal-close" aria-label="Close">&times;</button>
+            <h2>Delete this item?</h2>
+            <p>"<span id="delete-item-name">Item Name</span>" will be removed from your wishlist. This can't be undone.</p>
+            <div class="confirm-modal-actions">
+                <button type="button" id="cancel-delete-btn" class="btn btn-primary-blue" style="background:#3F6699;">Cancel</button>
+                <button type="button" id="confirm-delete-btn" class="btn btn-cancel">Delete</button>
+            </div>
         </div>
     </div>
 

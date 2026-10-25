@@ -568,3 +568,171 @@ body {
     .cl-row { grid-template-columns: 1fr; }
     .wishlist-stats { grid-template-columns: 1fr; }
 }
+
+/* DROPDOWN MENU TITIK TIGA */
+.product-card-menu-wrapper {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+}
+
+.product-card-menu {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--polo-blue);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--san-marino);
+}
+
+.menu-dropdown {
+    position: absolute;
+    top: 34px;
+    right: 0;
+    background: #FFFFFF;
+    border: 1px solid var(--polo-blue);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    min-width: 110px;
+    overflow: hidden;
+    z-index: 20;
+}
+
+.menu-dropdown.hidden {
+    display: none !important;
+}
+
+.dropdown-item {
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--martinique);
+    background: none;
+    border: none;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+.dropdown-item:hover {
+    background: var(--linen);
+}
+
+.dropdown-item.delete-action {
+    color: #D9381E;
+}
+
+/* STYLING DETAIL VIEW & CONFIRM DELETE MODALS */
+.detail-modal-card {
+    position: relative;
+    width: min(720px, 95%);
+    background: #FAF5EC;
+    border: 1px solid var(--polo-blue);
+    border-radius: 28px;
+    padding: 32px;
+}
+
+.detail-modal-body {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 24px;
+}
+
+.detail-img-box {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #FFFFFF;
+    border: 1px solid var(--polo-blue);
+}
+
+.detail-img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.detail-info-box h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    margin: 0 0 12px 0;
+    color: var(--martinique);
+}
+
+.detail-tags-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.detail-field {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.detail-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--dolphin);
+    letter-spacing: 0.05em;
+}
+
+.detail-val {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--martinique);
+}
+
+.detail-actions-row {
+    display: flex;
+    gap: 12px;
+}
+
+.confirm-delete-modal {
+    width: min(440px, 90%);
+    background: #FFFFFF;
+    border: 1px solid var(--polo-blue);
+    border-radius: 24px;
+    padding: 32px 28px;
+    text-align: center;
+}
+
+.confirm-delete-modal h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--martinique);
+    margin: 0 0 8px 0;
+}
+
+.confirm-delete-modal p {
+    font-size: 14px;
+    color: var(--dolphin);
+    margin: 0 0 24px 0;
+}
+
+.confirm-modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
