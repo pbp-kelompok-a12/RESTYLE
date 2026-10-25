@@ -80,6 +80,12 @@ CSRF_TRUSTED_ORIGINS = [
     "https://aulia-nur51-restyle.pws.cs.ui.ac.id",
 ]
 
+# Nama cookie dibuat unik. Di PWS banyak aplikasi Django berbagi domain *.pws.cs.ui.ac.id dan
+# semuanya memakai nama bawaan "csrftoken" / "sessionid"; kalau browser mengirim dua cookie
+# dengan nama yang sama, token CSRF bisa tidak cocok ("CSRF token from POST incorrect").
+CSRF_COOKIE_NAME = "restyle_csrftoken"
+SESSION_COOKIE_NAME = "restyle_sessionid"
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
