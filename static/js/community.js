@@ -770,10 +770,10 @@ document.addEventListener("keydown", (event) => {
 });
 
 // Token CSRF (semacam "tanda tangan" supaya server tahu permintaan ini benar dari RE:STYLE).
-// Diambil dari cookie "csrftoken". Jangan mengandalkan <input> di dalam kartu post:
-// kartu post milik orang lain tidak punya form, jadi input itu tidak ada.
+// Diambil dari cookie "restyle_csrftoken" (CSRF_COOKIE_NAME di settings.py). Jangan mengandalkan
+// <input> di dalam kartu post: kartu post milik orang lain tidak punya form, jadi input itu tidak ada.
 function getCsrfToken() {
-    const cookie = document.cookie.split("; ").find((row) => row.startsWith("csrftoken="));
+    const cookie = document.cookie.split("; ").find((row) => row.startsWith("restyle_csrftoken="));
     if (cookie) {
         return decodeURIComponent(cookie.split("=")[1]);
     }
