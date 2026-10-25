@@ -1,6 +1,7 @@
 from django.urls import path
-from main.views import ( show_landing_page, register, login_user,  logout_user, profile_view,
-    style_quiz, profile_view, wishlist_view
+from main.views import ( 
+    show_landing_page, register, login_user, logout_user, profile_view,
+    style_quiz, wishlist_view, add_wishlist_item
 )
 
 app_name = "main"
@@ -13,4 +14,5 @@ urlpatterns = [
     path('logout/', logout_user, name='logout'),
     path('profile/', profile_view, name="profile"),
     path('wishlist/', wishlist_view, name='wishlist'),
-]   
+    path('wishlist/add/', add_wishlist_item, name='add_wishlist_item'),
+]

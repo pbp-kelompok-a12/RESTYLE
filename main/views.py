@@ -3,8 +3,17 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
+from django.http import JsonResponse
 from types import SimpleNamespace
-from .models import PERSONAS, UserProfile
+from .models import PERSONAS, UserProfile, WishlistItem
+from closet.models import Item as ClosetItem
+
+COLOR_HEX_MAP = {
+    "White": "#FFFFFF", "Black": "#000000", "Gray": "#808080",
+    "Beige": "#F5F5DC", "Brown": "#7B3F00", "Red": "#D9381E",
+    "Orange": "#FFA500", "Yellow": "#FFFF00", "Pink": "#FFC0CB",
+    "Green": "#008000", "Blue": "#0000FF", "Purple": "#800080"
+}
 
 def show_landing_page(request):
     dummy_features = [
@@ -13,9 +22,7 @@ def show_landing_page(request):
         SimpleNamespace(title="Wrap Jeans", desc="Bottom · Denim · Worn 6 times", image="/static/img/wrap_jeans.png", status="ready"),
         SimpleNamespace(title="Layered Sweater", desc="Top · Navy · Worn 1 time", image="/static/img/layered_sweater.png", status="ready"),
     ]
-    context = {
-        "dummy_features": dummy_features
-    }
+    context = {"dummy_features": dummy_features}
     return render(request, 'index.html', context)
 
 def style_quiz(request):
@@ -55,7 +62,6 @@ def style_quiz(request):
                 'wardrobe_goal': profile.wardrobe_goal,
             }
 
-    # data persona untuk layar hasil di akhir quiz (sama dengan yang tampil di profil)
     personas = {
         key: {"title": title, "description": description, "icon": icon}
         for key, (title, description, icon) in PERSONAS.items()
@@ -70,7 +76,6 @@ def register(request):
         if form.is_valid():
             user = form.save()
             
-            # jika user baru aja ngisi kuis, simpan data ke UserProfile
             quiz_data = request.session.get('quiz_data', {})
             UserProfile.objects.create(
                 user=user,
@@ -94,7 +99,7 @@ def login_user(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('main:profile') # redirect ke profile setelah login
+            return redirect('main:profile')
         else:
             messages.error(request, 'Invalid username or password!')
     else:
@@ -113,6 +118,65 @@ def profile_view(request):
     return redirect('community:show_user_profile', username=request.user.username)
 
 
-def wishlist_view(request):
-    return render(request, "wishlist.html")
+# --- WISHLIST & CONSCIOUS SHOPPING LOGIC ---
 
+@login_required
+def wishlist_view(request):
+    wishlist_items = WishlistItem.objects.filter(user=request.user).order_by('-id')
+    
+    closet_items = ClosetItem.objects.filter(user=request.user)
+    closet_set = set((item.category.lower(), item.color.lower()) for item in closet_items)
+    
+    closest_matches_count = 0
+
+    for item in wishlist_items:
+        item.color_hex = COLOR_HEX_MAP.get(item.color.capitalize(), "#3F6699")
+        if (item.category.lower(), item.color.lower()) in closet_set:
+            item.has_match = True
+            closest_matches_count += 1
+        else:
+            item.has_match = False
+
+    is_conscious_shopping = closest_matches_count > 0
+
+    context = {
+        'wishlist_items': wishlist_items,
+        'wishlist_count': wishlist_items.count(),
+        'closest_matches_count': closest_matches_count,
+        'is_conscious_shopping': is_conscious_shopping,
+    }
+    return render(request, "wishlist.html", context)
+
+
+@login_required
+def add_wishlist_item(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        category = request.POST.get("category")
+        color = request.POST.get("color")
+        material = request.POST.get("material", "")
+        brand = request.POST.get("brand", "")
+        link = request.POST.get("link", "")
+        price = request.POST.get("price") or 0
+        photo = request.FILES.get("photo")
+
+        style_tags = request.POST.getlist("style_tags")
+        style_tag = style_tags[0] if style_tags else ""
+
+        WishlistItem.objects.create(
+            user=request.user,
+            name=name,
+            category=category,
+            color=color,
+            material=material,
+            brand=brand,
+            link=link,
+            price=price,
+            photo=photo,
+            style_tag=style_tag
+        )
+
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return JsonResponse({"status": "success"}, status=200)
+
+        return redirect("main:wishlist")

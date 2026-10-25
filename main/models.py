@@ -1,9 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
-
-# Persona per jawaban "preferred style" di style quiz: (nama, deskripsi, ikon Font Awesome)
+# Persona per jawaban "preferred style" di style quiz
 PERSONAS = {
     "Minimal": (
         "The Conscious Minimalist",
@@ -27,7 +25,7 @@ PERSONAS = {
     ),
 }
 
-# Label yang ditampilkan untuk tiap jawaban quiz (sama dengan teks di halaman style quiz)
+# Label yang ditampilkan untuk tiap jawaban quiz
 STYLE_LABELS = {
     "Minimal": "Minimal & Timeless",
     "Casual": "Casual & Comfy",
@@ -60,16 +58,31 @@ class UserProfile(models.Model):
 
     @property
     def persona(self):
-        """nama, deskripsi, dan ikon persona. Belum ikut quiz: pakai Conscious Minimalist."""
         title, description, icon = PERSONAS.get(self.preferred_style, PERSONAS["Minimal"])
         return {"title": title, "description": description, "icon": icon}
 
     @property
     def quiz_answers(self):
-        """jawaban quiz yang sudah diisi, untuk ditampilkan sebagai chip: [(judul, isi), ...]"""
         answers = [
             ("Style", STYLE_LABELS.get(self.preferred_style)),
             ("Priority", PRIORITY_LABELS.get(self.conscious_shopping_priority)),
             ("Goal", GOAL_LABELS.get(self.wardrobe_goal)),
         ]
         return [(label, value) for label, value in answers if value]
+
+
+class WishlistItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlist_items')
+    name = models.CharField(max_length=255)
+    category = models.CharField(max_length=100)
+    color = models.CharField(max_length=100)
+    material = models.CharField(max_length=100, blank=True, null=True)
+    brand = models.CharField(max_length=100, blank=True, null=True)
+    link = models.URLField(blank=True, null=True)
+    price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    photo = models.ImageField(upload_to='wishlist_photos/', blank=True, null=True)
+    style_tag = models.CharField(max_length=100, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.user.username})"
