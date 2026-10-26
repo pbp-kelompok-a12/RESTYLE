@@ -736,3 +736,27 @@ body {
     justify-content: center;
     gap: 12px;
 }
+
+/* FLOATING ADD ITEM BUTTON */
+.floating-add-btn {
+    position: fixed;
+    bottom: 36px;
+    right: 36px;
+    background-color: var(--san-marino);
+    color: #FFFFFF;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 999px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(63, 102, 153, 0.35);
+    z-index: 100;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.floating-add-btn:hover {
+    background-color: #2D4D75;
+    transform: translateY(-2px);
+}
