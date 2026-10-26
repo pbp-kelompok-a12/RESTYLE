@@ -210,6 +210,7 @@ def toggle_wishlist_from_community(request):
     brand = request.POST.get("brand", "")
     link = request.POST.get("link", "")
     price = request.POST.get("price") or 0
+    photo_url = request.POST.get("photo_url", "")
 
     # Cek apakah item sudah ada di wishlist pengguna
     existing_item = WishlistItem.objects.filter(user=request.user, name=name).first()
@@ -220,7 +221,7 @@ def toggle_wishlist_from_community(request):
         return JsonResponse({"status": "removed", "saved": False})
 
     # Tambahkan jika belum ada (Add)
-    WishlistItem.objects.create(
+    wishlist_item = WishlistItem(
         user=request.user,
         name=name,
         category=category,
@@ -231,6 +232,21 @@ def toggle_wishlist_from_community(request):
         price=price,
         style_tag=""
     )
+
+    # Unduh dan simpan gambar jika photo_url tersedia
+    if photo_url and photo_url.startswith(("http://", "https://", "/media/")):
+        try:
+            if photo_url.startswith("/media/"):
+                photo_url = request.build_absolute_uri(photo_url)
+            
+            resp = requests.get(photo_url, timeout=5)
+            if resp.status_code == 200:
+                filename = os.path.basename(photo_url.split("?")[0]) or f"community_{request.user.id}.jpg"
+                wishlist_item.photo.save(filename, ContentFile(resp.content), save=False)
+        except Exception as e:
+            print("Error downloading community photo:", e)
+
+    wishlist_item.save()
 
     return JsonResponse({"status": "added", "saved": True})
 
