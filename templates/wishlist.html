@@ -156,12 +156,14 @@
     <section id="wishlist-items" class="wishlist-items-grid" {% if not wishlist_items %}style="display: none;"{% endif %}>
         {% for item in wishlist_items %}
             <div class="product-card" 
-                 data-id="{{ item.id }}" 
-                 data-category="{{ item.category }}" 
-                 data-color="{{ item.color }}" 
-                 data-style="{{ item.style_tag|default:'' }}"
-                 data-name="{{ item.name }}" 
-                 data-has-match="{% if item.has_match %}true{% else %}false{% endif %}">
+                data-id="{{ item.id }}" 
+                data-category="{{ item.category }}" 
+                data-color="{{ item.color }}" 
+                data-style="{{ item.style_tag|default:'' }}"
+                data-season="{{ item.season|default:'' }}"
+                data-weather="{{ item.weather|default:'' }}"
+                data-name="{{ item.name }}" 
+                data-has-match="{% if item.has_match %}true{% else %}false{% endif %}">
                  
                 {% if item.has_match %}
                     <span class="badge-status similar">Similar Item Found</span>
