@@ -1,3 +1,6 @@
+import os
+import requests
+from django.core.files.base import ContentFile
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -159,11 +162,13 @@ def add_wishlist_item(request):
         link = request.POST.get("link", "")
         price = request.POST.get("price") or 0
         photo = request.FILES.get("photo")
+        photo_url = request.POST.get("photo_url")
 
         style_tags = request.POST.getlist("style_tags")
         style_tag = style_tags[0] if style_tags else ""
 
-        WishlistItem.objects.create(
+        # Buat instance WishlistItem
+        wishlist_item = WishlistItem(
             user=request.user,
             name=name,
             category=category,
@@ -172,10 +177,27 @@ def add_wishlist_item(request):
             brand=brand,
             link=link,
             price=price,
-            photo=photo,
             style_tag=style_tag
         )
 
+        # 1. Jika ada upload foto langsung
+        if photo:
+            wishlist_item.photo = photo
+        # 2. Jika foto berasal dari URL foto item Community
+        elif photo_url and photo_url.startswith(("http://", "https://", "/media/")):
+            try:
+                # Jika link berupa relative media path
+                if photo_url.startswith("/media/"):
+                    photo_url = request.build_absolute_uri(photo_url)
+                
+                resp = requests.get(photo_url, timeout=5)
+                if resp.status_code == 200:
+                    filename = os.path.basename(photo_url.split("?")[0]) or f"community_{request.user.id}.jpg"
+                    wishlist_item.photo.save(filename, ContentFile(resp.content), save=False)
+            except Exception as e:
+                print("Error downloading community photo:", e)
+
+        wishlist_item.save()
         if request.headers.get("X-Requested-With") == "XMLHttpRequest":
             return JsonResponse({"status": "success"}, status=200)
 

@@ -25,9 +25,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Modal Add Event Trigger
+    // Modal Add Event Trigger (Mendukung Klik Tombol Floating, Banner, maupun Empty State)
     document.addEventListener("click", (e) => {
-        if (e.target.closest("#open-wishlist-form") || e.target.closest(".wishlist-empty-card button")) {
+        const addBtn = e.target.closest(".open-wishlist-form-btn") || e.target.closest("#open-wishlist-form");
+        if (addBtn) {
             if (form) {
                 form.reset();
                 form.action = "/wishlist/add/";

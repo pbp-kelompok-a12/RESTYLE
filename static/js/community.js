@@ -589,20 +589,53 @@ if (document.querySelector(".cm-tag-button")) {
         wishlistView.hidden = !saved;
     }
 
-    wishlistButton.addEventListener("click", () => {
-        const items = readWishlist();
-        const index = items.findIndex((entry) => entry.sourceItemId === shownItem.itemId);
-        if (index === -1) {
-            items.push(toWishlistEntry(shownItem));
-        } else {
-            items.splice(index, 1);
+    wishlistButton.addEventListener("click", async () => {
+        if (!shownItem) return;
+
+        // Ambil CSRF Token
+        const token = getCsrfToken();
+
+        // Buat Form Data secara dinamis dari object shownItem apapun di Community
+        const formData = new FormData();
+        formData.append("name", shownItem.name || "Item from Community");
+        formData.append("category", shownItem.category || "Top");
+        formData.append("color", shownItem.color || "White");
+        formData.append("material", shownItem.material || "");
+        formData.append("brand", shownItem.store || "");
+        formData.append("link", /^https?:\/\//i.test(shownItem.link || "") ? shownItem.link : "");
+        
+        // Kirim URL foto item Community secara dinamis
+        formData.append("photo_url", shownItem.photo || "");
+        
+        // Bersihkan string harga ke format angka murni
+        const rawPrice = (shownItem.price || "").toString().replace(/[^0-9]/g, "");
+        formData.append("price", rawPrice || "0");
+
+        try {
+            const response = await fetch("/wishlist/add/", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": token,
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                showToast("success", "Added to your wishlist.");
+                // Update tampilan tombol di popup modal community
+                wishlistButton.classList.remove("secondary-btn");
+                wishlistButton.classList.add("primary-btn");
+                wishlistButton.querySelector("i").className = "fa-solid fa-heart";
+                wishlistButton.querySelector(".cm-wishlist-label").textContent = "In your wishlist";
+                if (wishlistView) wishlistView.hidden = false;
+            } else {
+                showToast("error", "Could not add item to wishlist.");
+            }
+        } catch (error) {
+            console.error("Error adding to wishlist:", error);
+            showToast("error", "Something went wrong. Please try again.");
         }
-        if (!writeWishlist(items)) {
-            showToast("error", "Could not update your wishlist. Please try again.");
-            return;
-        }
-        showToast("success", index === -1 ? "Added to your wishlist." : "Removed from your wishlist.");
-        showWishlistState();
     });
 
     document.querySelectorAll(".cm-tag-button").forEach((button) => {
