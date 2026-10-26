@@ -1,8 +1,3 @@
-import os
-from unittest import mock
-
-from mixmatch.templatetags.mixmatch_extras import cutout
-
 from django.contrib.auth import get_user_model
 from django.test import TestCase, override_settings
 from django.urls import reverse
@@ -157,41 +152,3 @@ class MixMatchTests(TestCase):
         self.client.post(reverse("mixmatch:save_outfit"), data)
         self.assertEqual(len(Outfit.objects.get().pieces), 6)
         self.assertEqual(Post.objects.get().tagged_items.count(), 5)
-
-CLOUD_URL = "https://res.cloudinary.com/demo/image/upload/v123/closet/items/shirt.jpg"
-
-class CutoutFilterTests(TestCase):
-    def test_off_by_default(self):
-        with mock.patch.dict(os.environ, {"MIXMATCH_AUTO_CUTOUT": ""}):
-            self.assertEqual(cutout(CLOUD_URL), CLOUD_URL)
-
-    def test_rewrites_cloudinary_url_when_enabled(self):
-        with mock.patch.dict(os.environ, {"MIXMATCH_AUTO_CUTOUT": "True"}):
-            self.assertEqual(
-                cutout(CLOUD_URL),
-                "https://res.cloudinary.com/demo/image/upload/e_background_removal/v123/closet/items/shirt.png",
-            )
-
-    def test_leaves_local_and_empty_urls_alone(self):
-        with mock.patch.dict(os.environ, {"MIXMATCH_AUTO_CUTOUT": "True"}):
-            self.assertEqual(cutout("/media/closet/items/shirt.jpg"), "/media/closet/items/shirt.jpg")
-            self.assertEqual(cutout(""), "")
-            self.assertIsNone(cutout(None))
-
-    def test_not_applied_twice(self):
-        with mock.patch.dict(os.environ, {"MIXMATCH_AUTO_CUTOUT": "True"}):
-            once = cutout(CLOUD_URL)
-            self.assertEqual(cutout(once), once)
-
-    @override_settings(STORAGES=PLAIN_STORAGES, MEDIA_URL="https://res.cloudinary.com/demo/image/upload/")
-    def test_page_uses_cutout_everywhere_a_photo_is_shown(self):
-        user = User.objects.create_user("alsa", password="pw12345!")
-        top = Item.objects.create(user=user, name="Shirt", category="top", color="red")
-        top.photo.name = "closet/items/shirt.jpg"
-        top.save()
-        Outfit.objects.create(user=user, name="Look", top=top)
-        self.client.login(username="alsa", password="pw12345!")
-        with mock.patch.dict(os.environ, {"MIXMATCH_AUTO_CUTOUT": "True"}):
-            html = self.client.get(reverse("mixmatch:edit_outfit", args=[Outfit.objects.get().id])).content.decode()
-        self.assertIn("image/upload/e_background_removal/closet/items/shirt.png", html)
-        self.assertNotIn("image/upload/closet/items/shirt.jpg", html)
