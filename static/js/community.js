@@ -592,10 +592,9 @@ if (document.querySelector(".cm-tag-button")) {
     wishlistButton.addEventListener("click", async () => {
         if (!shownItem) return;
 
-        // Ambil CSRF Token
-        const token = getCsrfToken();
+        wishlistButton.disabled = true;
 
-        // Buat Form Data secara dinamis dari object shownItem apapun di Community
+        const token = getCsrfToken();
         const formData = new FormData();
         formData.append("name", shownItem.name || "Item from Community");
         formData.append("category", shownItem.category || "Top");
@@ -603,16 +602,13 @@ if (document.querySelector(".cm-tag-button")) {
         formData.append("material", shownItem.material || "");
         formData.append("brand", shownItem.store || "");
         formData.append("link", /^https?:\/\//i.test(shownItem.link || "") ? shownItem.link : "");
-        
-        // Kirim URL foto item Community secara dinamis
         formData.append("photo_url", shownItem.photo || "");
         
-        // Bersihkan string harga ke format angka murni
         const rawPrice = (shownItem.price || "").toString().replace(/[^0-9]/g, "");
         formData.append("price", rawPrice || "0");
 
         try {
-            const response = await fetch("/wishlist/add/", {
+            const response = await fetch("/wishlist/toggle-community/", {
                 method: "POST",
                 headers: {
                     "X-CSRFToken": token,
@@ -621,20 +617,25 @@ if (document.querySelector(".cm-tag-button")) {
                 body: formData
             });
 
+            const result = await response.json();
+
             if (response.ok) {
-                showToast("success", "Added to your wishlist.");
-                // Update tampilan tombol di popup modal community
-                wishlistButton.classList.remove("secondary-btn");
-                wishlistButton.classList.add("primary-btn");
-                wishlistButton.querySelector("i").className = "fa-solid fa-heart";
-                wishlistButton.querySelector(".cm-wishlist-label").textContent = "In your wishlist";
-                if (wishlistView) wishlistView.hidden = false;
+                const isSaved = result.saved;
+                showToast("success", isSaved ? "Added to your wishlist." : "Removed from your wishlist.");
+                
+                wishlistButton.classList.toggle("primary-btn", isSaved);
+                wishlistButton.classList.toggle("secondary-btn", !isSaved);
+                wishlistButton.querySelector("i").className = isSaved ? "fa-solid fa-heart" : "fa-regular fa-heart";
+                wishlistButton.querySelector(".cm-wishlist-label").textContent = isSaved ? "In your wishlist" : "Add to wishlist";
+                if (wishlistView) wishlistView.hidden = !isSaved;
             } else {
-                showToast("error", "Could not add item to wishlist.");
+                showToast("error", "Could not update wishlist.");
             }
         } catch (error) {
-            console.error("Error adding to wishlist:", error);
+            console.error("Error toggling wishlist:", error);
             showToast("error", "Something went wrong. Please try again.");
+        } finally {
+            wishlistButton.disabled = false;
         }
     });
 
