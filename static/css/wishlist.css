@@ -567,6 +567,18 @@ body {
     .wishlist-items-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     .cl-row { grid-template-columns: 1fr; }
     .wishlist-stats { grid-template-columns: 1fr; }
+    .wishlist-heading h1{
+        font-size: 32px;
+    }
+    .wishlist-badge{
+        font-size: 32px;
+        padding: 4px 8px;
+    }
+    .wishlist-banner{
+        flex-direction: column;
+        gap: 24px;
+    }
+    
 }
 
 /* DROPDOWN MENU TITIK TIGA */
@@ -805,4 +817,8 @@ body {
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
+}
+
+@media (min-width: 768px){
+    
 }
