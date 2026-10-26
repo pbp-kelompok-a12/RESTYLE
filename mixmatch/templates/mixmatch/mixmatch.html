@@ -161,7 +161,17 @@
         </div>
         {% endif %}
     </section>
-
+    <div class="mm-overlay" id="mm-overlay" hidden>
+        <div class="mm-modal" role="dialog" aria-modal="true" aria-labelledby="mm-modal-title">
+            <button type="button" class="mm-modal-close" data-close aria-label="Close">&times;</button>
+            <h2 class="mm-modal-title" id="mm-modal-title">Delete this outfit?</h2>
+            <p class="mm-modal-text" id="mm-modal-text"></p>
+            <div class="mm-modal-actions">
+                <button type="button" class="mm-modal-btn mm-modal-cancel" data-close>Cancel</button>
+                <button type="button" class="mm-modal-btn mm-modal-delete" id="mm-confirm-yes">Delete</button>
+            </div>
+        </div>
+    </div>
 </section>
 </main>
 <script src="{% static 'js/mixmatch.js' %}"></script>
