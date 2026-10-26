@@ -169,14 +169,18 @@
                     <span class="badge-status no-similar">No Similar Item Found</span>
                 {% endif %}
                 
-                <!-- DROPDOWN MENU TITIK TIGA DENGAN GAMBAR FIGMA Frame 9.png -->
+                <!-- DROPDOWN -->
                 <div class="product-card-menu-wrapper">
                     <button type="button" class="product-card-menu" aria-label="Options">
-                        <img src="{% static 'img/Frame 9.png' %}" alt="Options Menu">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <circle cx="5" cy="12" r="2"/>
+                            <circle cx="12" cy="12" r="2"/>
+                            <circle cx="19" cy="12" r="2"/>
+                        </svg>
                     </button>
                     <div class="menu-dropdown hidden">
-                        <button type="button" class="dropdown-item view-action" data-id="{{ item.id }}">View</button>
-                        <button type="button" class="dropdown-item edit-action" data-id="{{ item.id }}">Edit</button>
+                        <button type="button" class="dropdown-item view-action" data-id="{{ item.id }}">View details</button>
+                        <button type="button" class="dropdown-item edit-action" data-id="{{ item.id }}">Edit item</button>
                         <button type="button" class="dropdown-item delete-action" data-id="{{ item.id }}" data-name="{{ item.name }}">Delete</button>
                     </div>
                 </div>
