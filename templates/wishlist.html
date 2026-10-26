@@ -47,7 +47,7 @@
 
     <!-- 3. STATS SECTION -->
     <section class="wishlist-stats">
-        <div class="stat-card">
+        <div class="stat-card" id="stat-card-all" style="cursor: pointer;">
             <div class="stat-icon-wrapper">
                 <img src="{% static 'img/iconoven_bags.png' %}" alt="Wishlist Bag Icon" class="stat-icon">
             </div>
@@ -57,7 +57,7 @@
             </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card" id="stat-card-matches" style="cursor: pointer;">
             <div class="stat-icon-wrapper">
                 <img src="{% static 'img/Vector.png' %}" alt="Hanger Icon" class="stat-icon">
             </div>
@@ -192,12 +192,20 @@
         {% endfor %}
     </section>
 
-    <!-- 6. EMPTY STATE CARD -->
+    <!-- 6. EMPTY STATE CARD (PADA SAAT BELUM ADA ITEM SAMA SEKALI) -->
     <section class="wishlist-empty-card" id="wishlist-empty" {% if wishlist_items %}style="display: none;"{% endif %}>
         <img src="{% static 'img/bunglon_hires.png' %}" alt="Bunglon ReStyle" class="empty-chameleon">
         <h2>Your wishlist is empty</h2>
         <p>Your wishlist is empty. Select “Add to wishlist” to save your first item.</p>
         <button type="button" class="btn-primary-blue open-wishlist-form-btn">+ Add to wishlist</button>
+    </section>
+
+    <!-- 6B. NO MATCH FILTER STATE CARD (PERSIS SEPERTI CLOSET PAGE) -->
+    <section class="wishlist-no-match" id="wishlist-no-match" style="display: none;">
+        <img src="{% static 'img/bunglon_hires.png' %}" alt="No Items Match" class="no-match-chameleon">
+        <h2>No items match</h2>
+        <p>Try changing or clearing your filters.</p>
+        <button type="button" class="btn-primary-blue btn-trigger-clear-filters">Clear filters</button>
     </section>
 
     <!-- TOMBOL FLOATING ACTION (+ ADD TO WISHLIST) SEPERTI CLOSET PAGE -->
@@ -292,7 +300,7 @@
                     </div>
                 </div>
 
-                <!-- SECTION 3: STYLE & WEATHER (DISAMAKAN DENGAN CLOSET) -->
+                <!-- SECTION 3: STYLE & WEATHER -->
                 <div class="cl-section">
                     <h2>Style & weather</h2>
                     
@@ -333,7 +341,7 @@
                     </div>
                 </div>
 
-                <!-- SECTION 4: PURCHASE INFO (TANPA DATE PURCHASED) -->
+                <!-- SECTION 4: PURCHASE INFO -->
                 <div class="cl-section">
                     <h2>Purchase info</h2>
                     

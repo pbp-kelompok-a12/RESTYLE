@@ -8,8 +8,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const formModalTitle = document.getElementById("form-modal-title");
     const form = document.getElementById("wishlist-form");
     const container = document.getElementById("wishlist-items");
+    const noMatchSection = document.getElementById("wishlist-no-match");
 
     let currentActiveItemId = null;
+    let onlyShowMatches = false;
 
     function openModal(el) {
         if (el) {
@@ -25,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Modal Add Event Trigger (Mendukung Klik Tombol Floating, Banner, maupun Empty State)
+    // Modal Add Event Trigger
     document.addEventListener("click", (e) => {
         const addBtn = e.target.closest(".open-wishlist-form-btn") || e.target.closest("#open-wishlist-form");
         if (addBtn) {
@@ -42,26 +44,30 @@ document.addEventListener("DOMContentLoaded", () => {
     closeFormButton?.addEventListener("click", () => closeModal(formOverlay));
     cancelFormButton?.addEventListener("click", () => closeModal(formOverlay));
 
-    // View Matching Items Action
+    // INTERACTIVE STAT CARDS & VIEW MATCHING ITEMS ACTION
+    const statCardAll = document.getElementById("stat-card-all");
+    const statCardMatches = document.getElementById("stat-card-matches");
     const viewMatchingBtn = document.getElementById("btn-view-matching");
-    viewMatchingBtn?.addEventListener("click", () => {
-        const cards = document.querySelectorAll(".product-card");
-        let firstMatchCard = null;
 
-        cards.forEach(card => {
-            const hasMatch = card.getAttribute("data-has-match") === "true";
-            if (hasMatch) {
-                card.style.display = "block";
-                if (!firstMatchCard) firstMatchCard = card;
-            } else {
-                card.style.display = "none";
-            }
-        });
-
-        if (firstMatchCard) {
-            firstMatchCard.scrollIntoView({ behavior: "smooth", block: "center" });
+    function showAllWishlistItems() {
+        onlyShowMatches = false;
+        clearAllFilters();
+        if (container) {
+            container.scrollIntoView({ behavior: "smooth", block: "start" });
         }
-    });
+    }
+
+    function showMatchingWishlistItems() {
+        onlyShowMatches = true;
+        filterItems();
+        if (container) {
+            container.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    }
+
+    statCardAll?.addEventListener("click", showAllWishlistItems);
+    statCardMatches?.addEventListener("click", showMatchingWishlistItems);
+    viewMatchingBtn?.addEventListener("click", showMatchingWishlistItems);
 
     // 1. DETAIL VIEW MODAL
     function openDetailModal(itemId) {
@@ -264,7 +270,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Filter Logic
+    // FILTER LOGIC & NO MATCH CARD CONTROL
     const categoryButtons = document.querySelectorAll("#category-tabs .tab-btn");
     const clearFiltersBtn = document.getElementById("btn-clear-filters");
     const searchInput = document.getElementById("wishlist-search");
@@ -284,18 +290,21 @@ document.addEventListener("DOMContentLoaded", () => {
         const selectedColor = document.getElementById("filter-color")?.value.toLowerCase() || "";
 
         const cards = document.querySelectorAll(".product-card");
+        const totalItemsInDatabase = cards.length;
         let visibleCount = 0;
 
         cards.forEach(card => {
             const category = (card.getAttribute("data-category") || "").toLowerCase();
             const color = (card.getAttribute("data-color") || "").toLowerCase();
             const name = (card.getAttribute("data-name") || "").toLowerCase();
+            const hasMatch = card.getAttribute("data-has-match") === "true";
 
             const matchCategory = !activeCategory || category === activeCategory;
             const matchColor = !selectedColor || color === selectedColor;
             const matchSearch = !searchQuery || name.includes(searchQuery);
+            const matchMatchCardFilter = !onlyShowMatches || hasMatch;
 
-            if (matchCategory && matchColor && matchSearch) {
+            if (matchCategory && matchColor && matchSearch && matchMatchCardFilter) {
                 card.style.display = "block";
                 visibleCount++;
             } else {
@@ -303,19 +312,40 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        if (container) {
-            container.style.display = visibleCount > 0 ? "grid" : "none";
+        const emptyDatabaseCard = document.getElementById("wishlist-empty");
+
+        if (totalItemsInDatabase === 0) {
+            if (container) container.style.display = "none";
+            if (noMatchSection) noMatchSection.style.display = "none";
+            if (emptyDatabaseCard) emptyDatabaseCard.style.display = "flex";
+        } else if (visibleCount === 0) {
+            if (container) container.style.display = "none";
+            if (emptyDatabaseCard) emptyDatabaseCard.style.display = "none";
+            if (noMatchSection) noMatchSection.style.display = "flex";
+        } else {
+            if (container) container.style.display = "grid";
+            if (emptyDatabaseCard) emptyDatabaseCard.style.display = "none";
+            if (noMatchSection) noMatchSection.style.display = "none";
         }
     }
 
-    searchInput?.addEventListener("input", filterItems);
-    filterSelects.forEach(select => select.addEventListener("change", filterItems));
-
-    clearFiltersBtn?.addEventListener("click", () => {
+    function clearAllFilters() {
+        onlyShowMatches = false;
         if (searchInput) searchInput.value = "";
         filterSelects.forEach(select => select.selectedIndex = 0);
         categoryButtons.forEach(btn => btn.classList.remove("active"));
         categoryButtons[0]?.classList.add("active");
         filterItems();
+    }
+
+    searchInput?.addEventListener("input", filterItems);
+    filterSelects.forEach(select => select.addEventListener("change", filterItems));
+
+    clearFiltersBtn?.addEventListener("click", clearAllFilters);
+
+    document.addEventListener("click", (e) => {
+        if (e.target.closest(".btn-trigger-clear-filters")) {
+            clearAllFilters();
+        }
     });
 });
