@@ -167,7 +167,6 @@ def add_wishlist_item(request):
         style_tags = request.POST.getlist("style_tags")
         style_tag = style_tags[0] if style_tags else ""
 
-        # Buat instance WishlistItem
         wishlist_item = WishlistItem(
             user=request.user,
             name=name,
@@ -180,13 +179,10 @@ def add_wishlist_item(request):
             style_tag=style_tag
         )
 
-        # 1. Jika ada upload foto langsung
         if photo:
             wishlist_item.photo = photo
-        # 2. Jika foto berasal dari URL foto item Community
         elif photo_url and photo_url.startswith(("http://", "https://", "/media/")):
             try:
-                # Jika link berupa relative media path
                 if photo_url.startswith("/media/"):
                     photo_url = request.build_absolute_uri(photo_url)
                 
@@ -202,6 +198,41 @@ def add_wishlist_item(request):
             return JsonResponse({"status": "success"}, status=200)
 
         return redirect("main:wishlist")
+
+
+@login_required
+@require_POST
+def toggle_wishlist_from_community(request):
+    name = request.POST.get("name")
+    category = request.POST.get("category", "Top")
+    color = request.POST.get("color", "White")
+    material = request.POST.get("material", "")
+    brand = request.POST.get("brand", "")
+    link = request.POST.get("link", "")
+    price = request.POST.get("price") or 0
+
+    # Cek apakah item sudah ada di wishlist pengguna
+    existing_item = WishlistItem.objects.filter(user=request.user, name=name).first()
+
+    if existing_item:
+        # Hapus jika sudah ada (Remove)
+        existing_item.delete()
+        return JsonResponse({"status": "removed", "saved": False})
+
+    # Tambahkan jika belum ada (Add)
+    WishlistItem.objects.create(
+        user=request.user,
+        name=name,
+        category=category,
+        color=color,
+        material=material,
+        brand=brand,
+        link=link,
+        price=price,
+        style_tag=""
+    )
+
+    return JsonResponse({"status": "added", "saved": True})
 
 
 @login_required
