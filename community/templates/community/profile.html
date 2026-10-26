@@ -62,7 +62,7 @@
             {% endif %}
             {% else %}
             {% url 'main:logout' as logout_url %}
-            {% include 'components/button.html' with href=logout_url btn_class="danger" label="Log Out" %}
+            {% include 'components/button.html' with href=logout_url btn_class="danger" label="Log Out" extra_class="cm-community-button cm-follow" %}
             {% endif %}
         </div>
 
