@@ -125,6 +125,15 @@
     font-weight: 700;
 }
 
+.avatar-photo{
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    border-radius: var(--corner-radius-999);
+}
+
 .nt-icon{
     position: absolute;
     right: -4px;
