@@ -520,6 +520,71 @@
 .mm-empty h3 { color: var(--color-azure-san-marino); font-family: var(--font-family-font-3), sans-serif; font-size: 18px; }
 .mm-empty-small { padding: 8px 0; }
 
+/* ---------- pop-up konfirmasi hapus ---------- */
+.mm-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(31, 61, 87, .45);
+}
+
+.mm-modal {
+    position: relative;
+    width: min(460px, 100%);
+    padding: 32px 28px 28px;
+    background: var(--color-orange-linen);
+    border: 1px solid var(--color-azure-polo-blue);
+    border-radius: var(--corner-radius-24);
+    text-align: center;
+}
+
+.mm-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: var(--color-white-solid);
+    color: var(--color-azure-san-marino);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+}
+.mm-modal-close:hover { background: var(--color-azure-st-blue); }
+
+.mm-modal-title {
+    margin: 0 0 12px;
+    font-family: var(--font-family-font-3), sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--color-azure-san-marino);
+}
+
+.mm-modal-text { margin: 0; color: var(--color-azure-martinique); }
+
+.mm-modal-actions { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
+
+.mm-modal-btn {
+    padding: 10px 22px;
+    border: 0;
+    border-radius: var(--corner-radius-999);
+    color: var(--color-white-solid);
+    font-family: var(--font-family-font-3), sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s ease-out;
+}
+.mm-modal-cancel { background: var(--color-azure-san-marino); }
+.mm-modal-delete { background: var(--color-red-cherry); }
+.mm-modal-btn:hover { filter: brightness(.9); }
+
 /* ---------- responsive ---------- */
 @media (max-width: 1320px) {
     .mm-slots { grid-template-columns: repeat(2, minmax(0, 1fr)); }   /* layar laptop sempit: slot jadi 2 kolom */

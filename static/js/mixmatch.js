@@ -130,11 +130,47 @@
 
     /* ---------- konfirmasi hapus outfit tersimpan ---------- */
     document.querySelectorAll(".mm-outfit-delete").forEach(function (deleteForm) {
-        deleteForm.addEventListener("submit", function (event) {
-            if (!window.confirm('Delete "' + deleteForm.dataset.confirm + '" from your saved outfits?')) {
-                event.preventDefault();
-            }
-        });
+        var overlay = document.getElementById("mm-overlay");
+        var modalText = document.getElementById("mm-modal-text");
+        var confirmYes = document.getElementById("mm-confirm-yes");
+        var pendingForm = null;
+
+        function closeModal() {
+            overlay.hidden = true;
+            document.body.style.overflow = "";
+            pendingForm = null;
+        }
+
+        function openConfirm(deleteForm) {
+            pendingForm = deleteForm;
+            modalText.textContent = '"' + deleteForm.dataset.confirm + "\" will be removed from your saved outfits. This can't be undone.";
+            overlay.hidden = false;
+            document.body.style.overflow = "hidden";
+            overlay.querySelector(".mm-modal-cancel").focus(); 
+        }
+
+        if (overlay) {
+            document.querySelectorAll(".mm-outfit-delete").forEach(function (deleteForm) {
+                deleteForm.addEventListener("submit", function (event) {
+                    event.preventDefault();
+                    openConfirm(deleteForm);
+                });
+            });
+
+            confirmYes.addEventListener("click", function () {
+                var deleteForm = pendingForm;
+                closeModal();
+                if (deleteForm) deleteForm.submit();   
+            });
+
+            overlay.addEventListener("click", function (event) {
+                if (event.target === overlay || event.target.closest("[data-close]")) closeModal();
+            });
+
+            document.addEventListener("keydown", function (event) {
+                if (event.key === "Escape" && !overlay.hidden) closeModal();
+            });
+        }
     });
 
     markPicked();
