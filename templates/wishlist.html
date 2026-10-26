@@ -41,7 +41,7 @@
                     <p>We'll compare your wishlist items with your Digital Closet by category and color.</p>
                 </div>
             </div>
-            <button type="button" class="btn-primary-blue open-wishlist-form-btn">+ Add to wishlist</button>
+            <button type="button" id="open-wishlist-form" class="btn-primary-blue">+ Add to wishlist</button>
         {% endif %}
     </section>
 
@@ -149,6 +149,8 @@
             </select>
             
             <button type="button" id="btn-clear-filters" class="btn-clear-filters">Clear filters</button>
+
+            <button type="button" id="open-wishlist-form" class="btn-primary-blue" style="margin-left: 12px; padding: 8px 18px; font-size: 13px;">+ Add item</button>
         </div>
     </section>
 
@@ -162,6 +164,7 @@
                     <span class="badge-status no-similar">No Similar Item Found</span>
                 {% endif %}
                 
+                <!-- DROPDOWN MENU TITIK TIGA -->
                 <div class="product-card-menu-wrapper">
                     <button type="button" class="product-card-menu" aria-label="Options">•••</button>
                     <div class="menu-dropdown hidden">
@@ -196,16 +199,14 @@
         <img src="{% static 'img/bunglon_hires.png' %}" alt="Bunglon ReStyle" class="empty-chameleon">
         <h2>Your wishlist is empty</h2>
         <p>Your wishlist is empty. Select “Add to wishlist” to save your first item.</p>
-        <button type="button" class="btn-primary-blue open-wishlist-form-btn">+ Add to wishlist</button>
+        <button type="button" class="btn-primary-blue">+ Add to wishlist</button>
     </section>
-
-    <!-- TOMBOL FLOATING ACTION (+ ADD ITEM) SEPERTI DI CLOSET -->
-    <button type="button" class="floating-add-btn open-wishlist-form-btn">+ Add item</button>
 
     <!-- 7. POP-UP MODAL ADD / EDIT ITEM -->
     <div id="add-wishlist" class="cl-overlay" hidden>
         <div class="cl-modal wishlist-modal-card">
             <button type="button" id="close-wishlist-form" class="cl-modal-close" aria-label="Close form">&times;</button>
+            
             <h1 class="wishlist-modal-title" id="form-modal-title">Add new item</h1>
 
             <form id="wishlist-form" method="POST" action="{% url 'main:add_wishlist_item' %}" enctype="multipart/form-data">
@@ -234,6 +235,7 @@
                 <!-- SECTION 2: DETAILS -->
                 <div class="cl-section">
                     <h2>Details <em class="req-star">*</em></h2>
+                    
                     <div class="cl-field">
                         <label for="item-name">Item name <em class="req-star">*</em></label>
                         <input type="text" id="item-name" name="name" placeholder="e.g. Cream Knit Sweater" required>
@@ -265,7 +267,7 @@
                             <label class="cl-opt"><input type="radio" name="color" value="Pink"><span><i class="cl-dot" style="background:#FFC0CB;"></i>Pink</span></label>
                             <label class="cl-opt"><input type="radio" name="color" value="Green"><span><i class="cl-dot" style="background:#008000;"></i>Green</span></label>
                             <label class="cl-opt"><input type="radio" name="color" value="Blue"><span><i class="cl-dot" style="background:#0000FF;"></i>Blue</span></label>
-                            <label class="cl-opt"><input type="radio" name="color" value="Purple"><span><i class="cl-dot" style="background:#808080;"></i>Purple</span></label>
+                            <label class="cl-opt"><input type="radio" name="color" value="Purple"><span><i class="cl-dot" style="background:#800080;"></i>Purple</span></label>
                         </div>
                     </div>
 
@@ -289,7 +291,7 @@
                     </div>
                 </div>
 
-                <!-- SECTION 3: STYLE & WEATHER (SAMA PERSIS CLOSET) -->
+                <!-- SECTION 3: STYLE & WEATHER -->
                 <div class="cl-section">
                     <h2>Style & weather</h2>
                     <div class="cl-field">
@@ -303,28 +305,6 @@
                             <label class="cl-opt"><input type="checkbox" name="style_tags" value="Party"><span>Party</span></label>
                             <label class="cl-opt"><input type="checkbox" name="style_tags" value="Cozy"><span>Cozy</span></label>
                             <label class="cl-opt"><input type="checkbox" name="style_tags" value="Vintage"><span>Vintage</span></label>
-                        </div>
-                    </div>
-
-                    <div class="cl-field">
-                        <label class="cl-label">Season</label>
-                        <div class="cl-opts">
-                            <label class="cl-opt"><input type="checkbox" name="seasons" value="Spring"><span>Spring</span></label>
-                            <label class="cl-opt"><input type="checkbox" name="seasons" value="Summer"><span>Summer</span></label>
-                            <label class="cl-opt"><input type="checkbox" name="seasons" value="Autumn"><span>Autumn</span></label>
-                            <label class="cl-opt"><input type="checkbox" name="seasons" value="Winter"><span>Winter</span></label>
-                            <label class="cl-opt"><input type="checkbox" name="seasons" value="All year round"><span>All year round</span></label>
-                        </div>
-                    </div>
-
-                    <div class="cl-field">
-                        <label class="cl-label">Weather</label>
-                        <div class="cl-opts">
-                            <label class="cl-opt"><input type="checkbox" name="weather" value="Hot"><span>Hot</span></label>
-                            <label class="cl-opt"><input type="checkbox" name="weather" value="Stormy"><span>Stormy</span></label>
-                            <label class="cl-opt"><input type="checkbox" name="weather" value="Cool"><span>Cool</span></label>
-                            <label class="cl-opt"><input type="checkbox" name="weather" value="Moderate"><span>Moderate</span></label>
-                            <label class="cl-opt"><input type="checkbox" name="weather" value="Rainy"><span>Rainy</span></label>
                         </div>
                     </div>
                 </div>
