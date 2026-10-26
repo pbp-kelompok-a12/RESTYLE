@@ -318,6 +318,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const selectedColor = document.getElementById("filter-color")?.value.toLowerCase() || "";
         const selectedStyle = document.getElementById("filter-style")?.value.toLowerCase() || "";
         const selectedStatus = document.getElementById("filter-status")?.value.toLowerCase() || "";
+        const selectedSeason = document.getElementById("filter-season")?.value.toLowerCase() || "";
+        const selectedWeather = document.getElementById("filter-weather")?.value.toLowerCase() || "";
 
         const cards = document.querySelectorAll(".product-card");
         const totalItemsInDatabase = cards.length;
@@ -327,12 +329,16 @@ document.addEventListener("DOMContentLoaded", () => {
             const category = (card.getAttribute("data-category") || "").toLowerCase();
             const color = (card.getAttribute("data-color") || "").toLowerCase();
             const style = (card.getAttribute("data-style") || "").toLowerCase();
+            const season = (card.getAttribute("data-season") || "").toLowerCase();
+            const weather = (card.getAttribute("data-weather") || "").toLowerCase();
             const name = (card.getAttribute("data-name") || "").toLowerCase();
             const hasMatch = card.getAttribute("data-has-match") === "true";
 
             const matchCategory = !activeCategory || category === activeCategory;
             const matchColor = !selectedColor || color === selectedColor;
             const matchStyle = !selectedStyle || style === selectedStyle;
+            const matchSeason = !selectedSeason || season.includes(selectedSeason);
+            const matchWeather = !selectedWeather || weather.includes(selectedWeather);
             const matchSearch = !searchQuery || name.includes(searchQuery);
             const matchStatCard = !onlyShowMatches || hasMatch;
 
@@ -343,7 +349,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 matchStatus = !hasMatch;
             }
 
-            if (matchCategory && matchColor && matchStyle && matchSearch && matchStatCard && matchStatus) {
+            if (matchCategory && matchColor && matchStyle && matchSeason && matchWeather && matchSearch && matchStatCard && matchStatus) {
                 card.style.display = "block";
                 visibleCount++;
             } else {
