@@ -170,8 +170,11 @@
     .week-grid { grid-template-columns: repeat(4, 1fr); }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
     .planner-top { padding-left: 20px; padding-right: 20px; }
     .planner-title h2 { font-size: 32px; }
     .week-grid { grid-template-columns: repeat(2, 1fr); }
+    .week-select{
+        padding: 16px 10px;
+    }
 }
