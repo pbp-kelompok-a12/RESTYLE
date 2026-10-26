@@ -16,7 +16,7 @@ COLOR_HEX_MAP = {
     "White": "#FFFFFF", "Black": "#000000", "Gray": "#808080",
     "Beige": "#F5F5DC", "Brown": "#7B3F00", "Red": "#D9381E",
     "Orange": "#FFA500", "Yellow": "#FFFF00", "Pink": "#FFC0CB",
-    "Green": "#008000", "Blue": "#0000FF", "Purple": "#800080"
+    "Green": "#008000", "Blue": "#0000FF", "Purple": "#47005C"
 }
 
 def show_landing_page(request):
@@ -254,6 +254,21 @@ def toggle_wishlist_from_community(request):
 @login_required
 def get_wishlist_detail(request, item_id):
     item = get_object_or_404(WishlistItem, pk=item_id, user=request.user)
+    
+    # Cari item di Digital Closet yang memiliki category & color yang sama
+    matching_closet_items = ClosetItem.objects.filter(
+        user=request.user,
+        category__iexact=item.category,
+        color__iexact=item.color
+    )
+    
+    matched_items_data = []
+    for closet_item in matching_closet_items:
+        matched_items_data.append({
+            "name": closet_item.name,
+            "photo_url": closet_item.photo.url if closet_item.photo else "/static/img/bunglon_hires.png"
+        })
+
     data = {
         "id": item.id,
         "name": item.name,
@@ -267,6 +282,8 @@ def get_wishlist_detail(request, item_id):
         "raw_price": item.price,
         "photo_url": item.photo.url if item.photo else "",
         "style_tag": item.style_tag or "-",
+        "has_match": len(matched_items_data) > 0,
+        "matched_items": matched_items_data
     }
     return JsonResponse(data)
 

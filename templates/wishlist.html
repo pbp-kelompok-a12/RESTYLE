@@ -144,8 +144,8 @@
 
             <select id="filter-status">
                 <option value="">Status</option>
-                <option value="Ready to Wear">Ready to Wear</option>
-                <option value="In the Wash">In the Wash</option>
+                <option value="Similar Item Found">Similar Item Found</option>
+                <option value="No Similar Item Found">No Similar Item Found</option>
             </select>
             
             <button type="button" id="btn-clear-filters" class="btn-clear-filters">Clear filters</button>
@@ -155,16 +155,25 @@
     <!-- 5. GRID PRODUCT CARDS -->
     <section id="wishlist-items" class="wishlist-items-grid" {% if not wishlist_items %}style="display: none;"{% endif %}>
         {% for item in wishlist_items %}
-            <div class="product-card" data-id="{{ item.id }}" data-category="{{ item.category }}" data-color="{{ item.color }}" data-name="{{ item.name }}" data-has-match="{% if item.has_match %}true{% else %}false{% endif %}">
+            <div class="product-card" 
+                 data-id="{{ item.id }}" 
+                 data-category="{{ item.category }}" 
+                 data-color="{{ item.color }}" 
+                 data-style="{{ item.style_tag|default:'' }}"
+                 data-name="{{ item.name }}" 
+                 data-has-match="{% if item.has_match %}true{% else %}false{% endif %}">
+                 
                 {% if item.has_match %}
                     <span class="badge-status similar">Similar Item Found</span>
                 {% else %}
                     <span class="badge-status no-similar">No Similar Item Found</span>
                 {% endif %}
                 
-                <!-- DROPDOWN MENU TITIK TIGA -->
+                <!-- DROPDOWN MENU TITIK TIGA DENGAN GAMBAR FIGMA Frame 9.png -->
                 <div class="product-card-menu-wrapper">
-                    <button type="button" class="product-card-menu" aria-label="Options">•••</button>
+                    <button type="button" class="product-card-menu" aria-label="Options">
+                        <img src="{% static 'img/Frame 9.png' %}" alt="Options Menu">
+                    </button>
                     <div class="menu-dropdown hidden">
                         <button type="button" class="dropdown-item view-action" data-id="{{ item.id }}">View</button>
                         <button type="button" class="dropdown-item edit-action" data-id="{{ item.id }}">Edit</button>
@@ -192,7 +201,7 @@
         {% endfor %}
     </section>
 
-    <!-- 6. EMPTY STATE CARD (PADA SAAT BELUM ADA ITEM SAMA SEKALI) -->
+    <!-- 6. EMPTY STATE CARD -->
     <section class="wishlist-empty-card" id="wishlist-empty" {% if wishlist_items %}style="display: none;"{% endif %}>
         <img src="{% static 'img/bunglon_hires.png' %}" alt="Bunglon ReStyle" class="empty-chameleon">
         <h2>Your wishlist is empty</h2>
@@ -200,7 +209,7 @@
         <button type="button" class="btn-primary-blue open-wishlist-form-btn">+ Add to wishlist</button>
     </section>
 
-    <!-- 6B. NO MATCH FILTER STATE CARD (PERSIS SEPERTI CLOSET PAGE) -->
+    <!-- 6B. NO MATCH FILTER STATE CARD -->
     <section class="wishlist-no-match" id="wishlist-no-match" style="display: none;">
         <img src="{% static 'img/bunglon_hires.png' %}" alt="No Items Match" class="no-match-chameleon">
         <h2>No items match</h2>
@@ -208,20 +217,18 @@
         <button type="button" class="btn-primary-blue btn-trigger-clear-filters">Clear filters</button>
     </section>
 
-    <!-- TOMBOL FLOATING ACTION (+ ADD TO WISHLIST) SEPERTI CLOSET PAGE -->
+    <!-- TOMBOL FLOATING ACTION (+ ADD TO WISHLIST) -->
     <button type="button" class="floating-add-btn open-wishlist-form-btn">+ Add to wishlist</button>
 
     <!-- 7. POP-UP MODAL ADD / EDIT ITEM -->
     <div id="add-wishlist" class="cl-overlay" hidden>
         <div class="cl-modal wishlist-modal-card">
             <button type="button" id="close-wishlist-form" class="cl-modal-close" aria-label="Close form">&times;</button>
-            
             <h1 class="wishlist-modal-title" id="form-modal-title">Add new item</h1>
 
             <form id="wishlist-form" method="POST" action="{% url 'main:add_wishlist_item' %}" enctype="multipart/form-data">
                 {% csrf_token %}
 
-                <!-- SECTION 1: PHOTO -->
                 <div class="cl-section">
                     <label class="cl-label">Photo <em class="req-star">*</em></label>
                     <label for="item-photo" class="cl-dropzone">
@@ -241,10 +248,8 @@
                     </label>
                 </div>
 
-                <!-- SECTION 2: DETAILS -->
                 <div class="cl-section">
                     <h2>Details <em class="req-star">*</em></h2>
-                    
                     <div class="cl-field">
                         <label for="item-name">Item name <em class="req-star">*</em></label>
                         <input type="text" id="item-name" name="name" placeholder="e.g. Cream Knit Sweater" required>
@@ -300,7 +305,6 @@
                     </div>
                 </div>
 
-                <!-- SECTION 3: STYLE & WEATHER -->
                 <div class="cl-section">
                     <h2>Style & weather</h2>
                     
@@ -341,10 +345,8 @@
                     </div>
                 </div>
 
-                <!-- SECTION 4: PURCHASE INFO -->
                 <div class="cl-section">
                     <h2>Purchase info</h2>
-                    
                     <div class="cl-field">
                         <label for="item-brand">Store / brand</label>
                         <input type="text" id="item-brand" name="brand" placeholder="e.g. Uniqlo">
@@ -361,7 +363,6 @@
                     </div>
                 </div>
 
-                <!-- FORM ACTIONS -->
                 <div class="modal-actions">
                     <button type="button" id="clear-wishlist-form" class="btn btn-cancel">Cancel</button>
                     <button type="submit" class="btn btn-save" id="save-btn">Save item</button>
@@ -371,7 +372,7 @@
         </div>
     </div>
 
-    <!-- 8. DETAIL VIEW MODAL -->
+    <!-- 8. DETAIL VIEW MODAL (WITH SIMILAR CLOSET ITEMS SECTION) -->
     <div id="view-detail-modal" class="cl-overlay" hidden>
         <div class="cl-modal detail-modal-card">
             <button type="button" id="close-detail-modal" class="cl-modal-close" aria-label="Close">&times;</button>
@@ -412,7 +413,13 @@
                         </div>
                     </div>
 
-                    <div class="detail-actions-row">
+                    <!-- SIMILAR ITEMS FROM DIGITAL CLOSET SECTION -->
+                    <div id="similar-closet-container" style="margin-top: 16px; border-top: 1px solid #E2E8F0; padding-top: 12px; display: none;">
+                        <span class="detail-label" style="color: #C0392B;">SIMILAR IN YOUR DIGITAL CLOSET</span>
+                        <div id="similar-closet-list" style="display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap;"></div>
+                    </div>
+
+                    <div class="detail-actions-row" style="margin-top: 20px;">
                         <button type="button" id="btn-edit-from-view" class="btn btn-primary-blue">Edit</button>
                         <button type="button" id="btn-delete-from-view" class="btn btn-cancel">Delete</button>
                     </div>
