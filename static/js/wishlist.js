@@ -190,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 4. DELEGATED CLICK HANDLERS FOR DROPDOWN & ACTIONS
+    // 4. DELEGATED CLICK HANDLERS FOR DROPDOWN & MENU BUTTON STATE
     document.addEventListener("click", (e) => {
         const viewBtn = e.target.closest(".view-action");
         if (viewBtn) {
@@ -215,12 +215,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const menuBtn = e.target.closest(".product-card-menu");
+        
+        // Reset semua menu dropdown & tombol aktif jika klik di luar
+        document.querySelectorAll(".product-card-menu").forEach(btn => {
+            if (btn !== menuBtn) btn.classList.remove("active");
+        });
+
         document.querySelectorAll(".menu-dropdown").forEach(dd => {
             if (!menuBtn || dd.previousElementSibling !== menuBtn) {
                 dd.classList.add("hidden");
             }
         });
+
         if (menuBtn) {
+            menuBtn.classList.toggle("active");
             menuBtn.nextElementSibling?.classList.toggle("hidden");
         }
     });
@@ -290,7 +298,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // FILTER LOGIC & NO MATCH CARD CONTROL (FULLY FUNCTIONAL FOR ALL DROPDOWNS)
+    // FILTER LOGIC & NO MATCH CARD CONTROL
     const categoryButtons = document.querySelectorAll("#category-tabs .tab-btn");
     const clearFiltersBtn = document.getElementById("btn-clear-filters");
     const searchInput = document.getElementById("wishlist-search");
@@ -310,8 +318,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const selectedColor = document.getElementById("filter-color")?.value.toLowerCase() || "";
         const selectedStyle = document.getElementById("filter-style")?.value.toLowerCase() || "";
         const selectedStatus = document.getElementById("filter-status")?.value.toLowerCase() || "";
-        const selectedSeason = document.getElementById("filter-season")?.value || "";
-        const selectedWeather = document.getElementById("filter-weather")?.value || "";
 
         const cards = document.querySelectorAll(".product-card");
         const totalItemsInDatabase = cards.length;
@@ -337,11 +343,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 matchStatus = !hasMatch;
             }
 
-            // season & weather default match (atau jika disetel)
-            const matchSeason = !selectedSeason;
-            const matchWeather = !selectedWeather;
-
-            if (matchCategory && matchColor && matchStyle && matchSearch && matchStatCard && matchStatus && matchSeason && matchWeather) {
+            if (matchCategory && matchColor && matchStyle && matchSearch && matchStatCard && matchStatus) {
                 card.style.display = "block";
                 visibleCount++;
             } else {
