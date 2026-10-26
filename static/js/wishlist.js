@@ -94,6 +94,26 @@ document.addEventListener("DOMContentLoaded", () => {
                     linkEl.textContent = "-";
                 }
 
+                // Render Digital Closet Similar Items
+                const similarContainer = document.getElementById("similar-closet-container");
+                const similarList = document.getElementById("similar-closet-list");
+                
+                if (data.has_match && data.matched_items && data.matched_items.length > 0) {
+                    similarList.innerHTML = "";
+                    data.matched_items.forEach(match => {
+                        const itemBox = document.createElement("div");
+                        itemBox.style.cssText = "display: flex; align-items: center; gap: 8px; background: #FFF; border: 1px solid #8FB0D4; border-radius: 999px; padding: 4px 12px;";
+                        itemBox.innerHTML = `
+                            <img src="${match.photo_url}" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
+                            <span style="font-size: 12px; font-weight: 600; color: #3A2B48;">${match.name}</span>
+                        `;
+                        similarList.appendChild(itemBox);
+                    });
+                    similarContainer.style.display = "block";
+                } else {
+                    similarContainer.style.display = "none";
+                }
+
                 openModal(viewOverlay);
             });
     }
@@ -270,7 +290,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // FILTER LOGIC & NO MATCH CARD CONTROL
+    // FILTER LOGIC & NO MATCH CARD CONTROL (FULLY FUNCTIONAL FOR ALL DROPDOWNS)
     const categoryButtons = document.querySelectorAll("#category-tabs .tab-btn");
     const clearFiltersBtn = document.getElementById("btn-clear-filters");
     const searchInput = document.getElementById("wishlist-search");
@@ -288,6 +308,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const activeCategory = document.querySelector("#category-tabs .tab-btn.active")?.getAttribute("data-category")?.toLowerCase() || "";
         const searchQuery = searchInput?.value.toLowerCase().trim() || "";
         const selectedColor = document.getElementById("filter-color")?.value.toLowerCase() || "";
+        const selectedStyle = document.getElementById("filter-style")?.value.toLowerCase() || "";
+        const selectedStatus = document.getElementById("filter-status")?.value.toLowerCase() || "";
+        const selectedSeason = document.getElementById("filter-season")?.value || "";
+        const selectedWeather = document.getElementById("filter-weather")?.value || "";
 
         const cards = document.querySelectorAll(".product-card");
         const totalItemsInDatabase = cards.length;
@@ -296,15 +320,28 @@ document.addEventListener("DOMContentLoaded", () => {
         cards.forEach(card => {
             const category = (card.getAttribute("data-category") || "").toLowerCase();
             const color = (card.getAttribute("data-color") || "").toLowerCase();
+            const style = (card.getAttribute("data-style") || "").toLowerCase();
             const name = (card.getAttribute("data-name") || "").toLowerCase();
             const hasMatch = card.getAttribute("data-has-match") === "true";
 
             const matchCategory = !activeCategory || category === activeCategory;
             const matchColor = !selectedColor || color === selectedColor;
+            const matchStyle = !selectedStyle || style === selectedStyle;
             const matchSearch = !searchQuery || name.includes(searchQuery);
-            const matchMatchCardFilter = !onlyShowMatches || hasMatch;
+            const matchStatCard = !onlyShowMatches || hasMatch;
 
-            if (matchCategory && matchColor && matchSearch && matchMatchCardFilter) {
+            let matchStatus = true;
+            if (selectedStatus === "similar item found") {
+                matchStatus = hasMatch;
+            } else if (selectedStatus === "no similar item found") {
+                matchStatus = !hasMatch;
+            }
+
+            // season & weather default match (atau jika disetel)
+            const matchSeason = !selectedSeason;
+            const matchWeather = !selectedWeather;
+
+            if (matchCategory && matchColor && matchStyle && matchSearch && matchStatCard && matchStatus && matchSeason && matchWeather) {
                 card.style.display = "block";
                 visibleCount++;
             } else {
