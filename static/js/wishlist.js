@@ -9,9 +9,29 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("wishlist-form");
     const container = document.getElementById("wishlist-items");
     const noMatchSection = document.getElementById("wishlist-no-match");
+    const priceInput = document.getElementById("item-price");
 
     let currentActiveItemId = null;
     let onlyShowMatches = false;
+
+    // Helper: Format angka ke titik ribuan (misal: 100000 -> 100.000)
+    function formatNumberWithDots(val) {
+        if (!val) return "";
+        const cleanNumber = val.toString().replace(/\D/g, "");
+        return cleanNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    // Event listener auto-format saat ketik harga
+    priceInput?.addEventListener("input", (e) => {
+        const cursorPosition = e.target.selectionStart;
+        const originalLength = e.target.value.length;
+        
+        e.target.value = formatNumberWithDots(e.target.value);
+        
+        const newLength = e.target.value.length;
+        const newPosition = cursorPosition + (newLength - originalLength);
+        e.target.setSelectionRange(newPosition, newPosition);
+    });
 
     function openModal(el) {
         if (el) {
@@ -134,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("item-name").value = data.name;
                 document.getElementById("item-brand").value = data.brand !== "-" ? data.brand : "";
                 document.getElementById("item-link").value = data.link;
-                document.getElementById("item-price").value = data.raw_price;
+                document.getElementById("item-price").value = formatNumberWithDots(data.raw_price);
                 document.getElementById("item-material").value = data.material !== "-" ? data.material : "";
 
                 const catRadio = form.querySelector(`input[name="category"][value="${data.category}"]`);
@@ -216,7 +236,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const menuBtn = e.target.closest(".product-card-menu");
         
-        // Reset semua menu dropdown & tombol aktif jika klik di luar
         document.querySelectorAll(".product-card-menu").forEach(btn => {
             if (btn !== menuBtn) btn.classList.remove("active");
         });
@@ -268,9 +287,16 @@ document.addEventListener("DOMContentLoaded", () => {
         clearPhoto();
     });
 
-    // Form Submit Logic (AJAX)
+    // Form Submit Logic (AJAX) - Bersihkan titik pada harga sebelum submit
     form?.addEventListener("submit", (e) => {
         e.preventDefault();
+        
+        // Simpan nilai terformat
+        const originalPrice = priceInput ? priceInput.value : "";
+        if (priceInput) {
+            priceInput.value = priceInput.value.replace(/\D/g, "");
+        }
+
         const formData = new FormData(form);
         const saveBtn = document.getElementById("save-btn");
         if (saveBtn) saveBtn.textContent = "Saving...";
@@ -287,6 +313,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 window.location.reload();
             } else {
                 alert("Gagal menyimpan item. Pastikan field wajib sudah terisi.");
+                if (priceInput) priceInput.value = originalPrice;
             }
         })
         .catch(err => {
