@@ -1,0 +1,72 @@
+<section
+    class="weather-widget {{ weather_class }}{% if compact %} weather-widget--compact{% endif %}"
+    id="{{ widget_id }}"
+    role="status"
+    aria-live="polite"
+    aria-label="{{ aria_label }}"
+    {% if widget_mode == 'planner' %}data-weather-url="{% url 'planner:current_weather' %}"{% endif %}>
+    <div class="weather-widget-main">
+        <div class="weather-widget-condition">
+            <span class="weather-widget-icon" id="{{ icon_id }}" aria-hidden="true"></span>
+            <strong id="{{ condition_id }}">{{ initial_condition }}</strong>
+        </div>
+        <div class="weather-widget-details">
+            <span class="weather-widget-temperature" id="{{ temperature_id }}" hidden>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z" fill="none" stroke="currentColor" stroke-width="1.8" />
+                    <path d="M11 7v10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                </svg>
+                <span></span>
+            </span>
+            {% if date_id %}<span class="weather-widget-date" id="{{ date_id }}"></span>{% endif %}
+            <span class="weather-widget-location" id="{{ location_id }}" hidden>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" fill="none" stroke="currentColor" stroke-width="1.8" />
+                    <circle cx="12" cy="10" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8" />
+                </svg>
+                <span></span>
+            </span>
+            <span class="weather-widget-message" id="{{ message_id }}"></span>
+        </div>
+        {% if widget_mode == 'planner' %}
+            <small class="weather-attribution" id="weather-attribution" hidden>
+                Location data &copy;
+                <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap contributors</a>
+            </small>
+        {% endif %}
+    </div>
+
+    <div class="weather-widget-actions">
+        {% if widget_mode == 'planner' %}
+            <button type="button" class="btn btn--compact primary-btn weather-enable" id="weather-enable" title="Allow location access to display local weather" aria-label="Allow location">Allow location</button>
+            <button type="button" class="btn primary-btn weather-refresh" id="weather-refresh" aria-label="Refresh weather" title="Refresh weather" hidden>
+                <svg viewBox="0 0 16 16" width="22" height="22" aria-hidden="true">
+                    <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9" />
+                    <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z" />
+                </svg>
+            </button>
+        {% else %}
+            <button type="button" class="btn primary-btn weather-use-current" id="modal-weather-use-current" aria-label="Use my current location" title="Use my current location" hidden>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </button>
+            <button type="button" class="btn btn--compact primary-btn weather-location-change" id="modal-weather-change" aria-label="Change location">Change Location</button>
+            <button type="button" class="btn btn--compact primary-btn weather-modal-allow" id="modal-weather-allow" hidden>Allow location</button>
+            <button type="button" class="btn btn--compact secondary-btn weather-modal-retry" id="modal-weather-retry" hidden>Try again</button>
+        {% endif %}
+    </div>
+
+    {% if widget_mode == 'modal' %}
+        <div class="weather-location-search" id="modal-weather-search" hidden>
+            <div class="weather-search-heading">
+                <button type="button" class="btn primary-btn weather-search-back" id="modal-weather-search-back" aria-label="Back to weather">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m7 7-7-7 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <strong>Choose Location</strong>
+            </div>
+            <label class="weather-search-label" for="modal-weather-search-input">Search for a city</label>
+            <input id="modal-weather-search-input" type="search" minlength="2" autocomplete="off" aria-controls="modal-weather-search-results" aria-expanded="false" placeholder="e.g. Depok">
+            <div id="modal-weather-search-status" class="weather-search-status" role="status" aria-live="polite"></div>
+            <div id="modal-weather-search-results" class="weather-search-results" role="listbox" aria-label="Location search results"></div>
+        </div>
+    {% endif %}
+</section>

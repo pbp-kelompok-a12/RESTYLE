@@ -1,7 +1,7 @@
 import json
 import time
 from datetime import date, timedelta
-from urllib.error import URLError
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.utils.dateparse import parse_date
+from django.utils import timezone
 from django.views.decorators.http import require_GET, require_POST
 
 from mixmatch.models import Outfit, SLOTS
@@ -68,8 +69,6 @@ def item_is_washing(item, user, target_date, current_plan=None, weekdays=None):
         if item.pk in [getattr(plan.outfit, slot + "_id") for slot in SLOTS]:
             has_recent_wear = True
             break
-    # A selected laundry day clears the legacy closet-level wash state unless
-    # the item has been worn again since that laundry day.
     return has_recent_wear or (item.status == "washing" and last_laundry is None)
 
 
@@ -232,6 +231,100 @@ def current_weather(request):
         **weather, "location": location, "latitude": latitude, "longitude": longitude,
         "timestamp": int(time.time()),
     })
+
+
+@login_required(login_url=LOGIN_URL)
+@require_GET
+def forecast_weather(request):
+    day = parse_date(request.GET.get("date", ""))
+    try:
+        latitude = float(request.GET.get("latitude", ""))
+        longitude = float(request.GET.get("longitude", ""))
+        if not (-90 <= latitude <= 90 and -180 <= longitude <= 180):
+            raise ValueError("Coordinates are out of range")
+    except (TypeError, ValueError):
+        return JsonResponse({"error": "Valid location coordinates are required."}, status=400)
+    if not day:
+        return JsonResponse({"error": "Invalid forecast date."}, status=400)
+
+    today = timezone.localdate()
+    days_ahead = (day - today).days
+    if days_ahead < 0 or days_ahead > 16:
+        return JsonResponse({"no_data": True, "date": day.isoformat()})
+
+    cache_key = f"planner_forecast_{round(latitude, 5)}_{round(longitude, 5)}_{day.isoformat()}"
+    cached = cache.get(cache_key)
+    if cached:
+        return JsonResponse(cached)
+
+    query = urlencode({
+        "latitude": latitude,
+        "longitude": longitude,
+        "daily": "weather_code,temperature_2m_max,temperature_2m_min",
+        "start_date": day.isoformat(),
+        "end_date": day.isoformat(),
+        "timezone": "auto",
+    })
+    try:
+        with urlopen(f"https://api.open-meteo.com/v1/forecast?{query}", timeout=5) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+        daily = payload.get("daily", {})
+        dates = daily.get("time", [])
+        if day.isoformat() not in dates:
+            return JsonResponse({"no_data": True, "date": day.isoformat()})
+        index = dates.index(day.isoformat())
+        codes = daily.get("weather_code", [])
+        highs = daily.get("temperature_2m_max", [])
+        lows = daily.get("temperature_2m_min", [])
+        if index >= len(codes) or index >= len(highs) or index >= len(lows):
+            return JsonResponse({"no_data": True, "date": day.isoformat()})
+        code, high, low = codes[index], highs[index], lows[index]
+        if code not in WEATHER_CODES or high is None or low is None:
+            return JsonResponse({"no_data": True, "date": day.isoformat()})
+        condition, category, theme = WEATHER_CODES[code]
+        result = {
+            "no_data": False,
+            "date": day.isoformat(),
+            "condition": condition,
+            "category": category,
+            "theme": theme,
+            "temperature": round((float(high) + float(low)) / 2),
+            "temperature_label": "daily average",
+        }
+        cache.set(cache_key, result, timeout=15 * 60)
+        return JsonResponse(result)
+    except HTTPError as error:
+        if error.code == 400:
+            return JsonResponse({"no_data": True, "date": day.isoformat()})
+        return JsonResponse({"error": "Weather forecast is unavailable right now."}, status=503)
+    except (URLError, TimeoutError, ValueError, KeyError, IndexError, OSError):
+        return JsonResponse({"error": "Weather forecast is unavailable right now."}, status=503)
+
+
+@login_required(login_url=LOGIN_URL)
+@require_GET
+def search_locations(request):
+    query = request.GET.get("name", "").strip()
+    if len(query) < 2:
+        return JsonResponse({"locations": []})
+    params = urlencode({"name": query, "count": 5, "language": "en", "format": "json"})
+    try:
+        with urlopen(f"https://geocoding-api.open-meteo.com/v1/search?{params}", timeout=5) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+        locations = []
+        for place in payload.get("results", [])[:5]:
+            latitude = place.get("latitude")
+            longitude = place.get("longitude")
+            if latitude is None or longitude is None:
+                continue
+            name = place.get("name", "")
+            region = place.get("admin1", "")
+            country = place.get("country", "")
+            label = ", ".join(dict.fromkeys(value for value in (name, region, country) if value))
+            locations.append({"name": label or name, "latitude": latitude, "longitude": longitude})
+        return JsonResponse({"locations": locations})
+    except (URLError, TimeoutError, ValueError, OSError):
+        return JsonResponse({"error": "Location search is unavailable right now."}, status=503)
 
 
 @login_required(login_url=LOGIN_URL)
