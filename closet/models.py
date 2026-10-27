@@ -4,7 +4,7 @@ from django.db import models
 STYLE_OPTIONS = ["Casual", "Formal", "Street", "Minimal", "Sporty", "Party", "Cozy", "Vintage"]
 ALL_YEAR = "All year round"
 SEASON_OPTIONS = ["Spring", "Summer", "Autumn", "Winter", ALL_YEAR]
-WEATHER_OPTIONS = ["Hot", "Stormy", "Cool", "Moderate", "Rainy"]
+WEATHER_OPTIONS = ["Hot", "Stormy", "Cool", "Moderate", "Rainy", "Drizzle", "Thunderstorm"]
 
 class Item(models.Model):
     CATEGORY_CHOICES = [

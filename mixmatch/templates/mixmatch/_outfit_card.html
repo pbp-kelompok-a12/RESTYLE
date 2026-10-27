@@ -1,0 +1,29 @@
+<article class="mm-outfit{% if editing %} is-editing{% endif %}{% if selectable or planner_day %} mm-outfit--selectable{% endif %}{% if planner_day %} mm-outfit--planner-day{% endif %}{% if selected %} is-selected{% endif %}{% if status == 'washing' %} is-washing{% endif %}"
+    {% if selectable or planner_day %}aria-disabled="{% if status == 'washing' %}true{% else %}false{% endif %}"{% endif %}>
+    {% if selectable or planner_day %}
+    <div class="mm-outfit-pills" aria-label="Outfit status and weather">
+        {% if selectable %}<span class="mm-outfit-selected-check" aria-hidden="true">{% if selected %}<svg viewBox="0 0 16 16" width="12" height="12"><path d="m3 8 3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>{% endif %}</span>{% endif %}
+        <span class="mm-outfit-pill mm-outfit-pill--status {% if status == 'washing' %}is-washing{% else %}is-ready{% endif %}">{% if status == 'washing' %}In The Wash{% else %}Ready{% endif %}</span>
+        <span class="mm-outfit-pill mm-outfit-pill--weather mm-weather-{{ weather_class|default:'unknown' }}">{{ weather|default:'Flexible' }}</span>
+    </div>
+    <button type="button" class="mm-outfit-link {% if selectable %}mm-outfit-select{% else %}mm-outfit-day-open{% endif %}" {% if selectable %}data-outfit-id="{{ o.id }}" aria-pressed="{{ selected|yesno:'true,false' }}"{% else %}data-plan-date="{{ planner_date|date:'Y-m-d' }}"{% endif %} {% if status == 'washing' %}disabled aria-disabled="true"{% endif %} aria-label="{% if status == 'washing' %}{{ o.name }}, In The Wash{% elif selectable %}{% if selected %}Deselect{% else %}Choose{% endif %} {{ o.name }}{% else %}Open {{ o.name }} outfit{% endif %}">
+    {% else %}
+    <a class="mm-outfit-link" href="{% url 'mixmatch:edit_outfit' o.id %}" aria-label="Open {{ o.name }} in the builder">
+    {% endif %}
+        <div class="mm-flat{% if o.dresses %} has-dress{% endif %}">
+            {% for slot, piece in o.slot_pieces %}
+            <span class="mm-p mm-p-{{ slot }}">
+                {% if piece.photo %}<img src="{{ piece.photo.url }}" alt="{{ piece.name }}" loading="lazy">
+                {% else %}<i class="mm-swatch" style="background:{{ piece.color_hex }}"></i>{% endif %}
+            </span>
+            {% empty %}<span class="mm-outfit-empty">Pieces were removed from your closet</span>{% endfor %}
+        </div>
+        <p class="mm-outfit-name">{{ o.name }}</p>
+        {% if o.tags %}<p class="mm-outfit-tags">{{ o.tags|join:" · " }}</p>{% endif %}
+    {% if selectable or planner_day %}</button>{% else %}</a>{% endif %}
+    {% if show_delete %}
+    <form method="post" action="{% url 'mixmatch:delete_outfit' o.id %}" class="mm-outfit-delete" data-confirm="{{ o.name }}">
+        {% csrf_token %}<button type="submit" aria-label="Delete {{ o.name }}"><i class="fa-solid fa-trash"></i></button>
+    </form>
+    {% endif %}
+</article>
