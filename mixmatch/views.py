@@ -1,6 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from urllib.parse import urlencode
 from django.views.decorators.http import require_POST
 
 from closet.models import Item, STYLE_OPTIONS
@@ -51,6 +53,7 @@ def builder_context(request, form=None, outfit=None):
         "notes_value": notes,
         "saved_outfits": Outfit.objects.filter(user=request.user).select_related(*SLOTS),
         "new_purchases": 0,
+        "planner_return": request.GET.get("planner_return") or request.POST.get("planner_return", ""),
     }
 
 @login_required(login_url=LOGIN_URL)
@@ -84,6 +87,9 @@ def save_outfit(request):
         if request.POST.get("share") == "1":
             return share_to_community(request, outfit)
         messages.success(request, f'Yay! "{outfit.name}" is saved.')
+        planner_return = request.POST.get("planner_return")
+        if planner_return:
+            return redirect(f"{reverse('planner:show_planner')}?{urlencode({'choose_date': planner_return, 'planner_saved': '1'})}")
         return redirect("mixmatch:show_mixmatch")
     report_errors(request, form)
     return render(request, "mixmatch/mixmatch.html", builder_context(request, form=form), status=400)
@@ -98,6 +104,9 @@ def edit_outfit(request, outfit_id):
             if request.POST.get("share") == "1":
                 return share_to_community(request, outfit)
             messages.success(request, f'"{outfit.name}" was updated!')
+            planner_return = request.POST.get("planner_return")
+            if planner_return:
+                return redirect(f"{reverse('planner:show_planner')}?{urlencode({'choose_date': planner_return, 'planner_saved': '1'})}")
             return redirect("mixmatch:show_mixmatch")
         report_errors(request, form)
         return render(request, "mixmatch/mixmatch.html", builder_context(request, form=form, outfit=outfit), status=400)
