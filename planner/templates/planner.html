@@ -13,22 +13,7 @@
         <div class="planner-title"><h2>Plan your <span class="highlight">outfit!</span></h2></div>
         
 
-        <section class="weather-widget weather-widget--no-permission" id="planner-weather-widget" data-weather-url="{% url 'planner:current_weather' %}" role="status" aria-live="polite" aria-label="Current weather and location">
-            <div class="weather-widget-main">
-                <div class="weather-widget-condition"><span class="weather-widget-icon" id="weather-widget-icon" aria-hidden="true"></span><strong id="weather-widget-condition">Allow location</strong></div>
-                <div class="weather-widget-details">
-                    <span class="weather-widget-temperature" id="weather-widget-temperature" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M11 7v10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span></span></span>
-                    <span class="weather-widget-location" id="weather-widget-location" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><span></span></span>
-                    <span class="weather-widget-message" id="weather-widget-message"></span>
-                </div>
-                <small class="weather-attribution" id="weather-attribution" hidden>Location data &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap contributors</a></small>
-            </div>
-            <button type="button" class="btn btn--compact primary-btn weather-enable" id="weather-enable" title="Allow location access to display local weather" aria-label="Allow location">Allow location</button>
-            <button type="button" class="btn primary-btn weather-refresh" id="weather-refresh" aria-label="Refresh weather" title="Refresh weather" hidden><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
-  <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9"/>
-  <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"/>
-</svg></button>
-        </section>
+        {% include 'planner/_weather_card.html' with widget_id='planner-weather-widget' widget_mode='planner' weather_class='weather-widget--no-permission' aria_label='Current weather and location' condition_id='weather-widget-condition' icon_id='weather-widget-icon' temperature_id='weather-widget-temperature' location_id='weather-widget-location' message_id='weather-widget-message' initial_condition='Allow location' %}
 
         <form class="laundry-days" id="laundry-days-form" action="{% url 'planner:save_laundry_days' %}" method="post">
             {% csrf_token %}<strong>Laundry days</strong><span>Items worn before a selected day become Ready again that day.</span>
@@ -55,16 +40,14 @@
         </div>
     </section>
 </main>
-<div class="planner-overlay" id="planner-modal" hidden data-options-url="{% url 'planner:outfit_options' %}" data-save-url="{% url 'planner:save_plan' %}" data-clear-url="{% url 'planner:clear_plan' %}" data-add-url="{% url 'mixmatch:show_mixmatch' %}">
+<div class="planner-overlay" id="planner-modal" hidden data-options-url="{% url 'planner:outfit_options' %}" data-save-url="{% url 'planner:save_plan' %}" data-clear-url="{% url 'planner:clear_plan' %}" data-add-url="{% url 'mixmatch:show_mixmatch' %}" data-forecast-url="{% url 'planner:forecast_weather' %}" data-location-search-url="{% url 'planner:search_locations' %}">
     <section class="planner-dialog" role="dialog" aria-modal="true" aria-labelledby="planner-dialog-title" aria-describedby="planner-dialog-date">
         <button type="button" class="mm-modal-close" aria-label="Close"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button>
         <h2 id="planner-dialog-title">Choose your Mix &amp; Match</h2>
         <p class="planner-context planner-for"><strong>For:</strong> <span id="planner-dialog-date" class="planner-date-highlight"></span></p>
-        <p class="planner-context planner-modal-location"><span class="planner-modal-location-icon" id="planner-modal-location-icon" aria-hidden="true"></span><span id="planner-modal-location">Location: Belum tersedia</span></p>
-        <p class="planner-context planner-modal-weather"><span class="planner-modal-weather-icon" id="planner-modal-weather-icon" aria-hidden="true"></span><span id="planner-modal-weather">Weather: Belum tersedia</span></p>
-        <small class="planner-weather-hint" id="planner-weather-hint">Izinkan lokasi dari widget cuaca di halaman Planner.</small>
         <div class="planner-error" id="planner-error" role="alert" hidden></div>
         <div class="planner-dialog-content">
+            {% include 'planner/_weather_card.html' with widget_id='modal-weather-card' widget_mode='modal' compact=True weather_class='weather-widget--neutral' aria_label='Weather forecast for selected planner date' condition_id='modal-weather-condition' icon_id='modal-weather-icon' temperature_id='modal-weather-temperature' location_id='modal-weather-location' message_id='modal-weather-message' date_id='modal-weather-date' initial_condition='Weather loading' %}
             <section class="planner-modal-section"><h3>Recommended</h3><div class="planner-card-grid" id="planner-recommended"></div><p class="planner-empty" id="planner-recommended-empty" hidden>No matching outfits for this weather yet.</p></section>
             <section class="planner-modal-section"><h3>All Mix and Match</h3><div class="planner-card-grid" id="planner-all-outfits"></div><p class="planner-empty" id="planner-all-empty" hidden>No saved Mix &amp; Match yet.</p></section>
             <button type="button" class="btn tertiary-btn planner-remove-unavailable" id="planner-remove-unavailable-plan" hidden>Remove plan</button>
