@@ -29,7 +29,7 @@
         </form>
         <div class="week-grid" data-week-start="{{ days.0.date|date:'Y-m-d' }}" data-state-url="{% url 'planner:week_state' %}">
             {% for item in days %}
-            <div class="day-col {% if item.is_today %}is-today{% endif %}">
+            <div class="day-col">
                 <div class="day-pill">{{ item.date|date:"l" }}<span class="day-date">{{ item.date|date:"j M" }}</span></div>
                 <div class="outfit-slot{% if item.visible %} has-plan{% endif %}{% if item.plan and not item.visible %} is-unavailable{% endif %}" data-date="{{ item.date|date:'Y-m-d' }}" data-plan-id="{{ item.plan.outfit_id|default:'' }}">
                     {% if item.visible %}{{ item.html|safe }}
