@@ -16,7 +16,7 @@ body {
     padding: 0;
 }
 
-/* CONTAINER UTAMA - Memastikan tidak tertutup Navbar */
+/* CONTAINER UTAMA */
 .wishlist-page {
     width: 100%;
     max-width: 1100px;
@@ -38,7 +38,7 @@ body {
 .wishlist-heading h1 {
     font-family: 'Poppins', sans-serif;
     font-size: 56px;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--san-marino);
     margin: 0 0 8px 0;
     line-height: 1.1;
@@ -52,7 +52,7 @@ body {
     color: #FDE89C;
     padding: 2px 18px 6px 18px;
     border-radius: 0 !important;
-    font-weight: 800;
+    font-weight: 700;
     display: inline-block;
 }
 
@@ -179,7 +179,7 @@ body {
     margin-left: 8px;
 }
 
-/* 4. FILTER CONTROL BAR */
+/* 4. FILTER CONTROL BAR (FIX UNTUK SEJAJAR CLEAR FILTERS) */
 .wishlist-controls {
     margin-bottom: 32px;
 }
@@ -211,19 +211,21 @@ body {
 
 .wishlist-filterbar {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     padding-top: 16px;
     border-top: 1px solid var(--pearl-bush);
+    width: 100%;
+    overflow-x: auto;
 }
 
 .cl-search {
     display: flex;
     align-items: center;
-    gap: 10px;
-    min-width: 240px;
-    padding: 8px 16px;
+    gap: 8px;
+    width: 210px;
+    flex-shrink: 0;
+    padding: 8px 14px;
     background: #FFFFFF;
     border: 1px solid var(--polo-blue);
     border-radius: 999px;
@@ -241,39 +243,45 @@ body {
 }
 
 .cl-filter-label {
-    margin-left: 6px;
-    font-size: 12px;
+    margin-left: 4px;
+    margin-right: 2px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: .05em;
     text-transform: uppercase;
     color: var(--dolphin);
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .wishlist-filterbar select {
     appearance: none;
     -webkit-appearance: none;
-    padding: 8px 36px 8px 14px;
+    padding: 8px 30px 8px 12px;
     background-color: #FFFFFF;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%233F6994' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 14px center;
-    border: 1px solid var(--pearl-bush);
+    background-position: right 10px center;
+    border: 1px solid var(--polo-blue);
     border-radius: 999px;
     font-size: 13px;
     font-weight: 600;
     color: var(--martinique);
     cursor: pointer;
+    flex-shrink: 0;
 }
 
 .btn-clear-filters {
     margin-left: auto;
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--san-marino);
     background: none;
     border: none;
     text-decoration: underline;
     cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 /* 5. PRODUCT GRID CARDS */
@@ -322,22 +330,85 @@ body {
 .badge-status.similar { background-color: #D9381E; }
 .badge-status.no-similar { background-color: #7BB342; }
 
-.product-card-menu {
+/* OPTION BUTTON DENGAN DESIGN FIGMA (Frame 9.png) */
+.product-card-menu-wrapper {
     position: absolute;
     top: 12px;
     right: 12px;
-    width: 28px;
-    height: 28px;
-    background: rgba(255, 255, 255, 0.85);
+    z-index: 10;
+}
+
+.product-card-menu {
+    width: 30px;
+    height: 30px;
+    background: #FFFFFF;
     border: 1px solid var(--polo-blue);
     border-radius: 50%;
+    padding: 0;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
-    font-weight: bold;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.product-card-menu img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    transition: filter 0.2s ease;
+}
+
+/* STATE DIPENCET / AKTIF: LINGKARAN BIRU SOLID DENGAN TITIK PUTIH */
+.product-card-menu.active {
+    background: var(--san-marino);
+    border-color: var(--san-marino);
+}
+
+.product-card-menu.active img {
+    filter: brightness(0) invert(1);
+}
+
+/* POP-UP MENU DROPDOWN DARI FIGMA */
+.menu-dropdown {
+    position: absolute;
+    top: 36px;
+    right: 0;
+    background: #FFFFFF;
+    border: 1px solid var(--polo-blue);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(63, 102, 153, 0.15);
+    display: flex;
+    flex-direction: column;
+    min-width: 140px;
+    overflow: hidden;
+    z-index: 20;
+    padding: 6px 0;
+}
+
+.menu-dropdown.hidden {
+    display: none !important;
+}
+
+.dropdown-item {
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--martinique);
+    background: none;
+    border: none;
+    text-align: left;
+    text-decoration: none;
     cursor: pointer;
-    z-index: 2;
+    width: 100%;
+}
+
+.dropdown-item:hover {
+    background: var(--linen);
+}
+
+.dropdown-item.delete-action {
+    color: #D9381E;
 }
 
 .product-card-body { padding: 14px 16px 18px; }
@@ -403,7 +474,7 @@ body {
     margin: 0 0 20px 0;
 }
 
-/* 7. POP-UP MODAL ADD ITEM (Z-INDEX FIX) */
+/* 7. POP-UP MODAL ADD ITEM */
 .cl-overlay {
     position: fixed;
     inset: 0;
@@ -441,10 +512,13 @@ body {
     background: #FFFFFF;
     color: var(--san-marino);
     font-size: 20px;
+    line-height: 1;
+    padding: 0 0 2px 0;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
 }
 
 .wishlist-modal-title {
@@ -559,92 +633,7 @@ body {
     cursor: pointer;
 }
 
-@media (max-width: 1024px) {
-    .wishlist-items-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
-
-@media (max-width: 768px) {
-    .wishlist-items-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-    .cl-row { grid-template-columns: 1fr; }
-    .wishlist-stats { grid-template-columns: 1fr; }
-    .wishlist-heading h1{
-        font-size: 32px;
-    }
-    .wishlist-badge{
-        font-size: 32px;
-        padding: 4px 8px;
-    }
-    .wishlist-banner{
-        flex-direction: column;
-        gap: 24px;
-    }
-    
-}
-
-/* DROPDOWN MENU TITIK TIGA */
-.product-card-menu-wrapper {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    z-index: 10;
-}
-
-.product-card-menu {
-    width: 28px;
-    height: 28px;
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid var(--polo-blue);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    color: var(--san-marino);
-}
-
-.menu-dropdown {
-    position: absolute;
-    top: 34px;
-    right: 0;
-    background: #FFFFFF;
-    border: 1px solid var(--polo-blue);
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    min-width: 110px;
-    overflow: hidden;
-    z-index: 20;
-}
-
-.menu-dropdown.hidden {
-    display: none !important;
-}
-
-.dropdown-item {
-    padding: 8px 14px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--martinique);
-    background: none;
-    border: none;
-    text-align: left;
-    text-decoration: none;
-    cursor: pointer;
-    width: 100%;
-}
-
-.dropdown-item:hover {
-    background: var(--linen);
-}
-
-.dropdown-item.delete-action {
-    color: #D9381E;
-}
-
-/* STYLING DETAIL VIEW & CONFIRM DELETE MODALS */
+/* DETAIL VIEW & DELETE CONFIRMATION MODALS */
 .detail-modal-card {
     position: relative;
     width: min(720px, 95%);
@@ -819,6 +808,85 @@ body {
     cursor: pointer;
 }
 
-@media (min-width: 768px){
-    
+@media (max-width: 1024px) {
+    .wishlist-items-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 768px) {
+    .wishlist-items-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .cl-row { grid-template-columns: 1fr; }
+    .wishlist-stats { grid-template-columns: 1fr; }
+}
+
+/* OPTION BUTTON & DROPDOWN MURNI CSS (SERUPA CLOSET PAGE) */
+.product-card-menu-wrapper {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+}
+
+.product-card-menu {
+    width: 30px;
+    height: 30px;
+    background: #FFFFFF;
+    border: 1px solid var(--polo-blue);
+    border-radius: 50%;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--san-marino);
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* SAAT HOVER / DIPENCET: LINGKARAN BIRU SOLID DENGAN TITIK PUTIH */
+.product-card-menu:hover,
+.product-card-menu.active {
+    background-color: var(--san-marino) !important;
+    border-color: var(--san-marino) !important;
+    color: #FFFFFF !important;
+}
+
+/* POP-UP MENU DROPDOWN MELAYANG */
+.menu-dropdown {
+    position: absolute;
+    top: 36px;
+    right: 0;
+    background: #FFFFFF;
+    border: 1px solid var(--polo-blue);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(63, 102, 153, 0.15);
+    display: flex;
+    flex-direction: column;
+    min-width: 140px;
+    overflow: hidden;
+    z-index: 20;
+    padding: 6px 0;
+}
+
+.menu-dropdown.hidden {
+    display: none !important;
+}
+
+.dropdown-item {
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--martinique);
+    background: none;
+    border: none;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+.dropdown-item:hover {
+    background: var(--linen);
+}
+
+.dropdown-item.delete-action {
+    color: #D9381E;
 }

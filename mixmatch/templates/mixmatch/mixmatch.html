@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static mixmatch_extras %}
+{% load static %}
 
 {% block meta %}
     <title>Mix &amp; Match | RE:STYLE</title>
@@ -41,11 +41,11 @@
                 {% for item in items %}
                 <button type="button" class="mm-item"
                         data-id="{{ item.id }}" data-slot="{{ item.slot }}" data-category="{{ item.category }}"
-                        data-name="{{ item.name }}" data-photo="{% if item.photo %}{{ item.photo.url|cutout }}{% endif %}" data-color="{{ item.color_hex }}"
+                        data-name="{{ item.name }}" data-photo="{% if item.photo %}{{ item.photo.url }}{% endif %}" data-color="{{ item.color_hex }}"
                         {% if item.status != 'ready' %}disabled title="This piece is in the wash"{% endif %}>
                     <span class="mm-item-photo">
                         {% if item.photo %}
-                        <img src="{{ item.photo.url|cutout }}" alt="" loading="lazy">
+                        <img src="{{ item.photo.url }}" alt="" loading="lazy">
                         {% else %}
                         <i class="mm-swatch" style="background:{{ item.color_hex }}"></i>
                         {% endif %}
@@ -80,7 +80,7 @@
                             <i class="fa-solid fa-circle-plus"></i>
                         </button>
                         <div class="mm-slot-piece" {% if not slot.item %}hidden{% endif %}>
-                            <img {% if slot.item.photo %}src="{{ slot.item.photo.url|cutout }}"{% else %}hidden{% endif %} alt="{{ slot.item.name }}">
+                            <img {% if slot.item.photo %}src="{{ slot.item.photo.url }}"{% else %}hidden{% endif %} alt="{{ slot.item.name }}">
                             <i class="mm-swatch" style="background:{{ slot.item.color_hex }}" {% if slot.item.photo %}hidden{% endif %}></i>
                             <span class="mm-slot-name">{{ slot.item.name }}</span>
                         </div>

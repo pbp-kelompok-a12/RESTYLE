@@ -9,9 +9,29 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("wishlist-form");
     const container = document.getElementById("wishlist-items");
     const noMatchSection = document.getElementById("wishlist-no-match");
+    const priceInput = document.getElementById("item-price");
 
     let currentActiveItemId = null;
     let onlyShowMatches = false;
+
+    // Helper: Format angka ke titik ribuan (misal: 100000 -> 100.000)
+    function formatNumberWithDots(val) {
+        if (!val) return "";
+        const cleanNumber = val.toString().replace(/\D/g, "");
+        return cleanNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    // Event listener auto-format saat ketik harga
+    priceInput?.addEventListener("input", (e) => {
+        const cursorPosition = e.target.selectionStart;
+        const originalLength = e.target.value.length;
+        
+        e.target.value = formatNumberWithDots(e.target.value);
+        
+        const newLength = e.target.value.length;
+        const newPosition = cursorPosition + (newLength - originalLength);
+        e.target.setSelectionRange(newPosition, newPosition);
+    });
 
     function openModal(el) {
         if (el) {
@@ -94,6 +114,26 @@ document.addEventListener("DOMContentLoaded", () => {
                     linkEl.textContent = "-";
                 }
 
+                // Render Digital Closet Similar Items
+                const similarContainer = document.getElementById("similar-closet-container");
+                const similarList = document.getElementById("similar-closet-list");
+                
+                if (data.has_match && data.matched_items && data.matched_items.length > 0) {
+                    similarList.innerHTML = "";
+                    data.matched_items.forEach(match => {
+                        const itemBox = document.createElement("div");
+                        itemBox.style.cssText = "display: flex; align-items: center; gap: 8px; background: #FFF; border: 1px solid #8FB0D4; border-radius: 999px; padding: 4px 12px;";
+                        itemBox.innerHTML = `
+                            <img src="${match.photo_url}" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
+                            <span style="font-size: 12px; font-weight: 600; color: #3A2B48;">${match.name}</span>
+                        `;
+                        similarList.appendChild(itemBox);
+                    });
+                    similarContainer.style.display = "block";
+                } else {
+                    similarContainer.style.display = "none";
+                }
+
                 openModal(viewOverlay);
             });
     }
@@ -114,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("item-name").value = data.name;
                 document.getElementById("item-brand").value = data.brand !== "-" ? data.brand : "";
                 document.getElementById("item-link").value = data.link;
-                document.getElementById("item-price").value = data.raw_price;
+                document.getElementById("item-price").value = formatNumberWithDots(data.raw_price);
                 document.getElementById("item-material").value = data.material !== "-" ? data.material : "";
 
                 const catRadio = form.querySelector(`input[name="category"][value="${data.category}"]`);
@@ -170,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 4. DELEGATED CLICK HANDLERS FOR DROPDOWN & ACTIONS
+    // 4. DELEGATED CLICK HANDLERS FOR DROPDOWN & MENU BUTTON STATE
     document.addEventListener("click", (e) => {
         const viewBtn = e.target.closest(".view-action");
         if (viewBtn) {
@@ -195,12 +235,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const menuBtn = e.target.closest(".product-card-menu");
+        
+        document.querySelectorAll(".product-card-menu").forEach(btn => {
+            if (btn !== menuBtn) btn.classList.remove("active");
+        });
+
         document.querySelectorAll(".menu-dropdown").forEach(dd => {
             if (!menuBtn || dd.previousElementSibling !== menuBtn) {
                 dd.classList.add("hidden");
             }
         });
+
         if (menuBtn) {
+            menuBtn.classList.toggle("active");
             menuBtn.nextElementSibling?.classList.toggle("hidden");
         }
     });
@@ -240,9 +287,16 @@ document.addEventListener("DOMContentLoaded", () => {
         clearPhoto();
     });
 
-    // Form Submit Logic (AJAX)
+    // Form Submit Logic (AJAX) - Bersihkan titik pada harga sebelum submit
     form?.addEventListener("submit", (e) => {
         e.preventDefault();
+        
+        // Simpan nilai terformat
+        const originalPrice = priceInput ? priceInput.value : "";
+        if (priceInput) {
+            priceInput.value = priceInput.value.replace(/\D/g, "");
+        }
+
         const formData = new FormData(form);
         const saveBtn = document.getElementById("save-btn");
         if (saveBtn) saveBtn.textContent = "Saving...";
@@ -259,6 +313,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 window.location.reload();
             } else {
                 alert("Gagal menyimpan item. Pastikan field wajib sudah terisi.");
+                if (priceInput) priceInput.value = originalPrice;
             }
         })
         .catch(err => {
@@ -288,6 +343,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const activeCategory = document.querySelector("#category-tabs .tab-btn.active")?.getAttribute("data-category")?.toLowerCase() || "";
         const searchQuery = searchInput?.value.toLowerCase().trim() || "";
         const selectedColor = document.getElementById("filter-color")?.value.toLowerCase() || "";
+        const selectedStyle = document.getElementById("filter-style")?.value.toLowerCase() || "";
+        const selectedStatus = document.getElementById("filter-status")?.value.toLowerCase() || "";
+        const selectedSeason = document.getElementById("filter-season")?.value.toLowerCase() || "";
+        const selectedWeather = document.getElementById("filter-weather")?.value.toLowerCase() || "";
 
         const cards = document.querySelectorAll(".product-card");
         const totalItemsInDatabase = cards.length;
@@ -296,15 +355,28 @@ document.addEventListener("DOMContentLoaded", () => {
         cards.forEach(card => {
             const category = (card.getAttribute("data-category") || "").toLowerCase();
             const color = (card.getAttribute("data-color") || "").toLowerCase();
+            const style = (card.getAttribute("data-style") || "").toLowerCase();
+            const season = (card.getAttribute("data-season") || "").toLowerCase();
+            const weather = (card.getAttribute("data-weather") || "").toLowerCase();
             const name = (card.getAttribute("data-name") || "").toLowerCase();
             const hasMatch = card.getAttribute("data-has-match") === "true";
 
             const matchCategory = !activeCategory || category === activeCategory;
             const matchColor = !selectedColor || color === selectedColor;
+            const matchStyle = !selectedStyle || style === selectedStyle;
+            const matchSeason = !selectedSeason || season.includes(selectedSeason);
+            const matchWeather = !selectedWeather || weather.includes(selectedWeather);
             const matchSearch = !searchQuery || name.includes(searchQuery);
-            const matchMatchCardFilter = !onlyShowMatches || hasMatch;
+            const matchStatCard = !onlyShowMatches || hasMatch;
 
-            if (matchCategory && matchColor && matchSearch && matchMatchCardFilter) {
+            let matchStatus = true;
+            if (selectedStatus === "similar item found") {
+                matchStatus = hasMatch;
+            } else if (selectedStatus === "no similar item found") {
+                matchStatus = !hasMatch;
+            }
+
+            if (matchCategory && matchColor && matchStyle && matchSeason && matchWeather && matchSearch && matchStatCard && matchStatus) {
                 card.style.display = "block";
                 visibleCount++;
             } else {
