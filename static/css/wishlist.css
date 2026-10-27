@@ -934,6 +934,18 @@ body {
         justify-content: center;
     }
 
+    /* TOMBOL EDIT & DELETE BERTUMPUK DI MOBILE */
+    .detail-actions-row {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .detail-actions-row .btn {
+        width: 100%;
+        text-align: center;
+    }
+
     /* 7. FLOATING ADD BUTTON */
     .floating-add-btn {
         bottom: 20px;
@@ -944,7 +956,7 @@ body {
     }
 }
 
-/* OPTION BUTTON & DROPDOWN MURNI CSS (SERUPA CLOSET PAGE) */
+/* OPTION BUTTON & DROPDOWN MURNI CSS */
 .product-card-menu-wrapper {
     position: absolute;
     top: 12px;
