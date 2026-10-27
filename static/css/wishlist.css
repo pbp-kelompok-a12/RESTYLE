@@ -511,14 +511,26 @@ body {
     border-radius: 50%;
     background: #FFFFFF;
     color: var(--san-marino);
-    font-size: 20px;
-    line-height: 1;
-    padding: 0 0 2px 0;
+    padding: 0;
+    margin: 0;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.cl-modal-close:hover {
+    background-color: var(--san-marino);
+    color: #FFFFFF;
+}
+
+.cl-modal-close svg {
+    display: block;
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
 }
 
 .wishlist-modal-title {

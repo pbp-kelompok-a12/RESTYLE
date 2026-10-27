@@ -16,7 +16,7 @@ COLOR_HEX_MAP = {
     "White": "#FFFFFF", "Black": "#000000", "Gray": "#808080",
     "Beige": "#F5F5DC", "Brown": "#7B3F00", "Red": "#D9381E",
     "Orange": "#FFA500", "Yellow": "#FFFF00", "Pink": "#FFC0CB",
-    "Green": "#008000", "Blue": "#0000FF", "Purple": "#47005C"
+    "Green": "#008000", "Blue": "#0000FF", "Purple": "#A855F7"
 }
 
 def show_landing_page(request):
