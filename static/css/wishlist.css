@@ -825,9 +825,123 @@ body {
 }
 
 @media (max-width: 768px) {
-    .wishlist-items-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-    .cl-row { grid-template-columns: 1fr; }
-    .wishlist-stats { grid-template-columns: 1fr; }
+    /* 1. CONTAINER & PADDING */
+    .wishlist-page {
+        padding: 100px 16px 100px 16px;
+    }
+
+    /* 2. HEADER TITLE & BADGE */
+    .wishlist-heading h1 {
+        font-size: 32px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .wishlist-badge {
+        padding: 2px 12px 4px 12px;
+    }
+
+    /* 3. BANNER REMINDER */
+    .wishlist-banner {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+        padding: 16px 20px;
+    }
+
+    .banner-content {
+        gap: 14px;
+    }
+
+    .banner-chameleon {
+        width: 50px;
+    }
+
+    .banner-text h2 {
+        font-size: 16px;
+    }
+
+    .banner-text p {
+        font-size: 12px;
+    }
+
+    .btn-primary-blue {
+        width: 100%;
+        text-align: center;
+        padding: 10px 16px;
+    }
+
+    /* 4. STAT CARDS */
+    .wishlist-stats {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 16px;
+    }
+
+    /* 5. PRODUCT GRID CARDS */
+    .wishlist-items-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .cl-row {
+        grid-template-columns: 1fr;
+    }
+
+    /* 6. MODAL RESPONSIVE FIX (CEGAH TERPOTONG DI HP) */
+    .wishlist-modal-card {
+        padding: 24px 20px;
+        width: 95%;
+        max-height: 85vh;
+    }
+
+    .wishlist-modal-title {
+        font-size: 24px;
+    }
+
+    .cl-section {
+        padding: 16px;
+    }
+
+    /* FIX DETAIL VIEW MODAL DI HP */
+    .detail-modal-card {
+        padding: 24px 16px;
+        width: 95%;
+        max-height: 85vh;
+        overflow-y: auto;
+    }
+
+    .detail-modal-body {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .detail-img-box {
+        width: 100%;
+        max-width: 220px;
+        margin: 0 auto;
+    }
+
+    .detail-info-box h2 {
+        font-size: 20px;
+        text-align: center;
+    }
+
+    .detail-tags-row {
+        justify-content: center;
+    }
+
+    /* 7. FLOATING ADD BUTTON */
+    .floating-add-btn {
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        font-size: 13px;
+        z-index: 90;
+    }
 }
 
 /* OPTION BUTTON & DROPDOWN MURNI CSS (SERUPA CLOSET PAGE) */
