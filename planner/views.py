@@ -134,13 +134,9 @@ def show_planner(request):
     except ValueError:
         ref = date.today()
 
-    today = date.today()
     monday = get_monday(ref)
     pref = get_settings(request.user)
-    days = [
-        {**slot, "is_today": slot["date"] == today}
-        for slot in build_week_slots(request.user, monday, pref.laundry_weekdays)
-    ]
+    days = build_week_slots(request.user, monday, pref.laundry_weekdays)
 
     week_options = []
     for i in range(-4, 9):
