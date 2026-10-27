@@ -137,6 +137,11 @@ body{
     border-radius: var(--corner-radius-999);
 }
 
+.btn--compact {
+    padding: 10px 24px;
+    font-size: 14px;
+}
+
 .primary-btn{
     background-color: var(--color-azure-san-marino);
     color: white;
