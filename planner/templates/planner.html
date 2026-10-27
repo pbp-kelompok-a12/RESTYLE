@@ -11,12 +11,7 @@
 <main>
     <section class="section-container planner-top">
         <div class="planner-title"><h2>Plan your <span class="highlight">outfit!</span></h2></div>
-        <form method="get" class="week-picker">
-            <a class="week-nav" href="?week={{ prev_week }}" aria-label="Previous week">&#8249;</a>
-            <div class="week-select-wrap"><select name="week" class="week-select" onchange="this.form.submit()">{% for opt in week_options %}<option value="{{ opt.value }}" {% if opt.selected %}selected{% endif %}>{{ opt.label }}</option>{% endfor %}</select></div>
-            <a class="week-nav" href="?week={{ next_week }}" aria-label="Next week">&#8250;</a>
-            <noscript><button type="submit" class="week-go">Go</button></noscript>
-        </form>
+        
 
         <section class="weather-widget weather-widget--no-permission" id="planner-weather-widget" data-weather-url="{% url 'planner:current_weather' %}" role="status" aria-live="polite" aria-label="Current weather and location">
             <div class="weather-widget-main">
@@ -39,6 +34,13 @@
             {% csrf_token %}<strong>Laundry days</strong><span>Items worn before a selected day become Ready again that day.</span>
             <div class="laundry-day-options">{% for value,label in weekday_choices %}<label><input type="checkbox" name="laundry_weekdays" value="{{ value }}" {% if value in laundry_weekdays %}checked{% endif %}><span>{{ label }}</span></label>{% endfor %}</div>
             <small id="laundry-save-status" aria-live="polite"></small>
+        </form>
+
+        <form method="get" class="week-picker">
+            <a class="week-nav" href="?week={{ prev_week }}" aria-label="Previous week">&#8249;</a>
+            <div class="week-select-wrap"><select name="week" class="week-select" onchange="this.form.submit()">{% for opt in week_options %}<option value="{{ opt.value }}" {% if opt.selected %}selected{% endif %}>{{ opt.label }}</option>{% endfor %}</select></div>
+            <a class="week-nav" href="?week={{ next_week }}" aria-label="Next week">&#8250;</a>
+            <noscript><button type="submit" class="week-go">Go</button></noscript>
         </form>
         <div class="week-grid" data-week-start="{{ days.0.date|date:'Y-m-d' }}" data-state-url="{% url 'planner:week_state' %}">
             {% for item in days %}
