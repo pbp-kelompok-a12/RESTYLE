@@ -18,18 +18,18 @@
             <noscript><button type="submit" class="week-go">Go</button></noscript>
         </form>
 
-        <section class="weather-widget weather-widget--neutral" id="planner-weather-widget" data-weather-url="{% url 'planner:current_weather' %}" role="status" aria-live="polite" aria-label="Current weather and location">
+        <section class="weather-widget weather-widget--no-permission" id="planner-weather-widget" data-weather-url="{% url 'planner:current_weather' %}" role="status" aria-live="polite" aria-label="Current weather and location">
             <div class="weather-widget-main">
                 <div class="weather-widget-condition"><span class="weather-widget-icon" id="weather-widget-icon" aria-hidden="true"></span><strong id="weather-widget-condition">Allow location</strong></div>
                 <div class="weather-widget-details">
                     <span class="weather-widget-temperature" id="weather-widget-temperature" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M11 7v10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span></span></span>
                     <span class="weather-widget-location" id="weather-widget-location" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><span></span></span>
-                    <span class="weather-widget-message" id="weather-widget-message">Allow location to see local weather.</span>
-                    <button type="button" class="mm-tool weather-enable" id="weather-enable">Allow location</button>
+                    <span class="weather-widget-message" id="weather-widget-message"></span>
                 </div>
                 <small class="weather-attribution" id="weather-attribution" hidden>Location data &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap contributors</a></small>
             </div>
-            <button type="button" class="btn primary-btn weather-refresh" id="weather-refresh" aria-label="Refresh weather" title="Refresh weather"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+            <button type="button" class="btn btn--compact primary-btn weather-enable" id="weather-enable" title="Allow location access to display local weather" aria-label="Allow location">Allow location</button>
+            <button type="button" class="btn primary-btn weather-refresh" id="weather-refresh" aria-label="Refresh weather" title="Refresh weather" hidden><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
   <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9"/>
   <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"/>
 </svg></button>
