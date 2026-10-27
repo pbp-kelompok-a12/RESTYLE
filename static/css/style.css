@@ -28,6 +28,46 @@
   --color-green-eco-leaf: #9CC24B;
   --color-red-cherry: #D6251B;
 
+  /* weather widget gradients */
+  --weather-sunny-start: #b8ddff;
+  --weather-sunny-end: #5ea2f2;
+  --weather-cloudy-start: #b9c7d1;
+  --weather-cloudy-end: #8293a2;
+  --weather-rainy-start: #667b91;
+  --weather-rainy-end: #3d536a;
+  --weather-drizzle-start: #788a9c;
+  --weather-drizzle-end: #4d6277;
+  --weather-thunderstorm-start: #575267;
+  --weather-thunderstorm-end: #34313f;
+  --weather-snowy-start: #c7e6f3;
+  --weather-snowy-end: #79aeca;
+  --weather-neutral-start: #738695;
+  --weather-neutral-end: #4b5d6a;
+
+  /* outfit card pills */
+  --pill-ready-bg: #d9f3df;
+  --pill-ready-text: #23753c;
+  --pill-washing-bg: #ee8e8c;
+  --pill-washing-text: #ffffff;
+  --pill-hot-bg: #fff0bc;
+  --pill-hot-text: #805600;
+  --pill-stormy-bg: #dbe2e8;
+  --pill-stormy-text: #405363;
+  --pill-cool-bg: #dcecf5;
+  --pill-cool-text: #426779;
+  --pill-moderate-bg: #e9eef0;
+  --pill-moderate-text: #596c75;
+  --pill-rainy-bg: #dce3ed;
+  --pill-rainy-text: #445c76;
+  --pill-drizzle-bg: #dce3ed;
+  --pill-drizzle-text: #445c76;
+  --pill-thunderstorm-bg: #e6e0ef;
+  --pill-thunderstorm-text: #50465f;
+  --pill-flexible-bg: #e9eef0;
+  --pill-flexible-text: #596c75;
+  --pill-neutral-bg: #e9eef0;
+  --pill-neutral-text: #596c75;
+
   /* number */
   --corner-radius-6: 0.375rem;
   --corner-radius-8: 0.5rem;
