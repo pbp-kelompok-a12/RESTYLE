@@ -11,6 +11,7 @@ from django.utils import timezone
 from closet.models import Item
 from mixmatch.models import Outfit
 from planner.models import DailyPlan, PlannerSettings
+from planner.services import sync_item_statuses
 from planner.views import get_monday, item_is_washing, latest_laundry_day
 
 
@@ -64,9 +65,9 @@ class PlannerTests(TestCase):
     def test_latest_laundry_day_returns_none_when_no_day_selected(self):
         self.assertIsNone(latest_laundry_day(date(2026, 10, 28), []))
 
-    def test_item_is_washing_when_item_is_marked_washing_and_no_laundry_day_exists(self):
+    def test_planner_status_ignores_closet_item_status(self):
         item = self.make_item(self.user, "Wet Shirt", "top", status="washing")
-        self.assertTrue(item_is_washing(item, self.user, date(2026, 10, 28), weekdays=[]))
+        self.assertFalse(item_is_washing(item, self.user, date(2026, 10, 28), weekdays=[]))
 
     def test_recent_planned_wear_makes_item_unavailable_until_laundry_day(self):
         # Monday is the laundry day; a Tuesday wear is still recent on Wednesday.
@@ -77,17 +78,48 @@ class PlannerTests(TestCase):
         DailyPlan.objects.create(user=self.user, date=tuesday, outfit=self.outfit)
         self.assertTrue(item_is_washing(self.top, self.user, wednesday, weekdays=[0]))
 
-    def test_wear_before_friday_laundry_does_not_block_saturday(self):
+    def test_planned_wear_remains_washing_until_laundry_days_pass(self):
         thursday = date(2026, 10, 29)
         saturday = date(2026, 10, 31)
         DailyPlan.objects.create(user=self.user, date=thursday, outfit=self.outfit)
-        self.assertFalse(item_is_washing(self.top, self.user, saturday, weekdays=[4]))
+        self.assertTrue(item_is_washing(
+            self.top, self.user, saturday, weekdays=[4], laundry_time_days=2
+        ))
+        self.assertFalse(item_is_washing(
+            self.top, self.user, date(2026, 11, 1), weekdays=[4], laundry_time_days=2
+        ))
+
+    def test_closet_status_mirrors_today_planner_status(self):
+        plan_day = date(2026, 10, 28)  # Wednesday
+        washing_day = date(2026, 10, 29)  # Thursday
+        ready_day = date(2026, 11, 2)  # Friday schedule + 3 days
+        PlannerSettings.objects.create(
+            user=self.user, laundry_weekdays=[4], laundry_time_days=3
+        )
+        DailyPlan.objects.create(user=self.user, date=plan_day, outfit=self.outfit)
+
+        # Closet values do not decide Planner status; synchronization copies
+        # the calculated status from the plan dates into the Closet fields.
+        self.top.status = "ready"
+        self.top.save(update_fields=["status"])
+        sync_item_statuses(self.user, on_date=washing_day)
+        self.top.refresh_from_db()
+        self.bottom.refresh_from_db()
+        self.assertEqual(self.top.status, "washing")
+        self.assertEqual(self.bottom.status, "washing")
+
+        sync_item_statuses(self.user, on_date=ready_day)
+        self.top.refresh_from_db()
+        self.bottom.refresh_from_db()
+        self.assertEqual(self.top.status, "ready")
+        self.assertEqual(self.bottom.status, "ready")
 
     def test_planner_page_shows_week_and_laundry_form(self):
         response = self.client.get(reverse("planner:show_planner"), {"week": "2026-10-28"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'data-week-start="2026-10-26"')
         self.assertContains(response, "Laundry days")
+        self.assertContains(response, 'name="laundry_time_days"')
         self.assertContains(response, "Choose your Mix &amp; Match")
 
     def test_invalid_week_query_falls_back_to_current_week(self):
@@ -155,9 +187,14 @@ class PlannerTests(TestCase):
         self.assertFalse(DailyPlan.objects.filter(user=self.user).exists())
 
     def test_save_plan_rejects_outfit_with_washing_item(self):
-        PlannerSettings.objects.create(user=self.user, laundry_weekdays=[])
+        PlannerSettings.objects.create(
+            user=self.user, laundry_weekdays=[4], laundry_time_days=3
+        )
         self.top.status = "washing"
         self.top.save(update_fields=["status"])
+        DailyPlan.objects.create(
+            user=self.user, date=date(2026, 10, 27), outfit=self.outfit
+        )
 
         response = self.client.post(
             reverse("planner:save_plan"),
@@ -167,7 +204,7 @@ class PlannerTests(TestCase):
 
         self.assertEqual(response.status_code, 409)
         self.assertIn("wash", response.json()["error"].lower())
-        self.assertFalse(DailyPlan.objects.filter(user=self.user).exists())
+        self.assertEqual(DailyPlan.objects.filter(user=self.user).count(), 1)
 
     def test_clear_plan_only_deletes_current_users_plan_for_given_date(self):
         DailyPlan.objects.create(user=self.user, date="2026-10-28", outfit=self.outfit)
@@ -194,19 +231,22 @@ class PlannerTests(TestCase):
     def test_save_laundry_days_sorts_and_deduplicates_weekdays(self):
         response = self.client.post(
             reverse("planner:save_laundry_days"),
-            {"laundry_weekdays": ["5", "1", "5"]},
+            {"laundry_weekdays": ["5", "1", "5"], "laundry_time_days": "3"},
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(PlannerSettings.objects.get(user=self.user).laundry_weekdays, [1, 5])
+        self.assertEqual(PlannerSettings.objects.get(user=self.user).laundry_time_days, 3)
 
     def test_save_laundry_days_rejects_empty_or_out_of_range_values(self):
         url = reverse("planner:save_laundry_days")
         empty = self.client.post(url, {})
-        invalid = self.client.post(url, {"laundry_weekdays": "7"})
-        non_integer = self.client.post(url, {"laundry_weekdays": "monday"})
+        invalid = self.client.post(url, {"laundry_weekdays": "7", "laundry_time_days": "2"})
+        non_integer = self.client.post(url, {"laundry_weekdays": "monday", "laundry_time_days": "2"})
+        invalid_duration = self.client.post(url, {"laundry_weekdays": "1", "laundry_time_days": "0"})
         self.assertEqual(empty.status_code, 400)
         self.assertEqual(invalid.status_code, 400)
         self.assertEqual(non_integer.status_code, 400)
+        self.assertEqual(invalid_duration.status_code, 400)
 
     def test_week_state_returns_seven_slots_and_plan_state(self):
         monday = date(2026, 10, 26)

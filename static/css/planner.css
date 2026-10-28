@@ -734,6 +734,22 @@
     gap: 8px;
 }
 
+.laundry-time {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.laundry-time input {
+    width: 72px;
+    padding: 8px 10px;
+    border: 1px solid var(--color-azure-san-marino);
+    border-radius: 8px;
+    color: inherit;
+}
+
 .laundry-day-options label {
     cursor: pointer;
 }

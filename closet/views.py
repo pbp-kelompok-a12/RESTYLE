@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from closet.forms import ItemForm
 from django.db.models import Q
 from closet.models import Item, SEASON_OPTIONS, STYLE_OPTIONS, WEATHER_OPTIONS, ALL_YEAR
+from planner.services import sync_item_statuses
 
 FILTER_KEYS = ("cat", "color", "style", "season", "weather", "status", "q")
 
@@ -24,6 +25,7 @@ def wants_modal(request):
 
 @login_required(login_url="/login")
 def show_closet(request):
+    sync_item_statuses(request.user)
     filters = {key: request.GET.get(key, "").strip() for key in FILTER_KEYS}
     all_items = Item.objects.filter(user=request.user)
     items = all_items

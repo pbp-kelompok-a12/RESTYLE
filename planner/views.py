@@ -16,6 +16,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 from mixmatch.models import Outfit, SLOTS
 from .models import DailyPlan, PlannerSettings
+from .services import sync_item_statuses, washing_item_ids
 
 LOGIN_URL = "/login/"
 WEEKDAYS = [(0, "Monday"), (1, "Tuesday"), (2, "Wednesday"), (3, "Thursday"), (4, "Friday"), (5, "Saturday"), (6, "Sunday")]
@@ -54,32 +55,30 @@ def latest_laundry_day(on_date, weekdays):
     return max(candidates) if candidates else None
 
 
-def item_is_washing(item, user, target_date, current_plan=None, weekdays=None):
-    weekdays = weekdays if weekdays is not None else get_settings(user).laundry_weekdays
-    last_laundry = latest_laundry_day(target_date, weekdays)
-    if item.status == "washing" and not last_laundry:
-        return True
-    plans = DailyPlan.objects.filter(user=user, date__lt=target_date, outfit__in=Outfit.objects.filter(user=user))
-    if current_plan:
-        plans = plans.exclude(pk=current_plan.pk)
-    if last_laundry:
-        plans = plans.filter(date__gte=last_laundry)
-    has_recent_wear = False
-    for plan in plans.select_related("outfit"):
-        if item.pk in [getattr(plan.outfit, slot + "_id") for slot in SLOTS]:
-            has_recent_wear = True
-            break
-    return has_recent_wear or (item.status == "washing" and last_laundry is None)
+def item_is_washing(item, user, target_date, current_plan=None, weekdays=None, laundry_time_days=None):
+    preferences = get_settings(user) if weekdays is None or laundry_time_days is None else None
+    weekdays = weekdays if weekdays is not None else preferences.laundry_weekdays
+    laundry_time_days = laundry_time_days if laundry_time_days is not None else preferences.laundry_time_days
+    return item.pk in washing_item_ids(
+        user, target_date, weekdays, laundry_time_days, exclude_plan=current_plan
+    )
 
 
-def outfit_status(outfit, user, target_date, current_plan=None, weekdays=None):
+def outfit_status(outfit, user, target_date, current_plan=None, weekdays=None, laundry_time_days=None):
     pieces = [getattr(outfit, slot) for slot in SLOTS if getattr(outfit, slot + "_id")]
-    return "washing" if any(item_is_washing(piece, user, target_date, current_plan, weekdays) for piece in pieces) else "ready"
+    if weekdays is None or laundry_time_days is None:
+        preferences = get_settings(user)
+        weekdays = weekdays if weekdays is not None else preferences.laundry_weekdays
+        laundry_time_days = laundry_time_days if laundry_time_days is not None else preferences.laundry_time_days
+    washing_ids = washing_item_ids(
+        user, target_date, weekdays, laundry_time_days, exclude_plan=current_plan
+    )
+    return "washing" if any(piece.pk in washing_ids for piece in pieces) else "ready"
 
 
-def serialize_outfit(outfit, user, target_date, current_plan, weekdays):
+def serialize_outfit(outfit, user, target_date, current_plan, weekdays, laundry_time_days):
     weather = outfit_weather(outfit)
-    status = outfit_status(outfit, user, target_date, current_plan, weekdays)
+    status = outfit_status(outfit, user, target_date, current_plan, weekdays, laundry_time_days)
     selected = bool(current_plan and current_plan.outfit_id == outfit.pk)
     return {
         "id": outfit.pk, "name": outfit.name, "tags": outfit.tags or [],
@@ -103,7 +102,7 @@ def outfit_weather(outfit):
     return next((weather for weather in WEATHER_OPTIONS if weather in common), "")
 
 
-def build_week_slots(user, monday, weekdays):
+def build_week_slots(user, monday, weekdays, laundry_time_days):
     plans = {
         plan.date: plan
         for plan in DailyPlan.objects.filter(user=user, date__range=(monday, monday + timedelta(days=6)))
@@ -113,13 +112,14 @@ def build_week_slots(user, monday, weekdays):
     for offset in range(7):
         day = monday + timedelta(days=offset)
         plan = plans.get(day)
-        visible = bool(plan and outfit_status(plan.outfit, user, day, plan, weekdays) == "ready")
+        status = outfit_status(plan.outfit, user, day, plan, weekdays, laundry_time_days) if plan else "ready"
+        visible = bool(plan and status == "ready")
         card_html = ""
         if visible:
             weather = outfit_weather(plan.outfit)
             card_html = render_to_string("mixmatch/_outfit_card.html", {
                 "o": plan.outfit, "planner_day": True, "planner_date": day,
-                "status": "ready", "weather": weather,
+                "status": status, "weather": weather,
                 "weather_class": WEATHER_COLORS.get(weather, "flexible" if not weather else "unknown"), "show_delete": False,
             })
         slots.append({"date": day, "plan": plan, "visible": visible, "html": card_html})
@@ -128,6 +128,7 @@ def build_week_slots(user, monday, weekdays):
 
 @login_required(login_url=LOGIN_URL)
 def show_planner(request):
+    sync_item_statuses(request.user)
     raw = request.GET.get("week")
     try:
         ref = date.fromisoformat(raw) if raw else date.today()
@@ -136,7 +137,7 @@ def show_planner(request):
 
     monday = get_monday(ref)
     pref = get_settings(request.user)
-    days = build_week_slots(request.user, monday, pref.laundry_weekdays)
+    days = build_week_slots(request.user, monday, pref.laundry_weekdays, pref.laundry_time_days)
 
     week_options = []
     for i in range(-4, 9):
@@ -148,6 +149,7 @@ def show_planner(request):
         "days": days, "week_options": week_options,
         "prev_week": (monday - timedelta(weeks=1)).isoformat(), "next_week": (monday + timedelta(weeks=1)).isoformat(),
         "weekday_choices": WEEKDAYS, "laundry_weekdays": pref.laundry_weekdays,
+        "laundry_time_days": pref.laundry_time_days,
     }
     return render(request, "planner.html", context)
 
@@ -198,13 +200,16 @@ def reverse_geocode(latitude, longitude):
 @login_required(login_url=LOGIN_URL)
 @require_GET
 def outfit_options(request):
+    sync_item_statuses(request.user)
     day = parse_date(request.GET.get("date", ""))
     if not day:
         return JsonResponse({"error": "Invalid planner date."}, status=400)
     plan = DailyPlan.objects.filter(user=request.user, date=day).first()
     prefs = get_settings(request.user)
     outfits = list(Outfit.objects.filter(user=request.user).select_related(*SLOTS))
-    cards = [serialize_outfit(o, request.user, day, plan, prefs.laundry_weekdays) for o in outfits]
+    cards = [serialize_outfit(
+        o, request.user, day, plan, prefs.laundry_weekdays, prefs.laundry_time_days
+    ) for o in outfits]
     return JsonResponse({"date": day.isoformat(), "outfits": cards, "selected_id": plan.outfit_id if plan else None})
 
 
@@ -326,12 +331,13 @@ def search_locations(request):
 @login_required(login_url=LOGIN_URL)
 @require_GET
 def week_state(request):
+    sync_item_statuses(request.user)
     week = parse_date(request.GET.get("week", ""))
     if not week:
         return JsonResponse({"error": "Invalid planner week."}, status=400)
     monday = get_monday(week)
     pref = get_settings(request.user)
-    slots = build_week_slots(request.user, monday, pref.laundry_weekdays)
+    slots = build_week_slots(request.user, monday, pref.laundry_weekdays, pref.laundry_time_days)
     return JsonResponse({"slots": [
         {"date": slot["date"].isoformat(), "plan_id": slot["plan"].outfit_id if slot["plan"] else None,
          "visible": slot["visible"], "html": slot["html"]}
@@ -353,9 +359,12 @@ def save_plan(request):
     outfit = get_object_or_404(Outfit.objects.filter(user=request.user).select_related(*SLOTS), pk=outfit_id)
     existing = DailyPlan.objects.filter(user=request.user, date=day).first()
     prefs = get_settings(request.user)
-    if outfit_status(outfit, request.user, day, existing, prefs.laundry_weekdays) == "washing":
+    if outfit_status(
+        outfit, request.user, day, existing, prefs.laundry_weekdays, prefs.laundry_time_days
+    ) == "washing":
         return JsonResponse({"error": "This outfit contains clothing that is in the wash."}, status=409)
     DailyPlan.objects.update_or_create(user=request.user, date=day, defaults={"outfit": outfit})
+    sync_item_statuses(request.user)
     return JsonResponse({"ok": True, "outfit": outfit.name, "outfit_id": outfit.pk, "date": day.isoformat()})
 
 
@@ -370,6 +379,7 @@ def clear_plan(request):
     if not day:
         return JsonResponse({"error": "Invalid planner date."}, status=400)
     DailyPlan.objects.filter(user=request.user, date=day).delete()
+    sync_item_statuses(request.user)
     return JsonResponse({"ok": True, "date": day.isoformat()})
 
 
@@ -379,11 +389,16 @@ def save_laundry_days(request):
     values = request.POST.getlist("laundry_weekdays")
     try:
         weekdays = sorted({int(value) for value in values})
+        laundry_time_days = int(request.POST.get("laundry_time_days", ""))
         if not weekdays or any(value not in range(7) for value in weekdays):
             raise ValueError
+        if not 1 <= laundry_time_days <= 31:
+            raise ValueError
     except ValueError:
-        return JsonResponse({"error": "Choose valid weekdays."}, status=400)
+        return JsonResponse({"error": "Choose valid laundry weekdays and duration."}, status=400)
     pref = get_settings(request.user)
     pref.laundry_weekdays = weekdays
-    pref.save(update_fields=["laundry_weekdays"])
+    pref.laundry_time_days = laundry_time_days
+    pref.save(update_fields=["laundry_weekdays", "laundry_time_days"])
+    sync_item_statuses(request.user)
     return JsonResponse({"ok": True})
