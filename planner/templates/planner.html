@@ -16,8 +16,9 @@
         {% include 'planner/_weather_card.html' with widget_id='planner-weather-widget' widget_mode='planner' weather_class='weather-widget--no-permission' aria_label='Current weather and location' condition_id='weather-widget-condition' icon_id='weather-widget-icon' temperature_id='weather-widget-temperature' location_id='weather-widget-location' message_id='weather-widget-message' initial_condition='Allow location' %}
 
         <form class="laundry-days" id="laundry-days-form" action="{% url 'planner:save_laundry_days' %}" method="post">
-            {% csrf_token %}<strong>Laundry days</strong><span>Items worn before a selected day become Ready again that day.</span>
+            {% csrf_token %}<strong>Laundry schedule</strong><span>Items planned for a day enter the wash the next day, then become Ready {{ laundry_time_days }} day{{ laundry_time_days|pluralize }} after the next selected laundry day.</span>
             <div class="laundry-day-options">{% for value,label in weekday_choices %}<label><input type="checkbox" name="laundry_weekdays" value="{{ value }}" {% if value in laundry_weekdays %}checked{% endif %}><span>{{ label }}</span></label>{% endfor %}</div>
+            <label class="laundry-time">Laundry days <input type="number" name="laundry_time_days" min="1" max="31" value="{{ laundry_time_days }}" required></label>
             <small id="laundry-save-status" aria-live="polite"></small>
         </form>
 
