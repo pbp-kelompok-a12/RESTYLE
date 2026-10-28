@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from closet.models import Item
+from closet.models import Item, MANUAL_STATUS_CATEGORIES
 from mixmatch.models import SLOTS
 
 from .models import DailyPlan, PlannerSettings
@@ -46,7 +46,7 @@ def washing_item_ids(user, target_date, weekdays, laundry_time_days, exclude_pla
 
 
 def sync_item_statuses(user, on_date=None):
-    """Mirror today's Planner-derived state into Closet Item.status."""
+    """Mirror Planner state for automatically tracked items into Closet."""
     from django.utils import timezone
 
     today = on_date or timezone.localdate()
@@ -54,7 +54,9 @@ def sync_item_statuses(user, on_date=None):
     washing_ids = washing_item_ids(
         user, today, settings.laundry_weekdays, settings.laundry_time_days
     )
-    items = list(Item.objects.filter(user=user))
+    items = list(
+        Item.objects.filter(user=user).exclude(category__in=MANUAL_STATUS_CATEGORIES)
+    )
     changed = []
     for item in items:
         status = "washing" if item.pk in washing_ids else "ready"

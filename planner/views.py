@@ -14,6 +14,7 @@ from django.utils.dateparse import parse_date
 from django.utils import timezone
 from django.views.decorators.http import require_GET, require_POST
 
+from closet.models import MANUAL_STATUS_CATEGORIES
 from mixmatch.models import Outfit, SLOTS
 from .models import DailyPlan, PlannerSettings
 from .services import sync_item_statuses, washing_item_ids
@@ -66,6 +67,14 @@ def item_is_washing(item, user, target_date, current_plan=None, weekdays=None, l
 
 def outfit_status(outfit, user, target_date, current_plan=None, weekdays=None, laundry_time_days=None):
     pieces = [getattr(outfit, slot) for slot in SLOTS if getattr(outfit, slot + "_id")]
+    if any(
+        piece.category in MANUAL_STATUS_CATEGORIES and piece.status == "washing"
+        for piece in pieces
+    ):
+        return "washing"
+    scheduled_pieces = [
+        piece for piece in pieces if piece.category not in MANUAL_STATUS_CATEGORIES
+    ]
     if weekdays is None or laundry_time_days is None:
         preferences = get_settings(user)
         weekdays = weekdays if weekdays is not None else preferences.laundry_weekdays
@@ -73,7 +82,7 @@ def outfit_status(outfit, user, target_date, current_plan=None, weekdays=None, l
     washing_ids = washing_item_ids(
         user, target_date, weekdays, laundry_time_days, exclude_plan=current_plan
     )
-    return "washing" if any(piece.pk in washing_ids for piece in pieces) else "ready"
+    return "washing" if any(piece.pk in washing_ids for piece in scheduled_pieces) else "ready"
 
 
 def serialize_outfit(outfit, user, target_date, current_plan, weekdays, laundry_time_days):
@@ -354,11 +363,15 @@ def save_plan(request):
         outfit_id = int(data.get("outfit_id"))
     except (ValueError, TypeError, json.JSONDecodeError):
         return JsonResponse({"error": "Invalid plan data."}, status=400)
+
     if not day:
         return JsonResponse({"error": "Invalid planner date."}, status=400)
     outfit = get_object_or_404(Outfit.objects.filter(user=request.user).select_related(*SLOTS), pk=outfit_id)
     existing = DailyPlan.objects.filter(user=request.user, date=day).first()
     prefs = get_settings(request.user)
+
+    if day < timezone.localdate():
+        return JsonResponse({"error": "Invalid planner date"}, status=400)
     if outfit_status(
         outfit, request.user, day, existing, prefs.laundry_weekdays, prefs.laundry_time_days
     ) == "washing":

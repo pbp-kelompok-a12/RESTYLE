@@ -5,6 +5,7 @@ STYLE_OPTIONS = ["Casual", "Formal", "Street", "Minimal", "Sporty", "Party", "Co
 ALL_YEAR = "All year round"
 SEASON_OPTIONS = ["Spring", "Summer", "Autumn", "Winter", ALL_YEAR]
 WEATHER_OPTIONS = ["Hot", "Stormy", "Cool", "Moderate", "Rainy", "Drizzle", "Thunderstorm"]
+MANUAL_STATUS_CATEGORIES = ("shoes", "accessories")
 
 class Item(models.Model):
     CATEGORY_CHOICES = [
@@ -89,3 +90,7 @@ class Item(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.user.username})"
+
+    def change_status(self):
+        self.status = "washing" if self.status == "ready" else "ready"
+        self.save(update_fields=["status"])
