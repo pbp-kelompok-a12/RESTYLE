@@ -887,7 +887,12 @@ body{
 
 @media (max-width: 768px) {
     body{
-        padding: 16px;
+        padding: 0;
+    }
+
+    .section-container{
+        border-left: none;
+        border-right: none;
     }
 
     .site-header{
