@@ -2746,12 +2746,9 @@ body{
     border-radius: 0;
 }
 
-.cm-hero--open .cm-hero-stat + .cm-hero-stat::before{
-    content: "·";
-    order: -2; /* titik paling depan, sebelum angka (angka pakai order -1) */
-    margin: 0 12px;
-    color: var(--color-azure-polo-blue);
-    font-weight: 700;
+/* tanpa titik pemisah: cukup jarak antar angka */
+.cm-hero--open .cm-hero-stat + .cm-hero-stat{
+    margin-left: 28px;
 }
 
 .cm-hero--open .cm-hero-stat dd{
@@ -2783,8 +2780,8 @@ body{
         padding: 0;
     }
 
-    .cm-hero--open .cm-hero-stat + .cm-hero-stat::before{
-        margin: 0 8px;
+    .cm-hero--open .cm-hero-stat + .cm-hero-stat{
+        margin-left: 18px;
     }
 
     .cm-hero--open .cm-hero-stat dd{
