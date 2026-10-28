@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import models
-
+from mixmatch.models import Outfit
 
 def default_laundry_weekdays():
     return [6]
@@ -15,7 +15,7 @@ class PlannerSettings(models.Model):
 class DailyPlan(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="daily_outfit_plans")
     date = models.DateField()
-    outfit = models.ForeignKey("mixmatch.Outfit", on_delete=models.CASCADE, related_name="daily_plans")
+    outfit = models.ForeignKey(Outfit, on_delete=models.CASCADE, related_name="daily_plans")
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
