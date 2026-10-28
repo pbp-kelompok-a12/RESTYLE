@@ -1,5 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 from closet.models import Item, ALL_YEAR, SEASON_OPTIONS, STYLE_OPTIONS, WEATHER_OPTIONS
 from restyle.image_processing import optimize_image_upload
 
@@ -29,6 +30,12 @@ class ItemForm(forms.ModelForm):
     def clean_name(self):
         return self.cleaned_data["name"].strip()
 
+    def clean_date_purchased(self):
+        bought = self.cleaned_data.get("date_purchased")
+        if bought and bought > timezone.localdate():
+            raise ValidationError("Purchase date can't be in the future.")
+        return bought
+    
     def clean_photo(self):
         photo = self.cleaned_data.get("photo")
         if not photo or not self.files.get(self.add_prefix("photo")):
