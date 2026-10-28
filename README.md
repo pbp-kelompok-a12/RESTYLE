@@ -29,16 +29,25 @@ Aplikasi ini memberikan manfaat nyata bagi masyarakat dengan mendorong penggunaa
 
 | Modul | Penanggung Jawab | Deskripsi | Create | Read | Update | Delete |
 |---|---|---|---|---|---|---|
-| **Modul 1: Digital Closet (Wardrobe Management)** | Aulia Nur Shiva | Fitur inti untuk mengelola data pakaian pengguna, lengkap dengan filter berdasarkan warna, kategori, dan style. Kategori pakaian diisi/dipilih manual oleh pengguna (bukan deteksi otomatis via AI). | Menambah data pakaian baru (nama, kategori, warna, style, material, foto, status ketersediaan). Kategori dipilih manual dari dropdown | Melihat daftar pakaian, detail satu pakaian, serta memfilter berdasarkan warna/kategori | Mengubah data pakaian yang sudah ada (termasuk mengubah status: siap pakai/sedang dicuci) | Menghapus data pakaian dari koleksi |
+| **Modul 1: Digital Closet (Wardrobe Management)** | Aulia Nur Shiva | Fitur inti untuk mengelola data pakaian pengguna, lengkap dengan filter berdasarkan warna, kategori, dan style. Kategori pakaian diisi/dipilih manual oleh pengguna (bukan deteksi otomatis via AI). | Menambah data pakaian baru (nama, kategori, warna, style, material, foto, status ketersediaan). Kategori dipilih manual dari dropdown | Melihat daftar pakaian, detail satu pakaian, serta memfilter berdasarkan warna/kategori | Mengubah data (mengedit) pakaian yang sudah ada | Menghapus data pakaian dari koleksi |
 | **Modul 2: Mix & Match Outfit Builder** | Salwa Hafiza Aqila | Fitur untuk merangkai kombinasi outfit dari pakaian yang ada di Digital Closet (atasan, bawahan, sepatu, aksesori). | Membuat kombinasi outfit baru dari pakaian yang tersedia | Melihat daftar outfit yang sudah dibuat beserta detail kombinasinya | Mengubah/mengganti item dalam suatu kombinasi outfit | Menghapus outfit yang sudah disimpan |
 | **Modul 3: Weekly Outfit Planner & Weather Recommendation** | Fadly Atief Nauval | Fitur untuk merencanakan pemakaian outfit per hari dalam kalender mingguan, terintegrasi Open-Meteo API untuk rekomendasi sesuai cuaca berdasarkan lokasi menggunakan OpenStreetMap. Sistem otomatis mengecualikan pakaian berstatus "Laundry" dari pilihan. | Menambahkan jadwal outfit untuk hari/tanggal tertentu | Melihat jadwal mingguan serta rekomendasi outfit berdasarkan data cuaca real-time | Mengubah outfit yang dijadwalkan pada hari tertentu | Menghapus/membatalkan jadwal outfit pada hari tertentu |
 | **Modul 4: Conscious Shopping Reminder & Autentikasi** | Hasya Azzahra Rangkuti | Fitur wishlist untuk mencegah pembelian impulsif, dilengkapi sistem login/logout/autentikasi pengguna. Saat item wishlist ditambahkan, sistem menampilkan pakaian di Digital Closet dengan kategori & warna yang sama sebagai pengingat. | Menambah item wishlist (nama, kategori, warna, foto/link); registrasi akun baru | Melihat daftar wishlist beserta pengingat kemiripan dari Digital Closet; login pengguna | Mengubah data item wishlist | Menghapus item wishlist; logout pengguna |
-| **Modul 5: Fashion Community & Admin Panel** | Salsabilla Hasan | Forum diskusi antarpengguna untuk berbagi inspirasi styling, mix & match, dan ide pakaian sehari-hari. Modul ini juga mencakup Admin Panel: fitur moderasi yang memungkinkan Admin melihat dan menghapus post/komentar yang melanggar. | Membuat post baru (dengan foto), menambahkan komentar, memberikan like pada outfit pengguna lain | Melihat daftar post, detail post beserta komentar dan like; Admin dapat melihat seluruh post/komentar untuk keperluan moderasi | Mengubah post atau komentar milik sendiri | Menghapus post, komentar, atau like milik sendiri; Admin dapat menghapus post/komentar pengguna lain yang melanggar |
+| **Modul 5: Fashion Community** | Salsabilla Hasan | Forum diskusi antarpengguna untuk berbagi inspirasi styling, mix & match, dan ide pakaian sehari-hari. | Membuat post baru (dengan foto), menambahkan komentar, memberikan like pada outfit pengguna lain | Melihat daftar post, detail post beserta komentar dan like | Mengubah post atau komentar milik sendiri | Menghapus post, komentar, atau like milik sendiri |
+| **Modul 6: Admin Panel (Moderasi Konten)** | Dikerjakan bersama (seluruh anggota kelompok) | Fitur moderasi yang memungkinkan Admin menjaga kualitas Fashion Community dengan melihat dan menghapus post/komentar yang melanggar aturan. | Admin membuat akun/hak akses admin dan mengelola konten melalui panel khusus | Admin melihat seluruh post dan komentar pengguna untuk keperluan moderasi | Admin meninjau dan menandai konten yang melanggar | Admin menghapus post/komentar pengguna lain yang melanggar |
+
+## Fitur tambahan community
+1. Search: mencari post atau pengguna berdasarkan teks, nama, atau item Digital Closet yang ditandai.
+2. Notifications: pemberitahuan untuk like, balasan, follow, dan mention.
+3. Saved posts: menyimpan post sebagai inspirasi dan melihatnya di halaman tersendiri.
+4. Follow dan profil pengguna: mengikuti pengguna, melihat profil, serta daftar followers/following.
+5. Tag item Digital Closet di post dan balasan.
+6. Mention @username: saran username, tautan mention, dan notifikasi mention.
+7. Foto pada balasan, selain foto di post.
+8. Foto profil khusus Community.
 
 ### ⁠Sumber/dokumentasi Public API yang dipakai
 Open-Meteo API
-
-
 
 ### Jenis dan Peran Pengguna Aplikasi
 

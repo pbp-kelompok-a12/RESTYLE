@@ -59,11 +59,13 @@ def show_community(request):
     following_ids = (
         Follow.objects.filter(follower=request.user).values_list("followed_id", flat=True)
         if request.user.is_authenticated
-        else []
+        else [] # kalau blm login pake daftar kosong aja --> isinya kosong karena pengguna anonim belum punya daftar following
     )
+    
     users = get_user_model().objects.all()
     if request.user.is_authenticated:
-        users = users.exclude(id=request.user.id)
+        users = users.exclude(id=request.user.id) # akun sendiri dikeluarkan dari daftar saran
+
     stylists = (
         users.exclude(id__in=following_ids)
         .annotate(post_count=Count("community_posts"))
