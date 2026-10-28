@@ -5,7 +5,14 @@ from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from closet.forms import ItemForm
 from django.db.models import Q
-from closet.models import Item, SEASON_OPTIONS, STYLE_OPTIONS, WEATHER_OPTIONS, ALL_YEAR
+from closet.models import (
+    ALL_YEAR,
+    MANUAL_STATUS_CATEGORIES,
+    SEASON_OPTIONS,
+    STYLE_OPTIONS,
+    WEATHER_OPTIONS,
+    Item,
+)
 from planner.services import sync_item_statuses
 
 FILTER_KEYS = ("cat", "color", "style", "season", "weather", "status", "q")
@@ -79,6 +86,19 @@ def option_context():
     "season_options": SEASON_OPTIONS,
     "weather_options": WEATHER_OPTIONS,
     }
+
+
+@login_required(login_url="/login")
+@require_POST
+def change_status(request, item_id):
+    item = get_object_or_404(
+        Item.objects.filter(category__in=MANUAL_STATUS_CATEGORIES),
+        pk=item_id,
+        user=request.user,
+    )
+    item.change_status()
+    messages.success(request, f'"{item.name}" is now {item.get_status_display().lower()}.')
+    return redirect("closet:show_closet")
 
 @login_required(login_url="/login")
 def add_item(request):

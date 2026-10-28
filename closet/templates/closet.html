@@ -83,6 +83,12 @@
                 <div class="cl-menu-list" hidden>
                     <a href="{% url 'closet:show_item_detail' item.id %}" data-modal>View details</a>
                     <a href="{% url 'closet:edit_item' item.id %}" data-modal>Edit item</a>
+                    {% if item.category == "shoes" or item.category == "accessories" %}
+                    <form method="post" action="{% url 'closet:change_status' item.id %}">
+                        {% csrf_token %}
+                        <button type="submit">{% if item.status == "ready" %}Change to In The Wash{% else %}Change to Ready{% endif %}</button>
+                    </form>
+                    {% endif %}
                     <form method="post" action="{% url 'closet:delete_item' item.id %}" data-confirm="{{ item.name }}">
                         {% csrf_token %}
                         <button type="submit" class="cl-danger">Delete</button>
