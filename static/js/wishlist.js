@@ -134,12 +134,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (data.has_match && data.matched_items && data.matched_items.length > 0) {
                     similarList.innerHTML = "";
                     data.matched_items.forEach(match => {
-                        const itemBox = document.createElement("div");
-                        itemBox.style.cssText = "display: flex; align-items: center; gap: 8px; background: #FFF; border: 1px solid #8FB0D4; border-radius: 999px; padding: 4px 12px;";
+                        const itemBox = document.createElement("a");
+                        
+                        // Link mengarah ke detail item closet (jika ada ID) atau filter closet berdasarkan kategori & warna
+                        const cat = encodeURIComponent((data.category || "").toLowerCase());
+                        const col = encodeURIComponent((data.color || "").toLowerCase());
+                        const targetUrl = match.id ? `/closet/${match.id}/` : `/closet/?cat=${cat}&color=${col}`;
+
+                        itemBox.href = targetUrl;
+                        itemBox.style.cssText = "display: flex; align-items: center; gap: 8px; background: #FFF; border: 1px solid #8FB0D4; border-radius: 999px; padding: 4px 12px; text-decoration: none; cursor: pointer; transition: transform 0.2s ease, border-color 0.2s ease;";
                         itemBox.innerHTML = `
                             <img src="${match.photo_url}" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
                             <span style="font-size: 12px; font-weight: 600; color: #3A2B48;">${match.name}</span>
                         `;
+                        
+                        // Efek Hover
+                        itemBox.addEventListener("mouseenter", () => {
+                            itemBox.style.borderColor = "#3F6699";
+                            itemBox.style.transform = "translateY(-1px)";
+                        });
+                        itemBox.addEventListener("mouseleave", () => {
+                            itemBox.style.borderColor = "#8FB0D4";
+                            itemBox.style.transform = "none";
+                        });
+
                         similarList.appendChild(itemBox);
                     });
                     similarContainer.style.display = "block";
