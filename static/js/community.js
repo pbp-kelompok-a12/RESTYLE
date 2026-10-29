@@ -1118,11 +1118,15 @@ consciousDialog.innerHTML = `
         display: flex; 
         align-items: center; 
         justify-content: center; 
-        font-size: 18px; 
-        line-height: 1; 
         padding: 0;
+        box-sizing: border-box;
         transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-    ">&times;</button>
+    ">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: block; width: 14px; height: 14px;">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+    </button>
     <h2 style="font-family: 'Poppins', sans-serif; font-size: 26px; font-weight: 800; color: #3F6699; margin: 0 0 12px 0;">Oopss..</h2>
     <p style="font-size: 15px; color: #6B5F78; margin: 0 0 24px 0; font-weight: 500;">You already have this item. Do you really need another?</p>
     <div style="display: flex; gap: 12px; justify-content: center;">
