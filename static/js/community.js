@@ -622,33 +622,24 @@ if (document.querySelector(".cm-tag-button")) {
                 const result = await response.json();
 
                 if (result.status === "similar_exists") {
-                    // Set URL link ke Digital Closet dengan parameter 'cat' dan 'color'
+                    // Set URL link ke Digital Closet dengan parameter 'cat' dan 'color' dalam LOWERCASE
                     const closetLink = consciousDialog.querySelector("#cm-check-similar-link");
                     if (closetLink && shownItem) {
-                        let catVal = (shownItem.category || "").trim();
-                        
-                        // Mapping nama kategori agar sesuai dengan value backend Closet
-                        const categoryMap = {
-                            "Top": "Top",
-                            "Bottom": "Bottom",
-                            "Shoes": "Shoes",
-                            "Accessories": "Accessories",
-                            "Outerwear": "Outerwear",
-                            "Dress": "Dresses",
-                            "Dresses": "Dresses"
-                        };
+                        let catVal = (shownItem.category || "").trim().toLowerCase();
+                        let colVal = (shownItem.color || "").trim().toLowerCase();
 
-                        if (categoryMap[catVal]) {
-                            catVal = categoryMap[catVal];
+                        // Normalisasi nama kategori ke slug backend Closet
+                        if (catVal === "dress" || catVal === "dresses") {
+                            catVal = "dresses";
                         }
 
                         const cat = encodeURIComponent(catVal);
-                        const col = encodeURIComponent((shownItem.color || "").trim());
+                        const col = encodeURIComponent(colVal);
 
                         closetLink.href = `/closet/?cat=${cat}&color=${col}`;
                     }
                     consciousDialog.showModal();
-               } else if (response.ok) {
+                } else if (response.ok) {
                     const isSaved = result.saved;
                     showToast("success", isSaved ? "Added to your wishlist." : "Removed from your wishlist.");
                     
