@@ -221,15 +221,29 @@
         }
     });
 
-    /* auto redirect/sync parameter URL 'category' ke 'cat' jika dikirim dari community */
+    /* Auto sync filter dari URL (case-insensitive) */
     (function syncUrlParams() {
         var params = new URLSearchParams(window.location.search);
-        var categoryParam = params.get("category");
-        
+        var categoryParam = params.get("category") || params.get("cat");
+        var colorParam = params.get("color");
+
         if (categoryParam && !params.get("cat")) {
             params.set("cat", categoryParam);
             params.delete("category");
             window.location.search = params.toString();
+            return;
+        }
+
+        // Jika select color di halaman belum terpilih pas karena kapitalisasi huruf
+        if (colorParam) {
+            var colorSelect = document.querySelector('select[name="color"]');
+            if (colorSelect && !colorSelect.value) {
+                Array.from(colorSelect.options).forEach(function(opt) {
+                    if (opt.value.toLowerCase() === colorParam.toLowerCase()) {
+                        colorSelect.value = opt.value;
+                    }
+                });
+            }
         }
     })();
 })();

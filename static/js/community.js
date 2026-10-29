@@ -625,11 +625,14 @@ if (document.querySelector(".cm-tag-button")) {
                     // Set URL link ke Digital Closet dengan parameter 'cat' dan 'color'
                     const closetLink = consciousDialog.querySelector("#cm-check-similar-link");
                     if (closetLink && shownItem) {
-                        // Sesuaikan penamaan kategori agar pas dengan slug/value di Closet
-                        let categoryValue = shownItem.category || "";
-                        
+                        // Normalisasi Kategori (misal "Dresses" -> "Dress" / "Shoes" -> "Shoes")
+                        let categoryValue = (shownItem.category || "").trim();
+                        if (categoryValue.toLowerCase() === "dresses") categoryValue = "Dress";
+
+                        // Ubah ke huruf kecil / kapitalisasi sesuai pilihan di Closet
                         const cat = encodeURIComponent(categoryValue);
-                        const col = encodeURIComponent(shownItem.color || "");
+                        const col = encodeURIComponent((shownItem.color || "").trim());
+
                         closetLink.href = `/closet/?cat=${cat}&color=${col}`;
                     }
                     consciousDialog.showModal();
