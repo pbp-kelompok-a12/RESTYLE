@@ -33,7 +33,7 @@ class Outfit(models.Model):
     top = models.ForeignKey("closet.Item", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
     bottom = models.ForeignKey("closet.Item", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
     shoes = models.ForeignKey("closet.Item", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
-    accessories = models.ForeignKey("closet.Item", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    accessories = models.ManyToManyField("closet.Item", blank=True, related_name="outfits_with_accessory")
     outerwear = models.ForeignKey("closet.Item", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
     dresses = models.ForeignKey("closet.Item", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
 
@@ -48,8 +48,32 @@ class Outfit(models.Model):
 
     @property
     def pieces(self):
-        return [getattr(self, slot) for slot in SLOTS if getattr(self, slot) is not None]
+        pieces = []
+
+        for slot in SLOTS:
+            value = getattr(self, slot)
+
+            if slot == "accessories":
+                pieces.extend(value.all())
+            elif value is not None:
+                pieces.append(value)
+
+        return pieces
+
 
     @property
     def slot_pieces(self):
-        return [(slot, getattr(self, slot)) for slot in SLOTS if getattr(self, slot) is not None]
+        result = []
+
+        for slot in SLOTS:
+            value = getattr(self, slot)
+
+            if slot == "accessories":
+                result.extend(
+                    (slot, item)
+                    for item in value.all()
+                )
+            elif value is not None:
+                result.append((slot, value))
+
+        return result
