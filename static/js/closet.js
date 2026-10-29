@@ -246,4 +246,24 @@
             }
         }
     })();
+
+    /* Highlight chip kategori berdasarkan URL parameter 'cat' */
+    (function highlightCategoryChip() {
+        var params = new URLSearchParams(window.location.search);
+        var currentCat = params.get("cat") || params.get("category");
+        if (!currentCat) return;
+
+        var chips = document.querySelectorAll(".cl-cats .cl-cat");
+        chips.forEach(function (chip) {
+            var chipText = chip.textContent.trim().toLowerCase();
+            var targetCat = currentCat.trim().toLowerCase();
+
+            // Cocokkan nama chip dengan parameter URL (termasuk penanganan Dress/Dresses)
+            if (chipText === targetCat || (chipText === "dresses" && targetCat === "dress")) {
+                chips.forEach(function (c) { c.classList.remove("is-selected"); });
+                chip.classList.add("is-selected");
+            }
+        });
+    })();
+    
 })();
