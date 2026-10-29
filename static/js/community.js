@@ -592,51 +592,67 @@ if (document.querySelector(".cm-tag-button")) {
     wishlistButton.addEventListener("click", async () => {
         if (!shownItem) return;
 
-        wishlistButton.disabled = true;
+        async function sendWishlistRequest(forceSave = false) {
+            wishlistButton.disabled = true;
 
-        const token = getCsrfToken();
-        const formData = new FormData();
-        formData.append("name", shownItem.name || "Item from Community");
-        formData.append("category", shownItem.category || "Top");
-        formData.append("color", shownItem.color || "White");
-        formData.append("material", shownItem.material || "");
-        formData.append("brand", shownItem.store || "");
-        formData.append("link", /^https?:\/\//i.test(shownItem.link || "") ? shownItem.link : "");
-        formData.append("photo_url", shownItem.photo || "");
-        
-        const rawPrice = (shownItem.price || "").toString().replace(/[^0-9]/g, "");
-        formData.append("price", rawPrice || "0");
+            const token = getCsrfToken();
+            const formData = new FormData();
+            formData.append("name", shownItem.name || "Item from Community");
+            formData.append("category", shownItem.category || "Top");
+            formData.append("color", shownItem.color || "White");
+            formData.append("material", shownItem.material || "");
+            formData.append("brand", shownItem.store || "");
+            formData.append("link", /^https?:\/\//i.test(shownItem.link || "") ? shownItem.link : "");
+            formData.append("photo_url", shownItem.photo || "");
+            
+            const rawPrice = (shownItem.price || "").toString().replace(/[^0-9]/g, "");
+            formData.append("price", rawPrice || "0");
+            if (forceSave) formData.append("force", "true");
 
-        try {
-            const response = await fetch("/wishlist/toggle-community/", {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": token,
-                    "X-Requested-With": "XMLHttpRequest"
-                },
-                body: formData
-            });
+            try {
+                const response = await fetch("/wishlist/toggle-community/", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": token,
+                        "X-Requested-With": "XMLHttpRequest"
+                    },
+                    body: formData
+                });
 
-            const result = await response.json();
+                const result = await response.json();
 
-            if (response.ok) {
-                const isSaved = result.saved;
-                showToast("success", isSaved ? "Added to your wishlist." : "Removed from your wishlist.");
-                
-                wishlistButton.classList.toggle("primary-btn", isSaved);
-                wishlistButton.classList.toggle("secondary-btn", !isSaved);
-                wishlistButton.querySelector("i").className = isSaved ? "fa-solid fa-heart" : "fa-regular fa-heart";
-                wishlistButton.querySelector(".cm-wishlist-label").textContent = isSaved ? "In your wishlist" : "Add to wishlist";
-                if (wishlistView) wishlistView.hidden = !isSaved;
-            } else {
-                showToast("error", "Could not update wishlist.");
+                if (result.status === "similar_exists") {
+                    // Tampilkan pop-up jika ada item mirip di closet
+                    consciousDialog.showModal();
+                } else if (response.ok) {
+                    const isSaved = result.saved;
+                    showToast("success", isSaved ? "Added to your wishlist." : "Removed from your wishlist.");
+                    
+                    wishlistButton.classList.toggle("primary-btn", isSaved);
+                    wishlistButton.classList.toggle("secondary-btn", !isSaved);
+                    wishlistButton.querySelector("i").className = isSaved ? "fa-solid fa-heart" : "fa-regular fa-heart";
+                    wishlistButton.querySelector(".cm-wishlist-label").textContent = isSaved ? "In your wishlist" : "Add to wishlist";
+                    if (wishlistView) wishlistView.hidden = !isSaved;
+                } else {
+                    showToast("error", "Could not update wishlist.");
+                }
+            } catch (error) {
+                console.error("Error toggling wishlist:", error);
+                showToast("error", "Something went wrong. Please try again.");
+            } finally {
+                wishlistButton.disabled = false;
             }
-        } catch (error) {
-            console.error("Error toggling wishlist:", error);
-            showToast("error", "Something went wrong. Please try again.");
-        } finally {
-            wishlistButton.disabled = false;
         }
+
+        const forceAddBtn = consciousDialog.querySelector(".cm-force-add-btn");
+        if (forceAddBtn) {
+            forceAddBtn.onclick = () => {
+                consciousDialog.close();
+                sendWishlistRequest(true);
+            };
+        }
+
+        sendWishlistRequest(false);
     });
 
     document.querySelectorAll(".cm-tag-button").forEach((button) => {
@@ -1083,3 +1099,21 @@ document.querySelectorAll(".cm-follow").forEach((button) => {
     window.addEventListener("resize", close);
     window.addEventListener("scroll", close); // scroll halaman saja, bukan scroll di dalam kotak tulis
 })();
+
+const consciousDialog = document.createElement("dialog");
+consciousDialog.className = "cm-confirm-dialog";
+consciousDialog.style.cssText = "border-radius: 24px; padding: 32px; border: 1px solid #8FB0D4; background: #FAF5EC; text-align: center; max-width: 440px; width: 90%;";
+consciousDialog.innerHTML = `
+    <div style="position: relative;">
+        <button type="button" class="cm-close-conscious" style="position: absolute; top: -12px; right: -12px; width: 28px; height: 28px; border-radius: 50%; border: 1px solid #8FB0D4; background: #FFF; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px;">&times;</button>
+        <h2 style="font-family: 'Poppins', sans-serif; font-size: 26px; font-weight: 800; color: #3F6699; margin: 0 0 12px 0;">Oopss..</h2>
+        <p style="font-size: 15px; color: #6B5F78; margin: 0 0 24px 0; font-weight: 500;">You already have this item. Do you really need another?</p>
+        <div style="display: flex; gap: 12px; justify-content: center;">
+            <a href="/closet/" class="btn" style="background: #3F6699; color: #FFF; border-radius: 999px; padding: 10px 20px; font-weight: 700; text-decoration: none; font-size: 13px;">Check Closet</a>
+            <button type="button" class="cm-force-add-btn" style="background: #8FB0D4; color: #FFF; border: none; border-radius: 999px; padding: 10px 20px; font-weight: 700; cursor: pointer; font-size: 13px;">Keep Shopping</button>
+        </div>
+    </div>
+`;
+document.body.appendChild(consciousDialog);
+
+consciousDialog.querySelector(".cm-close-conscious").addEventListener("click", () => consciousDialog.close());

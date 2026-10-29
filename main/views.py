@@ -152,7 +152,7 @@ def wishlist_view(request):
 
 
 @login_required
-def add_wishlist_item(request):
+def add_wishlist_item(request): 
     if request.method == "POST":
         name = request.POST.get("name")
         category = request.POST.get("category")
@@ -161,6 +161,7 @@ def add_wishlist_item(request):
         brand = request.POST.get("brand", "")
         link = request.POST.get("link", "")
         price = request.POST.get("price") or 0
+        target_date = request.POST.get("target_date") or None
         photo = request.FILES.get("photo")
         photo_url = request.POST.get("photo_url")
 
@@ -176,7 +177,8 @@ def add_wishlist_item(request):
             brand=brand,
             link=link,
             price=price,
-            style_tag=style_tag
+            style_tag=style_tag,
+            target_date=target_date
         )
 
         if photo:
@@ -211,16 +213,30 @@ def toggle_wishlist_from_community(request):
     link = request.POST.get("link", "")
     price = request.POST.get("price") or 0
     photo_url = request.POST.get("photo_url", "")
+    force = request.POST.get("force") == "true"
 
-    # Cek apakah item sudah ada di wishlist pengguna
+    # Cek kemiripan di Digital Closet
+    matching_closet = ClosetItem.objects.filter(
+        user=request.user,
+        category__iexact=category,
+        color__iexact=color
+    ).exists()
+
     existing_item = WishlistItem.objects.filter(user=request.user, name=name).first()
 
     if existing_item:
-        # Hapus jika sudah ada (Remove)
         existing_item.delete()
         return JsonResponse({"status": "removed", "saved": False})
 
-    # Tambahkan jika belum ada (Add)
+    # Jika ada kemiripan di closet dan belum di-force (tanpa persetujuan pop-up)
+    if matching_closet and not force:
+        return JsonResponse({
+            "status": "similar_exists",
+            "has_similar": True,
+            "message": "You already have this item. Do you really need another?"
+        }, status=200)
+
+    # Tambahkan ke wishlist jika tidak ada kemiripan atau pengguna memilih 'force' (Keep Shopping)
     wishlist_item = WishlistItem(
         user=request.user,
         name=name,
@@ -233,7 +249,6 @@ def toggle_wishlist_from_community(request):
         style_tag=""
     )
 
-    # Unduh dan simpan gambar jika photo_url tersedia
     if photo_url and photo_url.startswith(("http://", "https://", "/media/")):
         try:
             if photo_url.startswith("/media/"):
@@ -247,7 +262,6 @@ def toggle_wishlist_from_community(request):
             print("Error downloading community photo:", e)
 
     wishlist_item.save()
-
     return JsonResponse({"status": "added", "saved": True})
 
 
@@ -255,7 +269,6 @@ def toggle_wishlist_from_community(request):
 def get_wishlist_detail(request, item_id):
     item = get_object_or_404(WishlistItem, pk=item_id, user=request.user)
     
-    # Cari item di Digital Closet yang memiliki category & color yang sama
     matching_closet_items = ClosetItem.objects.filter(
         user=request.user,
         category__iexact=item.category,
@@ -280,6 +293,7 @@ def get_wishlist_detail(request, item_id):
         "link": item.link or "",
         "price": f"Rp {item.price:,.0f}".replace(",", ".") if item.price else "Rp 0",
         "raw_price": item.price,
+        "target_date": item.target_date.strftime("%Y-%m-%d") if item.target_date else "",
         "photo_url": item.photo.url if item.photo else "",
         "style_tag": item.style_tag or "-",
         "has_match": len(matched_items_data) > 0,
@@ -299,6 +313,7 @@ def edit_wishlist_item(request, item_id):
         item.brand = request.POST.get("brand", "")
         item.link = request.POST.get("link", "")
         item.price = request.POST.get("price") or 0
+        item.target_date = request.POST.get("target_date") or None
 
         if request.FILES.get("photo"):
             item.photo = request.FILES.get("photo")

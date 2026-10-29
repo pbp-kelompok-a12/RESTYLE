@@ -82,6 +82,7 @@ class WishlistItem(models.Model):
     price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     photo = models.ImageField(upload_to='wishlist_photos/', blank=True, null=True)
     style_tag = models.CharField(max_length=100, blank=True, null=True)
+    target_date = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
