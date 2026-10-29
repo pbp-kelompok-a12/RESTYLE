@@ -220,4 +220,16 @@
             e.target.form.submit();
         }
     });
+
+    /* auto redirect/sync parameter URL 'category' ke 'cat' jika dikirim dari community */
+    (function syncUrlParams() {
+        var params = new URLSearchParams(window.location.search);
+        var categoryParam = params.get("category");
+        
+        if (categoryParam && !params.get("cat")) {
+            params.set("cat", categoryParam);
+            params.delete("category");
+            window.location.search = params.toString();
+        }
+    })();
 })();

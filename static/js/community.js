@@ -622,12 +622,15 @@ if (document.querySelector(".cm-tag-button")) {
                 const result = await response.json();
 
                 if (result.status === "similar_exists") {
-                    // Set URL link ke Digital Closet dengan parameter filter kategori & warna
+                    // Set URL link ke Digital Closet dengan parameter 'cat' dan 'color'
                     const closetLink = consciousDialog.querySelector("#cm-check-similar-link");
                     if (closetLink && shownItem) {
-                        const cat = encodeURIComponent(shownItem.category || "");
+                        // Sesuaikan penamaan kategori agar pas dengan slug/value di Closet
+                        let categoryValue = shownItem.category || "";
+                        
+                        const cat = encodeURIComponent(categoryValue);
                         const col = encodeURIComponent(shownItem.color || "");
-                        closetLink.href = `/closet/?category=${cat}&color=${col}`;
+                        closetLink.href = `/closet/?cat=${cat}&color=${col}`;
                     }
                     consciousDialog.showModal();
                } else if (response.ok) {
