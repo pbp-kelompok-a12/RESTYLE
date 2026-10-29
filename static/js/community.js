@@ -1105,8 +1105,8 @@ consciousDialog.className = "cm-confirm-dialog";
 consciousDialog.style.cssText = "border-radius: 24px; padding: 32px; border: 1px solid #8FB0D4; background: #FAF5EC; text-align: center; max-width: 440px; width: 90%;";
 consciousDialog.innerHTML = `
     <div style="position: relative;">
-        <button type="button" class="cm-close-conscious" style="position: absolute; top: -12px; right: -12px; width: 28px; height: 28px; border-radius: 50%; border: 1px solid #8FB0D4; background: #FFF; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px;">&times;</button>
-        <h2 style="font-family: 'Poppins', sans-serif; font-size: 26px; font-weight: 800; color: #3F6699; margin: 0 0 12px 0;">Oopss..</h2>
+    <button type="button" class="cm-close-conscious" style="position: absolute; top: 16px; right: 16px; width: 28px; height: 28px; border-radius: 50%; border: 1px solid #8FB0D4; background: #FFF; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; line-height: 1; padding: 0;">&times;</button>
+    <h2 style="font-family: 'Poppins', sans-serif; font-size: 26px; font-weight: 800; color: #3F6699; margin: 0 0 12px 0;">Oopss..</h2>
         <p style="font-size: 15px; color: #6B5F78; margin: 0 0 24px 0; font-weight: 500;">You already have this item. Do you really need another?</p>
         <div style="display: flex; gap: 12px; justify-content: center;">
             <a href="/closet/" class="btn" style="background: #9CC24B; color: #FFF; border-radius: 999px; padding: 10px 20px; font-weight: 700; text-decoration: none; font-size: 13px;">Check Closet</a>
