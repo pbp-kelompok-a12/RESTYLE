@@ -52,10 +52,18 @@ document.querySelectorAll(".cm-composer, .cm-edit-form, .cm-reply-rich, .communi
         form.addEventListener("submit", (event) => {
             event.preventDefault();
             const submitButton = event.submitter;
+            const loadingToast = form.classList.contains("cm-composer") && window.showToast
+                ? window.showToast("loading", "Posting...")
+                : null;
             if (submitButton) submitButton.disabled = true;
             compressCommunityForm(form).then(() => form.submit()).catch(() => {
                 if (submitButton) submitButton.disabled = false;
-                showToast("error", "Could not compress the photo. Please try a smaller image.");
+                const message = "Could not compress the photo. Please try a smaller image.";
+                if (loadingToast && window.updateToast) {
+                    window.updateToast(loadingToast, "error", message);
+                } else {
+                    showToast("error", message);
+                }
             });
         });
     });

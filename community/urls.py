@@ -22,6 +22,7 @@ from community.views import (
     show_moderation,
     show_search,
     mention_suggestions,
+    get_post_json,
 )
 
 app_name = "community"
@@ -59,4 +60,5 @@ urlpatterns = [
     path("comment/<int:comment_id>/delete/", delete_comment, name="delete_comment"),
     path("comment/<int:comment_id>/like/", toggle_comment_like, name="toggle_comment_like"),
     path("user/<str:username>/follow/", toggle_follow, name="toggle_follow"),
+    path("api/posts/", get_post_json, name="get_post_json")
 ]
