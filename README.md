@@ -70,9 +70,23 @@ Admin bertugas mengelola dan menjaga konten serta data yang terdapat pada platfo
 * Memoderasi konten atau postingan pengguna.
 * Mengelola data yang diperlukan agar fitur-fitur RE:STYLE dapat berjalan dengan baik.
 
-### Penggunaan AI
+### Penggunaan AI dan Sumber Eksternal
 
-1. 
+1. Modul 1: Digital Closet (Wardrobe Management) - Aulia Nur Shiva
+
+Dalam pengembangan modul Digital Closet, saya menggunakan AI (Claude dan ChatGPT) sebagai alay bantu selama proses implementasi dan pengembangan fitur, terutama pada bagian JavaScript dan penyempurnaan interface.
+
+Pada awalnya, implementasi fitur Digital Closet mengacu pada tutorial PBP yang mancakup fitur mirip/serupa, seperti menambahkan, mengedit, mencari item. Implementasi awal form yang saya gunakan yaitu menggunakan halaman form terpisah. Namun, untuk membuat interaksi yang lebih nyaman bagi user, saya mengeksplorasi penggunakan popup atau modal sebagai alternatif. Dalam proses ini, saya mencari sumber eksternal yaitu YouTube dan menggunakan AI untuk membantu memberikan arahan mengenai implementasi ini serta membantu penulisan dan penyesuaian kode JavaScript yang diperlukan.
+
+Selain itu, AI digunakan sebagai alat bantu dalam menyelesaikan detail interface, seperti penyesuaian format tampilan nominal harga menggunakan pemisah ribuan. 
+
+Sumber eksternal:
+- https://youtu.be/xKOyDDuQSVY?si=NGuyf6DxNCOUbiRZ 
+- https://youtu.be/MBaw_6cPmAw?si=fz7_QdNRE3GoHkss
+- https://youtu.be/4pSPWkrd-1M?si=dMmcVCcspA90blbv
+- https://youtu.be/opjyyXoqrxg?si=DwmeoCX6oHeldoGH
+
+
 2. 
 3. 
 4. 
@@ -97,5 +111,5 @@ https://pws.cs.ui.ac.id/web/project/aulia.nur51/restyle
 
 
 ### Link Figma
-https://www.figma.com/design/iyZj0ZO4xLOuL4vXyHW49w/Untitled?node-id=0-1&t=PNawZmEwwjxpivVc-1
+https://www.figma.com/files/team/1681266096856658809/folder/654466752?fuid=1569545861454915648
 
