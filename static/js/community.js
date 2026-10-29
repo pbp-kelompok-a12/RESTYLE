@@ -1109,8 +1109,8 @@ consciousDialog.innerHTML = `
         <h2 style="font-family: 'Poppins', sans-serif; font-size: 26px; font-weight: 800; color: #3F6699; margin: 0 0 12px 0;">Oopss..</h2>
         <p style="font-size: 15px; color: #6B5F78; margin: 0 0 24px 0; font-weight: 500;">You already have this item. Do you really need another?</p>
         <div style="display: flex; gap: 12px; justify-content: center;">
-            <a href="/closet/" class="btn" style="background: #3F6699; color: #FFF; border-radius: 999px; padding: 10px 20px; font-weight: 700; text-decoration: none; font-size: 13px;">Check Closet</a>
-            <button type="button" class="cm-force-add-btn" style="background: #8FB0D4; color: #FFF; border: none; border-radius: 999px; padding: 10px 20px; font-weight: 700; cursor: pointer; font-size: 13px;">Keep Shopping</button>
+            <a href="/closet/" class="btn" style="background: #9CC24B; color: #FFF; border-radius: 999px; padding: 10px 20px; font-weight: 700; text-decoration: none; font-size: 13px;">Check Closet</a>
+            <button type="button" class="cm-force-add-btn" style="background: #3F6699; color: #FFF; border: none; border-radius: 999px; padding: 10px 20px; font-weight: 700; cursor: pointer; font-size: 13px;">Keep Shopping</button>
         </div>
     </div>
 `;

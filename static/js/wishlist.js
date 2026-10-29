@@ -14,6 +14,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (targetDateInput) {
         const today = new Date().toISOString().split("T")[0];
         targetDateInput.setAttribute("min", today);
+
+        // Validasi real-time saat pengguna mengetik manual agar tidak bisa memasukkan tanggal masa lalu
+        targetDateInput.addEventListener("change", () => {
+            if (targetDateInput.value && targetDateInput.value < today) {
+                alert("Target purchase date must be today or in the future!");
+                targetDateInput.value = "";
+            }
+        });
     }
 
     let currentActiveItemId = null;
