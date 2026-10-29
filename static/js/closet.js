@@ -247,10 +247,28 @@
         }
     })();
 
-    /* Highlight chip kategori berdasarkan URL parameter 'cat' */
+    /* Highlight chip kategori & pastikan query URL selalu lowercase */
     (function highlightCategoryChip() {
         var params = new URLSearchParams(window.location.search);
         var currentCat = params.get("cat") || params.get("category");
+        var currentColor = params.get("color");
+
+        // Jika URL masih menggunakan huruf kapital, ubah ke lowercase lalu reload
+        var needsRedirect = false;
+        if (currentCat && currentCat !== currentCat.toLowerCase()) {
+            params.set("cat", currentCat.toLowerCase());
+            needsRedirect = true;
+        }
+        if (currentColor && currentColor !== currentColor.toLowerCase()) {
+            params.set("color", currentColor.toLowerCase());
+            needsRedirect = true;
+        }
+
+        if (needsRedirect) {
+            window.location.search = params.toString();
+            return;
+        }
+
         if (!currentCat) return;
 
         var chips = document.querySelectorAll(".cl-cats .cl-cat");
@@ -258,7 +276,6 @@
             var chipText = chip.textContent.trim().toLowerCase();
             var targetCat = currentCat.trim().toLowerCase();
 
-            // Cocokkan nama chip dengan parameter URL (termasuk penanganan Dress/Dresses)
             if (chipText === targetCat || (chipText === "dresses" && targetCat === "dress")) {
                 chips.forEach(function (c) { c.classList.remove("is-selected"); });
                 chip.classList.add("is-selected");
