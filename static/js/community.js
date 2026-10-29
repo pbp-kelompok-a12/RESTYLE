@@ -622,9 +622,15 @@ if (document.querySelector(".cm-tag-button")) {
                 const result = await response.json();
 
                 if (result.status === "similar_exists") {
-                    // Tampilkan pop-up jika ada item mirip di closet
+                    // Set URL link ke Digital Closet dengan parameter filter kategori & warna
+                    const closetLink = consciousDialog.querySelector("#cm-check-similar-link");
+                    if (closetLink && shownItem) {
+                        const cat = encodeURIComponent(shownItem.category || "");
+                        const col = encodeURIComponent(shownItem.color || "");
+                        closetLink.href = `/closet/?category=${cat}&color=${col}`;
+                    }
                     consciousDialog.showModal();
-                } else if (response.ok) {
+               } else if (response.ok) {
                     const isSaved = result.saved;
                     showToast("success", isSaved ? "Added to your wishlist." : "Removed from your wishlist.");
                     
@@ -1102,7 +1108,7 @@ document.querySelectorAll(".cm-follow").forEach((button) => {
 
 const consciousDialog = document.createElement("dialog");
 consciousDialog.className = "cm-confirm-dialog";
-consciousDialog.style.cssText = "border-radius: 24px; padding: 32px; border: 1px solid #8FB0D4; background: #FAF5EC; text-align: center; max-width: 440px; width: 90%; position: relative;";
+consciousDialog.style.cssText = "border-radius: 24px; padding: 32px 24px 28px 24px; border: 1px solid #8FB0D4; background: #FAF5EC; text-align: center; max-width: 460px; width: 90%; position: relative;";
 consciousDialog.innerHTML = `
     <button type="button" class="cm-close-conscious" aria-label="Close" style="
         position: absolute; 
@@ -1127,11 +1133,14 @@ consciousDialog.innerHTML = `
             <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
     </button>
-    <h2 style="font-family: 'Poppins', sans-serif; font-size: 26px; font-weight: 800; color: #3F6699; margin: 0 0 12px 0;">Oopss..</h2>
-    <p style="font-size: 15px; color: #6B5F78; margin: 0 0 24px 0; font-weight: 500;">You already have this item. Do you really need another?</p>
-    <div style="display: flex; gap: 12px; justify-content: center;">
-        <a href="/closet/" class="btn" style="background: #9CC24B; color: #FFF; border-radius: 999px; padding: 10px 20px; font-weight: 700; text-decoration: none; font-size: 13px;">Check Closet</a>
-        <button type="button" class="cm-force-add-btn" style="background: #3F6699; color: #FFF; border: none; border-radius: 999px; padding: 10px 20px; font-weight: 700; cursor: pointer; font-size: 13px;">Keep Shopping</button>
+    <div style="margin-bottom: 12px; display: flex; justify-content: center;">
+        <img src="/static/img/bunglon_hires.png" alt="Bunglon ReStyle" style="width: 80px; height: auto;">
+    </div>
+    <h2 style="font-family: 'Poppins', sans-serif; font-size: 28px; font-weight: 800; color: #D9381E; margin: 0 0 10px 0;">Oopss...</h2>
+    <p style="font-size: 15px; color: #3F6699; margin: 0 0 24px 0; font-weight: 600; line-height: 1.4;">You already have this item. Do you really need another?</p>
+    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <a id="cm-check-similar-link" href="/closet/" class="btn" style="background: #3F6699; color: #FFF; border-radius: 999px; padding: 10px 20px; font-weight: 700; text-decoration: none; font-size: 13px; border: none; display: inline-flex; align-items: center; justify-content: center;">Check Similar Items</a>
+        <button type="button" class="cm-force-add-btn" style="background: #D9381E; color: #FFF; border: none; border-radius: 999px; padding: 10px 20px; font-weight: 700; cursor: pointer; font-size: 13px;">Add to Wishlist</button>
     </div>
 `;
 document.body.appendChild(consciousDialog);
@@ -1139,7 +1148,7 @@ document.body.appendChild(consciousDialog);
 const closeBtn = consciousDialog.querySelector(".cm-close-conscious");
 closeBtn.addEventListener("click", () => consciousDialog.close());
 
-// Efek Hover / Sentuh
+// Efek Hover / Sentuh Tombol Silang
 closeBtn.addEventListener("mouseenter", () => {
     closeBtn.style.backgroundColor = "#3F6699";
     closeBtn.style.borderColor = "#3F6699";
