@@ -7,12 +7,14 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db.models import Count, Exists, OuterRef, Q
-from django.http import HttpResponseForbidden, JsonResponse
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme, urlencode
 from django.views.decorators.http import require_POST
+
+from django.core import serializers
 
 from community.forms import CommentForm, PostForm
 from closet.models import Item
@@ -617,3 +619,9 @@ def mention_suggestions(request):
             "photo": profile.photo.url if profile and profile.photo else "",
         })
     return JsonResponse({"results": results})
+
+def get_post_json(request):
+    posts = Post.objects.all()
+
+    posts_json = serializers.serialize("json", posts)
+    return HttpResponse(posts_json, content_type="application/json")

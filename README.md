@@ -70,7 +70,26 @@ Admin bertugas mengelola dan menjaga konten serta data yang terdapat pada platfo
 * Memoderasi konten atau postingan pengguna.
 * Mengelola data yang diperlukan agar fitur-fitur RE:STYLE dapat berjalan dengan baik.
 
+### Penggunaan AI
 
+1. 
+2. 
+3. 
+4. 
+
+5. Modul 5: Fashion Community dan Modul 6: Admin Panel (Moderasi Konten) - Salsabilla Hasan
+
+AI saya gunakan sebagai alat bantu selama pengembangan RE:STYLE, terutama pada fitur Community yang memiliki cukup banyak fitur tambahan dan alur yang cukup kompleks. Untuk Community, saya sendiri yang merancang tampilan dan desain antarmukanya melalui Figma, termasuk menentukan layout, komponen, serta alur interaksi yang ingin digunakan.
+
+Untuk core fitur Community yang terdapat pada modul, saya mempelajari konsep dan alurnya melalui sumber eksternal seperti dokumentasi Django dan tutorial web PBP. Sementara itu, untuk beberapa fitur tambahan Community seperti search, notifications, saved posts, follow dan profil pengguna, mention, tag item Digital Closet, foto pada balasan, dan foto profil khusus Community, saya menggunakan bantuan AI dalam proses implementasinya. Karena fitur-fitur tersebut cukup kompleks, saya menggunakan AI untuk membantu menerjemahkan rancangan dan kebutuhan fitur yang sudah saya tentukan ke dalam kode.
+
+Bantuan AI juga cukup banyak digunakan pada bagian JavaScript karena bagian tersebut masih cukup sulit bagi saya untuk implementasikan sendiri. Biasanya saya memberikan konteks mengenai fitur, desain, atau kode yang sudah ada, kemudian meminta AI membantu membuat atau menjelaskan bagian tertentu. Hasil dari AI kemudian saya cek dan sesuaikan kembali dengan struktur project yang saya miliki.
+
+Selain Community, saya juga turut berkontribusi pada Modul 6: Admin Panel (Moderasi Konten). Pada bagian ini, saya ikut mengerjakan dan mengembangkan bagian dari admin panel yang digunakan untuk mendukung kebutuhan moderasi Fashion Community. Karena pengembangan Admin Panel juga memiliki kompleksitas tersendiri, saya menggunakan bantuan AI dalam proses implementasinya. Terutama untuk bagian yang belum saya kuasai, saya menggunakan AI untuk membantu menerjemahkan kebutuhan fitur ke dalam kode, kemudian melakukan pengecekan dan penyesuaian terhadap project yang sudah ada.
+
+Saya menyadari bahwa pada beberapa bagian, terutama fitur tambahan Community dan Admin Panel, AI memiliki peran yang cukup besar dalam membantu proses implementasi. Saya tidak menganggap hasil dari AI selalu langsung benar. Kode yang diberikan tetap saya cek dan sesuaikan dengan model, URL, view, template, serta struktur project yang digunakan. Sementara itu, desain antarmuka dan kebutuhan fitur yang menjadi dasar implementasi saya tentukan sendiri melalui perancangan di Figma dan kebutuhan modul.
+
+Dengan demikian, AI saya gunakan sebagai alat bantu dalam proses belajar dan implementasi, terutama untuk bagian yang masih sulit saya kerjakan secara mandiri. Saya tetap melakukan pengecekan dan penyesuaian terhadap hasil AI agar dapat digunakan sesuai dengan struktur dan kebutuhan RE:STYLE.
 
 ### Link Deployment PWS
 https://pws.cs.ui.ac.id/web/project/aulia.nur51/restyle
