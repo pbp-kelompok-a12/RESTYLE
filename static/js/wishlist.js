@@ -10,6 +10,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("wishlist-items");
     const noMatchSection = document.getElementById("wishlist-no-match");
     const priceInput = document.getElementById("item-price");
+    const targetDateInput = document.getElementById("item-target-date");
+    if (targetDateInput) {
+        const today = new Date().toISOString().split("T")[0];
+        targetDateInput.setAttribute("min", today);
+    }
 
     let currentActiveItemId = null;
     let onlyShowMatches = false;
@@ -157,6 +162,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("item-price").value = formatNumberWithDots(data.raw_price);
                 document.getElementById("item-material").value = data.material !== "-" ? data.material : "";
 
+                const targetDateInput = document.getElementById("item-target-date");
+                if (targetDateInput) {
+                    targetDateInput.value = data.target_date || "";
+                }
+
                 const catRadio = form.querySelector(`input[name="category"][value="${data.category}"]`);
                 if (catRadio) catRadio.checked = true;
 
@@ -205,7 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(res => res.json())
         .then(data => {
             if (data.status === "success") {
-                window.location.reload();
+                window.location.reload(); // a d2
             }
         });
     });
@@ -311,7 +321,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(res => {
             if (res.ok) {
                 window.location.reload();
-            } else {
+            } else { // res.json().then(data =>{});
                 alert("Gagal menyimpan item. Pastikan field wajib sudah terisi.");
                 if (priceInput) priceInput.value = originalPrice;
             }
@@ -360,13 +370,19 @@ document.addEventListener("DOMContentLoaded", () => {
             const weather = (card.getAttribute("data-weather") || "").toLowerCase();
             const name = (card.getAttribute("data-name") || "").toLowerCase();
             const hasMatch = card.getAttribute("data-has-match") === "true";
+            const statusText = hasMatch ? "similar item found" : "no similar item found";
 
             const matchCategory = !activeCategory || category === activeCategory;
             const matchColor = !selectedColor || color === selectedColor;
             const matchStyle = !selectedStyle || style === selectedStyle;
             const matchSeason = !selectedSeason || season.includes(selectedSeason);
             const matchWeather = !selectedWeather || weather.includes(selectedWeather);
-            const matchSearch = !searchQuery || name.includes(searchQuery);
+            const matchSearch = !searchQuery || name.includes(searchQuery) || 
+                color.includes(searchQuery)||
+                style.includes(searchQuery) || 
+                season.includes(searchQuery) || 
+                weather.includes(searchQuery) ||
+                statusText.includes(searchQuery);
             const matchStatCard = !onlyShowMatches || hasMatch;
 
             let matchStatus = true;
