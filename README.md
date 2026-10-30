@@ -145,10 +145,15 @@ https://pws.cs.ui.ac.id/web/project/aulia.nur51/restyle
 
 #### Akun trial untuk mencoba
 - Akun Admin
+  
   Username: adminrestyle
+  
   Password: kerenbanget
+  
 - Akun Dummy (Sudah diisikan data - data untuk bisa dicoba)
+
   Username: restyle.archive
+  
   Password: bismillahPBPA
 
 
