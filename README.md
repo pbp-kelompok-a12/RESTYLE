@@ -74,11 +74,13 @@ Admin bertugas mengelola dan menjaga konten serta data yang terdapat pada platfo
 
 1. Modul 1: Digital Closet (Wardrobe Management) - Aulia Nur Shiva
 
-Dalam pengembangan modul Digital Closet, saya menggunakan AI (Claude dan ChatGPT) sebagai alay bantu selama proses implementasi dan pengembangan fitur, terutama pada bagian JavaScript dan penyempurnaan interface.
+Dalam pengembangan modul Digital Closet, saya menggunakan AI (Claude dan ChatGPT) sebagai alat bantu selama proses implementasi dan pengembangan fitur, terutama pada bagian JavaScript dan penyempurnaan interface.
 
 Pada awalnya, implementasi fitur Digital Closet mengacu pada tutorial PBP yang mancakup fitur mirip/serupa, seperti menambahkan, mengedit, mencari item. Implementasi awal form yang saya gunakan yaitu menggunakan halaman form terpisah. Namun, untuk membuat interaksi yang lebih nyaman bagi user, saya mengeksplorasi penggunakan popup atau modal sebagai alternatif. Dalam proses ini, saya mencari sumber eksternal yaitu YouTube dan menggunakan AI untuk membantu memberikan arahan mengenai implementasi ini serta membantu penulisan dan penyesuaian kode JavaScript yang diperlukan.
 
-Selain itu, AI digunakan sebagai alat bantu dalam menyelesaikan detail interface, seperti penyesuaian format tampilan nominal harga menggunakan pemisah ribuan. 
+Selain itu, saya mengimplementasikan AJAX untuk mendukung interaksi pada Digital Closet agar beberapa proses dapat dilakukan tanpa perlu memuat ulang seluruh halaman. Dalam proses implementasi AJAX, AI digunakan untuk membantu saya menyusun kode JavaScript yang diperlukan.
+
+AI juga digunakan sebagai alat bantu dalam menyelesaikan detail interface, seperti penyesuaian format tampilan nominal harga menggunakan pemisah ribuan. 
 
 Sumber eksternal:
 - https://youtu.be/xKOyDDuQSVY?si=NGuyf6DxNCOUbiRZ 
