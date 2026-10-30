@@ -28,7 +28,17 @@ class Migration(migrations.Migration):
             new_name="accessories_legacy",
         ),
         migrations.SeparateDatabaseAndState(
-            database_operations=[],
+            database_operations=[
+                migrations.AddField(
+                    model_name="outfit",
+                    name="accessories",
+                    field=models.ManyToManyField(
+                        blank=True,
+                        related_name="outfits_with_accessory",
+                        to="closet.item",
+                    ),
+                ),
+            ],
             state_operations=[
                 migrations.AddField(
                     model_name="outfit",
