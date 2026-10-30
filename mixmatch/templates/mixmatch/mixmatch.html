@@ -18,14 +18,20 @@
             <span class="mm-sticker">your way</span>
         </h1>
         {% if outfit %}
-            <p class="mm-editing">Editing <strong>{{ outfit.name }}</strong> · <a href="{% url 'mixmatch:show_mixmatch' %}">Start a new outfit</a></p>
+        <p class="mm-editing">
+            Editing <strong>{{ outfit.name }}</strong> ·
+            <a href="{% url 'mixmatch:show_mixmatch' %}">Start a new outfit</a>
+        </p>
         {% endif %}
     </header>
-
-        <form method="post" id="mm-form" class="mm-builder"
-            action="{% if outfit %}{% url 'mixmatch:edit_outfit' outfit.id %}{% else %}{% url 'mixmatch:save_outfit' %}{% endif %}">
+    <form method="post" id="mm-form" class="mm-builder"
+          action="{% if outfit %}{% url 'mixmatch:edit_outfit' outfit.id %}{% else %}{% url 'mixmatch:save_outfit' %}{% endif %}">
         {% csrf_token %}
-        {% if planner_return %}<input type="hidden" name="planner_return" value="{{ planner_return }}">{% endif %}
+        {% if planner_return %}
+        <input type="hidden" name="planner_return" value="{{ planner_return }}">
+        {% endif %}
+
+        <!-- YOUR CLOSET -->
         <aside class="mm-card mm-closet" aria-label="Your closet">
             <h2>Your closet</h2>
 
@@ -33,105 +39,238 @@
             <div class="mm-chips" role="group" aria-label="Filter by category">
                 <button type="button" class="mm-chip is-active" data-category="">ALL</button>
                 {% for value, label in category_options %}
-                <button type="button" class="mm-chip" data-category="{{ value }}">{{ label }}</button>
+                <button type="button" class="mm-chip" data-category="{{ value }}">
+                    {{ label }}
+                </button>
                 {% endfor %}
             </div>
 
             <div class="mm-items">
                 {% for item in items %}
-                <button type="button" class="mm-item"
-                        data-id="{{ item.id }}" data-slot="{{ item.slot }}" data-category="{{ item.category }}"
-                        data-name="{{ item.name }}" data-photo="{% if item.photo %}{{ item.photo.url }}{% endif %}" data-color="{{ item.color_hex }}"
-                        {% if item.status != 'ready' %}disabled title="This piece is in the wash"{% endif %}>
-                    <span class="mm-item-photo">
-                        {% if item.photo %}
-                        <img src="{{ item.photo.url }}" alt="" loading="lazy">
-                        {% else %}
-                        <i class="mm-swatch" style="background:{{ item.color_hex }}"></i>
-                        {% endif %}
-                        {% if item.status != 'ready' %}<span class="mm-item-wash">In the wash</span>{% endif %}
-                    </span>
-                    <span class="mm-item-name">{{ item.name }}</span>
-                    <span class="mm-item-add" aria-hidden="true"><i class="fa-solid fa-plus"></i></span>
-                </button>
+                <div class="mm-item-wrap">
+                    <button type="button"
+                            class="mm-item"
+                            data-id="{{ item.id }}"
+                            data-slot="{{ item.slot }}"
+                            data-category="{{ item.category }}"
+                            data-name="{{ item.name }}"
+                            data-photo="{% if item.photo %}{{ item.photo.url }}{% endif %}"
+                            data-color="{{ item.color_hex }}"
+                            {% if item.status != 'ready' %}
+                            disabled
+                            title="This piece is in the wash"
+                            {% endif %}>
+                        <span class="mm-item-photo">
+                            {% if item.photo %}
+                            <img src="{{ item.photo.url }}" alt="" loading="lazy">
+                            {% else %}
+                            <i class="mm-swatch" style="background:{{ item.color_hex }}"></i>
+                            {% endif %}
+                            {% if item.status != 'ready' %}
+                            <span class="mm-item-wash">In the wash</span>
+                            {% endif %}
+                        </span>
+                        <span class="mm-item-name">{{ item.name }}</span>
+
+                        <span class="mm-item-add" aria-hidden="true">
+                            <i class="fa-solid fa-plus"></i>
+                        </span>
+                    </button>
+                </div>
                 {% endfor %}
             </div>
+
             <p class="mm-none" hidden>No pieces in this category yet.</p>
+
             {% else %}
             <div class="mm-empty mm-empty-small">
                 <img src="{% static 'img/bunglon_hires.png' %}" alt="">
                 <p>Your closet is empty.</p>
-                <a href="{% url 'closet:show_closet' %}" class="btn primary-btn">Add pieces first</a>
+                <a href="{% url 'closet:show_closet' %}" class="btn primary-btn">
+                    Add pieces first
+                </a>
             </div>
             {% endif %}
         </aside>
+
+        <!-- OUTFIT BUILDER -->
         <div class="mm-canvas">
+
             <div class="mm-toolbar">
-                <button type="button" class="mm-tool mm-shuffle"><i class="fa-solid fa-shuffle"></i> Shuffle</button>
-                <button type="button" class="mm-tool mm-reset"><i class="fa-solid fa-rotate-right"></i> Reset</button>
+                <button type="button" class="mm-tool mm-shuffle">
+                    <i class="fa-solid fa-shuffle"></i> Shuffle
+                </button>
+
+                <button type="button" class="mm-tool mm-reset">
+                    <i class="fa-solid fa-rotate-right"></i> Reset
+                </button>
             </div>
+
             <div class="mm-slots">
                 {% for slot in slots %}
                 <div class="mm-slot-wrap">
                     <span class="mm-slot-label">{{ slot.label }}</span>
-                    <div class="mm-slot{% if slot.item %} is-filled{% endif %}" data-slot="{{ slot.key }}" data-categories="{{ slot.categories }}">
-                        <input type="hidden" name="{{ slot.key }}" value="{{ slot.item.id|default:'' }}">
-                        <button type="button" class="mm-slot-add" aria-label="Pick {{ slot.label|lower }} from your closet">
-                            <i class="fa-solid fa-circle-plus"></i>
-                        </button>
-                        <div class="mm-slot-piece" {% if not slot.item %}hidden{% endif %}>
-                            <img {% if slot.item.photo %}src="{{ slot.item.photo.url }}"{% else %}hidden{% endif %} alt="{{ slot.item.name }}">
-                            <i class="mm-swatch" style="background:{{ slot.item.color_hex }}" {% if slot.item.photo %}hidden{% endif %}></i>
-                            <span class="mm-slot-name">{{ slot.item.name }}</span>
-                        </div>
-                        <button type="button" class="mm-slot-clear" aria-label="Remove {{ slot.label|lower }}" {% if not slot.item %}hidden{% endif %}>
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
+
+                    <div class="mm-slot{% if slot.item %} is-filled{% endif %}"
+                         data-slot="{{ slot.key }}"
+                         data-categories="{{ slot.categories }}">
+
+                        {% if slot.key == 'accessories' %}
+
+                            <button type="button"
+                                    class="mm-slot-add"
+                                    aria-label="Pick accessories from your closet">
+                                <i class="fa-solid fa-circle-plus"></i>
+                            </button>
+
+                            <div class="mm-accessory-pieces"
+                                 {% if not slot.item %}hidden{% endif %}>
+
+                                {% for item in slot.item %}
+                                <div class="mm-accessory-piece">
+                                    <input type="hidden"
+                                           name="accessories"
+                                           value="{{ item.id }}">
+
+                                    {% if item.photo %}
+                                    <img src="{{ item.photo.url }}" alt="{{ item.name }}">
+                                    {% else %}
+                                    <i class="mm-swatch"
+                                       style="background:{{ item.color_hex }}"></i>
+                                    {% endif %}
+
+                                    <span class="mm-slot-name">{{ item.name }}</span>
+
+                                    <button type="button"
+                                            class="mm-accessory-remove"
+                                            aria-label="Remove {{ item.name }}">
+                                        &times;
+                                    </button>
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            <button type="button"
+                                    class="mm-slot-clear"
+                                    aria-label="Remove accessories"
+                                    {% if not slot.item %}hidden{% endif %}>
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+
+                        {% else %}
+
+                            <input type="hidden"
+                                   name="{{ slot.key }}"
+                                   value="{{ slot.item.id|default:'' }}">
+
+                            <button type="button"
+                                    class="mm-slot-add"
+                                    aria-label="Pick {{ slot.label|lower }} from your closet">
+                                <i class="fa-solid fa-circle-plus"></i>
+                            </button>
+
+                            <div class="mm-slot-piece"
+                                 {% if not slot.item %}hidden{% endif %}>
+
+                                <img
+                                    {% if slot.item.photo %}
+                                    src="{{ slot.item.photo.url }}"
+                                    {% else %}
+                                    hidden
+                                    {% endif %}
+                                    alt="{{ slot.item.name }}">
+
+                                <i class="mm-swatch"
+                                   style="background:{{ slot.item.color_hex }}"
+                                   {% if slot.item.photo %}hidden{% endif %}>
+                                </i>
+
+                                <span class="mm-slot-name">{{ slot.item.name }}</span>
+                            </div>
+
+                            <button type="button"
+                                    class="mm-slot-clear"
+                                    aria-label="Remove {{ slot.label|lower }}"
+                                    {% if not slot.item %}hidden{% endif %}>
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+
+                        {% endif %}
                     </div>
                 </div>
                 {% endfor %}
             </div>
-            <p class="mm-error" id="mm-error" role="alert" hidden>Pick at least one piece from your closet first.</p>
-            <div class="mm-purchases" title="Every piece here is already in your closet">
-                <span>New purchases</span>
-                <strong>Rp{{ new_purchases }}</strong>
-            </div>
+
+            <p class="mm-layering-note">
+                <strong>Style tip:</strong> Layer your favorite pieces to complete your look!
+            </p>
+
+            <p class="mm-error" id="mm-error" role="alert" hidden>
+                Pick at least one piece from your closet first.
+            </p>
         </div>
+
+        <!-- OUTFIT DETAILS -->
         <aside class="mm-card mm-details" aria-label="Outfit details">
             <h2>Outfit details</h2>
+
             <label class="mm-field">
                 <span>Outfit name</span>
-                <input type="text" name="name" value="{{ name_value }}" maxlength="100" required autocomplete="off">
+                <input type="text"
+                       name="name"
+                       value="{{ name_value }}"
+                       maxlength="100"
+                       required
+                       autocomplete="off">
             </label>
+
             <fieldset class="mm-field">
                 <legend>Tags</legend>
+
                 <div class="mm-tags">
                     {% for tag in tag_options %}
                     <label class="mm-tag">
-                        <input type="checkbox" name="tags" value="{{ tag }}" {% if tag in selected_tags %}checked{% endif %}>
+                        <input type="checkbox"
+                               name="tags"
+                               value="{{ tag }}"
+                               {% if tag in selected_tags %}checked{% endif %}>
                         <span>{{ tag }}</span>
                     </label>
                     {% endfor %}
                 </div>
             </fieldset>
+
             <label class="mm-field">
                 <span>Notes</span>
                 <textarea name="notes" rows="4" maxlength="500">{{ notes_value }}</textarea>
             </label>
-            <button type="submit" class="mm-btn mm-btn-dark">{% if outfit %}Update outfit{% else %}Save outfit{% endif %}</button>
-            <button type="submit" name="share" value="1" class="mm-btn mm-btn-yellow">
+
+            <button type="submit" class="mm-btn mm-btn-dark">
+                {% if outfit %}Update outfit{% else %}Save outfit{% endif %}
+            </button>
+
+            <button type="submit"
+                    name="share"
+                    value="1"
+                    class="mm-btn mm-btn-yellow">
                 Share to community
             </button>
         </aside>
     </form>
+
+    <!-- SAVED OUTFITS -->
     <section class="mm-saved" aria-labelledby="mm-saved-title">
-        <h2 id="mm-saved-title">Saved outfits <i class="fa-solid fa-star"></i></h2>
+        <h2 id="mm-saved-title">
+            Saved outfits <i class="fa-solid fa-star"></i>
+        </h2>
+
         {% if saved_outfits %}
         <div class="mm-saved-grid">
             {% for o in saved_outfits %}
             {% include 'mixmatch/_outfit_card.html' with o=o editing=outfit show_delete=True %}
             {% endfor %}
         </div>
+
         {% else %}
         <div class="mm-empty">
             <img src="{% static 'img/bunglon_hires.png' %}" alt="">
@@ -140,14 +279,77 @@
         </div>
         {% endif %}
     </section>
+
+    <!-- DELETE CONFIRMATION MODAL -->
     <div class="mm-overlay" id="mm-overlay" hidden>
-        <div class="mm-modal" role="dialog" aria-modal="true" aria-labelledby="mm-modal-title">
-            <button type="button" class="mm-modal-close" data-close aria-label="Close">&times;</button>
-            <h2 class="mm-modal-title" id="mm-modal-title">Delete this outfit?</h2>
+        <div class="mm-modal"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="mm-modal-title">
+
+            <button type="button"
+                    class="mm-modal-close"
+                    data-close
+                    aria-label="Close">&times;</button>
+
+            <h2 class="mm-modal-title" id="mm-modal-title">
+                Delete this outfit?
+            </h2>
+
             <p class="mm-modal-text" id="mm-modal-text"></p>
             <div class="mm-modal-actions">
-                <button type="button" class="mm-modal-btn mm-modal-cancel" data-close>Cancel</button>
-                <button type="button" class="mm-modal-btn mm-modal-delete" id="mm-confirm-yes">Delete</button>
+                <button type="button"
+                        class="mm-modal-btn mm-modal-cancel"
+                        data-close>
+                    Cancel
+                </button>
+
+                <button type="button"
+                        class="mm-modal-btn mm-modal-delete"
+                        id="mm-confirm-yes">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SAVED OUTFIT DETAIL MODAL -->
+    <div class="mm-overlay" id="mm-detail-overlay" hidden>
+        <div class="mm-modal mm-detail-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="mm-detail-title">
+
+            <button type="button"
+                    class="mm-modal-close"
+                    data-detail-close
+                    aria-label="Close">&times;</button>
+
+            <h2 class="mm-modal-title" id="mm-detail-title"></h2>
+
+            <p class="mm-detail-tags" id="mm-detail-tags" hidden></p>
+
+            <div class="mm-detail-pieces" id="mm-detail-pieces"></div>
+
+            <div class="mm-detail-notes-wrap" id="mm-detail-notes-wrap" hidden>
+                <h3>Notes</h3>
+                <p id="mm-detail-notes"></p>
+            </div>
+
+            <div class="mm-modal-actions">
+                <button type="button"
+                        class="mm-btn mm-btn-dark"
+                        id="mm-detail-edit">
+                    <i class="fa-solid fa-pen"></i>
+                    Edit Outfit
+                </button>
+
+                <button type="button"
+                        class="mm-btn mm-btn-yellow"
+                        id="mm-detail-delete">
+                    <i class="fa-solid fa-trash"></i>
+                    Delete Outfit
+                </button>
             </div>
         </div>
     </div>
@@ -156,3 +358,4 @@
 <script src="{% static 'js/mixmatch.js' %}"></script>
 {% include 'components/toast.html' %}
 {% endblock content %}
+ini mixmatxh.html
