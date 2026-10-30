@@ -87,7 +87,15 @@ Sumber eksternal:
 - https://youtu.be/opjyyXoqrxg?si=DwmeoCX6oHeldoGH
 
 
-2. 
+2. Modul 2: Mix & Match Outfit Builder
+Dalam pengembangan modul Mix & Match, saya menggunakan AI (Claude dan ChatGPT) sebagai alat bantu selama proses pengerjaan, terutama dalam pengembangan JavaScript, CSS, dan beberapa penyesuaian backend Django.
+
+Saya menentukan sendiri tampilan, alur penggunaan, serta fitur-fitur yang ingin dikembangkan, seperti Saved Outfits, Outfit Details, Edit, Update, Share to Community, Reset, dan Shuffle.
+
+Selama proses coding, saya tetap berusaha mengerjakan dan memahami implementasinya terlebih dahulu. AI membantu dalam mengembangkan beberapa bagian kode serta menyesuaikan fitur dengan kebutuhan modul, misalnya memungkinkan pengguna memilih lebih dari satu aksesori dalam satu outfit, mengombinasikan dress dengan item pakaian lainnya, dan mengembangkan fungsi dari fitur-fitur yang telah dirancang. Selain itu, AI juga membantu memberikan saran dan mencari solusi ketika terdapat error atau fitur yang belum berjalan sesuai harapan.
+
+Hasil dari proses tersebut kemudian saya pelajari, sesuaikan dengan kode yang sudah dibuat, dan uji kembali untuk memastikan setiap fitur berjalan sesuai harapan. Melalui proses ini, AI tidak hanya membantu dalam implementasi teknis, tetapi juga membantu saya memahami dan mengembangkan kode selama pengerjaan modul.
+
 3. Modul 3: Weekly Outfit Planner & Weather Recommendation
 
 Pada fitur Planner RE:STYLE, saya menggunakan AI sebagai asisten, bukan sebagai pengganti proses perancangan. Konsep fitur, aturan, dan desain antarmuka (modal pemilihan outfit, widget cuaca, dll.) saya tentukan dan rancang sendiri di Figma. Aturan seperti status "In the Wash" yang kembali "Ready" pada hari laundry, rekomendasi outfit berdasarkan cuaca, hingga penggunaan ulang komponen yang sudah ada (kartu outfit, tombol, toast) juga berasal dari keputusan saya.
