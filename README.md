@@ -88,6 +88,7 @@ Sumber eksternal:
 
 
 2. Modul 2: Mix & Match Outfit Builder
+
 Dalam pengembangan modul Mix & Match, saya menggunakan AI (Claude dan ChatGPT) sebagai alat bantu selama proses pengerjaan, terutama dalam pengembangan JavaScript, CSS, dan beberapa penyesuaian backend Django.
 
 Saya menentukan sendiri tampilan, alur penggunaan, serta fitur-fitur yang ingin dikembangkan, seperti Saved Outfits, Outfit Details, Edit, Update, Share to Community, Reset, dan Shuffle.
