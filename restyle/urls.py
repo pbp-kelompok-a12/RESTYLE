@@ -29,4 +29,5 @@ urlpatterns = [
     path("closet/", include("closet.urls")),
     path("mixmatch/", include("mixmatch.urls")),
     path("api/auth/", include("main.api_urls")),
+    path("api/closet/", include("closet.api_urls")),
 ]
