@@ -8,19 +8,64 @@
     </div>
     <button type="button" class="mm-outfit-link {% if selectable %}mm-outfit-select{% else %}mm-outfit-day-open{% endif %}" {% if selectable %}data-outfit-id="{{ o.id }}" aria-pressed="{{ selected|yesno:'true,false' }}"{% else %}data-plan-date="{{ planner_date|date:'Y-m-d' }}"{% endif %} {% if status == 'washing' %}disabled aria-disabled="true"{% endif %} aria-label="{% if status == 'washing' %}{{ o.name }}, In The Wash{% elif selectable %}{% if selected %}Deselect{% else %}Choose{% endif %} {{ o.name }}{% else %}Open {{ o.name }} outfit{% endif %}">
     {% else %}
-    <a class="mm-outfit-link" href="{% url 'mixmatch:edit_outfit' o.id %}" aria-label="Open {{ o.name }} in the builder">
+    <a class="mm-outfit-link"
+        href="{% url 'mixmatch:edit_outfit' o.id %}"
+        data-outfit-detail-trigger
+        aria-label="View details for {{ o.name }}">
     {% endif %}
-        <div class="mm-flat{% if o.dresses %} has-dress{% endif %}">
-            {% for slot, piece in o.slot_pieces %}
+    <div class="mm-flat{% if o.dresses %} has-dress{% endif %}">
+        {% for slot, piece in o.slot_pieces %}
+            {% if slot != "accessories" %}
             <span class="mm-p mm-p-{{ slot }}">
-                {% if piece.photo %}<img src="{{ piece.photo.url }}" alt="{{ piece.name }}" loading="lazy">
-                {% else %}<i class="mm-swatch" style="background:{{ piece.color_hex }}"></i>{% endif %}
+                {% if piece.photo %}
+                    <img src="{{ piece.photo.url }}" alt="{{ piece.name }}" loading="lazy">
+                {% else %}
+                    <i class="mm-swatch" style="background:{{ piece.color_hex }}"></i>
+                {% endif %}
             </span>
-            {% empty %}<span class="mm-outfit-empty">Pieces were removed from your closet</span>{% endfor %}
-        </div>
+            {% endif %}
+        {% endfor %}
+        {% if o.accessories.all %}
+        <span class="mm-p mm-p-accessories">
+            <span class="mm-accessories-stack">
+                {% for piece in o.accessories.all %}
+                <span class="mm-accessory-thumbnail">
+                    {% if piece.photo %}
+                        <img src="{{ piece.photo.url }}" alt="{{ piece.name }}" loading="lazy">
+                    {% else %}
+                        <i class="mm-swatch" style="background:{{ piece.color_hex }}"></i>
+                    {% endif %}
+                </span>
+                {% endfor %}
+            </span>
+        </span>
+        {% endif %}
+        {% if not o.pieces %}
+            <span class="mm-outfit-empty">Pieces were removed from your closet</span>
+        {% endif %}
+    </div>
         <p class="mm-outfit-name">{{ o.name }}</p>
         {% if o.tags %}<p class="mm-outfit-tags">{{ o.tags|join:" · " }}</p>{% endif %}
     {% if selectable or planner_day %}</button>{% else %}</a>{% endif %}
+    {% if show_delete %}
+        <div class="mm-outfit-detail-source"
+            hidden
+            data-outfit-name="{{ o.name }}"
+            data-outfit-tags="{{ o.tags|join:' · ' }}"
+            data-outfit-notes="{{ o.notes }}"
+            data-edit-url="{% url 'mixmatch:edit_outfit' o.id %}">
+
+            {% for slot, piece in o.slot_pieces %}
+            <div class="mm-detail-source-piece"
+                data-slot="{{ slot }}"
+                data-name="{{ piece.name }}"
+                data-photo="{% if piece.photo %}{{ piece.photo.url }}{% endif %}"
+                data-color="{{ piece.color_hex }}">
+            </div>
+            {% endfor %}
+
+        </div>
+        {% endif %}
     {% if show_delete %}
     <form method="post" action="{% url 'mixmatch:delete_outfit' o.id %}" class="mm-outfit-delete" data-confirm="{{ o.name }}">
         {% csrf_token %}<button type="submit" aria-label="Delete {{ o.name }}"><i class="fa-solid fa-trash"></i></button>

@@ -66,7 +66,14 @@ def item_is_washing(item, user, target_date, current_plan=None, weekdays=None, l
 
 
 def outfit_status(outfit, user, target_date, current_plan=None, weekdays=None, laundry_time_days=None):
-    pieces = [getattr(outfit, slot) for slot in SLOTS if getattr(outfit, slot + "_id")]
+    pieces = []
+    for slot in SLOTS:
+        if slot == "accessories":
+            pieces.extend(outfit.accessories.all())
+        else:
+            piece = getattr(outfit, slot)
+            if piece is not None:
+                pieces.append(piece)
     if any(
         piece.category in MANUAL_STATUS_CATEGORIES and piece.status == "washing"
         for piece in pieces
@@ -115,7 +122,10 @@ def build_week_slots(user, monday, weekdays, laundry_time_days):
     plans = {
         plan.date: plan
         for plan in DailyPlan.objects.filter(user=user, date__range=(monday, monday + timedelta(days=6)))
-        .select_related("outfit", *("outfit__" + slot for slot in SLOTS))
+        .select_related(
+            "outfit",
+            *("outfit__" + slot for slot in SLOTS if slot != "accessories")
+        ).prefetch_related("outfit__accessories")
     }
     slots = []
     for offset in range(7):
@@ -215,7 +225,11 @@ def outfit_options(request):
         return JsonResponse({"error": "Invalid planner date."}, status=400)
     plan = DailyPlan.objects.filter(user=request.user, date=day).first()
     prefs = get_settings(request.user)
-    outfits = list(Outfit.objects.filter(user=request.user).select_related(*SLOTS))
+    outfits = list(
+        Outfit.objects.filter(user=request.user)
+        .select_related(*(slot for slot in SLOTS if slot != "accessories"))
+        .prefetch_related("accessories")
+    )
     cards = [serialize_outfit(
         o, request.user, day, plan, prefs.laundry_weekdays, prefs.laundry_time_days
     ) for o in outfits]
@@ -366,7 +380,12 @@ def save_plan(request):
 
     if not day:
         return JsonResponse({"error": "Invalid planner date."}, status=400)
-    outfit = get_object_or_404(Outfit.objects.filter(user=request.user).select_related(*SLOTS), pk=outfit_id)
+    outfit = get_object_or_404(
+        Outfit.objects.filter(user=request.user)
+        .select_related(*(slot for slot in SLOTS if slot != "accessories"))
+        .prefetch_related("accessories"),
+        pk=outfit_id,
+    )
     existing = DailyPlan.objects.filter(user=request.user, date=day).first()
     prefs = get_settings(request.user)
 

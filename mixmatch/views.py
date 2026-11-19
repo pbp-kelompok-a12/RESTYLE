@@ -21,12 +21,24 @@ def builder_context(request, form=None, outfit=None):
     by_id = {str(item.id): item for item in items}
     slots = []
     for key in SLOTS:
-        if form is not None and form.is_bound:
-            picked = by_id.get(form.data.get(key, ""))
-        elif outfit is not None:
-            picked = getattr(outfit, key)
+        if key == "accessories":
+            if form is not None and form.is_bound:
+                picked = [
+                    by_id[item_id]
+                    for item_id in form.data.getlist(key)
+                    if item_id in by_id
+                ]
+            elif outfit is not None:
+                picked = list(outfit.accessories.all())
+            else:
+                picked = []
         else:
-            picked = None
+            if form is not None and form.is_bound:
+                picked = by_id.get(form.data.get(key, ""))
+            elif outfit is not None:
+                picked = getattr(outfit, key)
+            else:
+                picked = None
         slots.append({
             "key": key,
             "label": SLOT_LABELS[key],
@@ -36,11 +48,31 @@ def builder_context(request, form=None, outfit=None):
 
     if form is not None and form.is_bound:
         selected_tags = form.data.getlist("tags")
-        name, notes = form.data.get("name", ""), form.data.get("notes", "")
+        name = form.data.get("name", "")
+        notes = form.data.get("notes", "")
+
     elif outfit is not None:
-        selected_tags, name, notes = outfit.tags, outfit.name, outfit.notes
+        selected_tags = outfit.tags
+        name = outfit.name
+        notes = outfit.notes
+
     else:
-        selected_tags, name, notes = [], "", ""
+        selected_tags = []
+        name = ""
+        notes = ""
+
+    saved_outfits = (
+        Outfit.objects
+        .filter(user=request.user)
+        .select_related(
+            "top",
+            "bottom",
+            "shoes",
+            "outerwear",
+            "dresses",
+        )
+        .prefetch_related("accessories")
+    )
 
     return {
         "items": items,
@@ -51,9 +83,11 @@ def builder_context(request, form=None, outfit=None):
         "outfit": outfit,
         "name_value": name,
         "notes_value": notes,
-        "saved_outfits": Outfit.objects.filter(user=request.user).select_related(*SLOTS),
-        "new_purchases": 0,
-        "planner_return": request.GET.get("planner_return") or request.POST.get("planner_return", ""),
+        "saved_outfits": saved_outfits,
+        "planner_return": (
+            request.GET.get("planner_return")
+            or request.POST.get("planner_return", "")
+        ),
     }
 
 @login_required(login_url=LOGIN_URL)
@@ -84,6 +118,7 @@ def save_outfit(request):
         outfit = form.save(commit=False)
         outfit.user = request.user
         outfit.save()
+        form.save_m2m()
         if request.POST.get("share") == "1":
             return share_to_community(request, outfit)
         messages.success(request, f'Yay! "{outfit.name}" is saved.')

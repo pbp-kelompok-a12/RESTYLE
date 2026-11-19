@@ -32,7 +32,7 @@ Aplikasi ini memberikan manfaat nyata bagi masyarakat dengan mendorong penggunaa
 | **Modul 1: Digital Closet (Wardrobe Management)** | Aulia Nur Shiva | Fitur inti untuk mengelola data pakaian pengguna, lengkap dengan filter berdasarkan warna, kategori, dan style. Kategori pakaian diisi/dipilih manual oleh pengguna (bukan deteksi otomatis via AI). | Menambah data pakaian baru (nama, kategori, warna, style, material, foto, status ketersediaan). Kategori dipilih manual dari dropdown | Melihat daftar pakaian, detail satu pakaian, serta memfilter berdasarkan warna/kategori | Mengubah data (mengedit) pakaian yang sudah ada | Menghapus data pakaian dari koleksi |
 | **Modul 2: Mix & Match Outfit Builder** | Salwa Hafiza Aqila | Fitur untuk merangkai kombinasi outfit dari pakaian yang ada di Digital Closet (atasan, bawahan, sepatu, aksesori). | Membuat kombinasi outfit baru dari pakaian yang tersedia | Melihat daftar outfit yang sudah dibuat beserta detail kombinasinya | Mengubah/mengganti item dalam suatu kombinasi outfit | Menghapus outfit yang sudah disimpan |
 | **Modul 3: Weekly Outfit Planner & Weather Recommendation** | Fadly Atief Nauval | Fitur untuk merencanakan pemakaian outfit per hari dalam kalender mingguan, terintegrasi Open-Meteo API untuk rekomendasi sesuai cuaca berdasarkan lokasi menggunakan OpenStreetMap dengan pengolahan datanya melalui Nominatim. Sistem otomatis mengecualikan pakaian berstatus "Laundry" dari pilihan. | Menambahkan jadwal outfit untuk hari/tanggal tertentu | Melihat jadwal mingguan serta rekomendasi outfit berdasarkan data cuaca real-time | Mengubah outfit yang dijadwalkan pada hari tertentu | Menghapus/membatalkan jadwal outfit pada hari tertentu |
-| **Modul 4: Conscious Shopping Reminder & Autentikasi** | Hasya Azzahra Rangkuti | Fitur wishlist untuk mencegah pembelian impulsif, dilengkapi sistem login/logout/autentikasi pengguna. Saat item wishlist ditambahkan, sistem menampilkan pakaian di Digital Closet dengan kategori & warna yang sama sebagai pengingat. | Menambah item wishlist (nama, kategori, warna, foto/link); registrasi akun baru | Melihat daftar wishlist beserta pengingat kemiripan dari Digital Closet; login pengguna | Mengubah data item wishlist | Menghapus item wishlist; logout pengguna |
+| **Modul 4: Conscious Shopping Reminder & Autentikasi** | Hasya Azzahra Rangkuti | Fitur wishlist interaktif untuk mencegah pembelian impulsif melalui pengingat *Conscious Shopping*. Sistem otomatis mendeteksi kemiripan barang di Digital Closet berdasarkan kategori dan warna (baik saat menambah item di Wishlist maupun saat menyimpan pakaian dari Community). Dilengkapi pop-up peringatan *Conscious Alert* ber-maskot bunglon, *deep-linking* terfilter langsung ke Closet, modal detail interaktif, serta sistem login/logout/autentikasi pengguna. | Menambah item wishlist (nama, foto, kategori, warna, bahan, *style tags*, *season*, *weather*, brand, harga, *purchase link*, *target purchase date*); registrasi akun baru; menambah item ke wishlist langsung dari Community. | Melihat daftar wishlist; statistik *Closest Matches*; modal *view detail* dengan *chip* barang mirip yang bisa diklik untuk *redirect* langsung ke Digital Closet; *filter bar* dinamis (*search*, warna, *style*, *season*, *weather*, *status*); pop-up pengingat *Conscious Alert*; login pengguna. | Mengubah data item wishlist melalui modal *edit* (beserta pembaruan foto dan format harga real-time). | Menghapus item wishlist melalui modal konfirmasi; membatalkan/menghapus item dari wishlist; logout pengguna. |
 | **Modul 5: Fashion Community** | Salsabilla Hasan | Forum diskusi antarpengguna untuk berbagi inspirasi styling, mix & match, dan ide pakaian sehari-hari. | Membuat post baru (dengan foto), menambahkan komentar, memberikan like pada outfit pengguna lain | Melihat daftar post, detail post beserta komentar dan like | Mengubah post atau komentar milik sendiri | Menghapus post, komentar, atau like milik sendiri |
 | **Modul 6: Admin Panel (Moderasi Konten)** | Dikerjakan bersama (seluruh anggota kelompok) | Fitur moderasi yang memungkinkan Admin menjaga kualitas Fashion Community dengan melihat dan menghapus post/komentar yang melanggar aturan. | Admin membuat akun/hak akses admin dan mengelola konten melalui panel khusus | Admin melihat seluruh post dan komentar pengguna untuk keperluan moderasi | Admin meninjau dan menandai konten yang melanggar | Admin menghapus post/komentar pengguna lain yang melanggar |
 
@@ -78,7 +78,9 @@ Dalam pengembangan modul Digital Closet, saya menggunakan AI (Claude dan ChatGPT
 
 Pada awalnya, implementasi fitur Digital Closet mengacu pada tutorial PBP yang mancakup fitur mirip/serupa, seperti menambahkan, mengedit, mencari item. Implementasi awal form yang saya gunakan yaitu menggunakan halaman form terpisah. Namun, untuk membuat interaksi yang lebih nyaman bagi user, saya mengeksplorasi penggunakan popup atau modal sebagai alternatif. Dalam proses ini, saya mencari sumber eksternal yaitu YouTube dan menggunakan AI untuk membantu memberikan arahan mengenai implementasi ini serta membantu penulisan dan penyesuaian kode JavaScript yang diperlukan.
 
-Selain itu, AI digunakan sebagai alat bantu dalam menyelesaikan detail interface, seperti penyesuaian format tampilan nominal harga menggunakan pemisah ribuan. 
+Selain itu, saya mengimplementasikan AJAX untuk mendukung interaksi pada Digital Closet agar beberapa proses dapat dilakukan tanpa perlu memuat ulang seluruh halaman. Dalam proses implementasi AJAX, AI digunakan untuk membantu saya menyusun kode JavaScript yang diperlukan.
+
+AI juga digunakan sebagai alat bantu dalam menyelesaikan detail interface, seperti penyesuaian format tampilan nominal harga menggunakan pemisah ribuan. 
 
 Sumber eksternal:
 - https://youtu.be/xKOyDDuQSVY?si=NGuyf6DxNCOUbiRZ 
@@ -87,7 +89,16 @@ Sumber eksternal:
 - https://youtu.be/opjyyXoqrxg?si=DwmeoCX6oHeldoGH
 
 
-2. 
+2. Modul 2: Mix & Match Outfit Builder
+
+Dalam pengembangan modul Mix & Match, saya menggunakan AI (Claude dan ChatGPT) sebagai alat bantu selama proses pengerjaan, terutama dalam pengembangan JavaScript, CSS, dan beberapa penyesuaian backend Django.
+
+Saya menentukan sendiri tampilan, alur penggunaan, serta fitur-fitur yang ingin dikembangkan, seperti Saved Outfits, Outfit Details, Edit, Update, Share to Community, Reset, dan Shuffle.
+
+Selama proses coding, saya tetap berusaha mengerjakan dan memahami implementasinya terlebih dahulu. AI membantu dalam mengembangkan beberapa bagian kode serta menyesuaikan fitur dengan kebutuhan modul, misalnya memungkinkan pengguna memilih lebih dari satu aksesori dalam satu outfit, mengombinasikan dress dengan item pakaian lainnya, dan mengembangkan fungsi dari fitur-fitur yang telah dirancang. Selain itu, AI juga membantu memberikan saran dan mencari solusi ketika terdapat error atau fitur yang belum berjalan sesuai harapan.
+
+Hasil dari proses tersebut kemudian saya pelajari, sesuaikan dengan kode yang sudah dibuat, dan uji kembali untuk memastikan setiap fitur berjalan sesuai harapan. Melalui proses ini, AI tidak hanya membantu dalam implementasi teknis, tetapi juga membantu saya memahami dan mengembangkan kode selama pengerjaan modul.
+
 3. Modul 3: Weekly Outfit Planner & Weather Recommendation
 
 Pada fitur Planner RE:STYLE, saya menggunakan AI sebagai asisten, bukan sebagai pengganti proses perancangan. Konsep fitur, aturan, dan desain antarmuka (modal pemilihan outfit, widget cuaca, dll.) saya tentukan dan rancang sendiri di Figma. Aturan seperti status "In the Wash" yang kembali "Ready" pada hari laundry, rekomendasi outfit berdasarkan cuaca, hingga penggunaan ulang komponen yang sudah ada (kartu outfit, tombol, toast) juga berasal dari keputusan saya.
@@ -98,7 +109,22 @@ AI juga saya pakai untuk memahami kode yang dihasilkan, misalnya alur request da
 
 Saya mengakui bahwa kontribusi AI pada kode JavaScript dan beberapa fitur tambahan Planner. Namun, kebutuhan, desain, dan keputusan akhir tetap saya yang tentukan, dan kode dari AI tidak saya terima begitu saja tanpa pemeriksaan.
 
-4. 
+4. Modul 4: Conscious Shopping Reminder & Autentikasi - Hasya Azzahra Rangkuti
+
+Dalam pengembangan Modul 4 (Conscious Shopping Reminder & Autentikasi), saya menggunakan AI (Gemini) sebagai asisten dan alat bantu selama proses perancangan hingga implementasi fitur, terutama pada bagian integrasi JavaScript interaktif dan penyesuaian backend Django.
+
+Konsep utama pengingat *Conscious Shopping*—yaitu mencegah pembelian impulsif dengan mendeteksi kemiripan barang (berdasarkan kategori dan warna) antara barang impian dengan item di Digital Closet pengguna—saya tentukan berdasarkan ide modul dan kebutuhan aplikasi RE:STYLE. AI membantu saya menerjemahkan logika tersebut ke dalam kode, mulai dari validasi real-time di backend Django hingga interaksi dinamis di frontend.
+
+Peran AI sangat krusial dalam membangun alur interaksi kompleks, seperti pembuatan modal pop-up *Conscious Alert* yang dilengkapi maskot bunglon, penanganan *deep-linking* parameter URL (`cat` & `color`) dengan format *case-insensitive* ke halaman Digital Closet, serta pembuatan *chip* interaktif pada *modal view detail* Wishlist yang memungkinkan *redirect* langsung ke item terkait di closet. Selain itu, AI membantu penanganan form *AJAX*, kompresi foto sebelum diunggah, format harga dengan pemisah ribuan, hingga sinkronisasi data Wishlist yang ditambahkan langsung dari halaman Fashion Community.
+
+Saya juga memanfaatkan AI dalam mengimplementasikan fitur autentikasi pengguna (registrasi akun, login, dan logout) serta penataan antarmuka modal (*add*, *edit*, dan *confirm delete*) agar konsisten dengan panduan desain aplikasi.
+
+Seluruh kode yang dihasilkan AI tidak langsung saya gunakan secara mentah. Saya mengecek, melakukan pengujian langsung di lingkungan lokal dan server PWS, serta menyesuaikan logika fungsi pada *views*, *models*, *urls*, dan *template* agar terintegrasi sempurna dengan modul anggota tim lainnya.
+
+Sumber eksternal:
+- Dokumentasi Resmi Django (Authentication & Request/Response Lifecycle)
+- Dokumentasi MDN Web Docs (Fetch API & URLSearchParams)
+- Tutorial Web PBP (Pengelolaan Form & Autentikasi Django)
 
 5. Modul 5: Fashion Community dan Modul 6: Admin Panel (Moderasi Konten) - Salsabilla Hasan
 
@@ -116,6 +142,19 @@ Dengan demikian, AI saya gunakan sebagai alat bantu dalam proses belajar dan imp
 
 ### Link Deployment PWS
 https://pws.cs.ui.ac.id/web/project/aulia.nur51/restyle
+
+#### Akun trial untuk mencoba
+- Akun Admin
+  
+  Username: adminrestyle
+  
+  Password: kerenbanget
+  
+- Akun Dummy (Sudah diisikan data - data untuk bisa dicoba)
+
+  Username: restyle.archive
+  
+  Password: bismillahPBPA
 
 
 

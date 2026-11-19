@@ -37,11 +37,15 @@ def washing_item_ids(user, target_date, weekdays, laundry_time_days, exclude_pla
     for plan in plans:
         ready_date = ready_date_for_slot(plan.date, weekdays, laundry_time_days)
         if plan.date < target_date < ready_date:
-            washing.update(
-                item_id
-                for slot in SLOTS
-                if (item_id := getattr(plan.outfit, f"{slot}_id")) is not None
-            )
+            for slot in SLOTS:
+                if slot == "accessories":
+                    washing.update(
+                        plan.outfit.accessories.values_list("id", flat=True)
+                    )
+                else:
+                    item_id = getattr(plan.outfit, f"{slot}_id")
+                    if item_id is not None:
+                        washing.add(item_id)
     return washing
 
 

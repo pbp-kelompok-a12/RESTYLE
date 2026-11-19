@@ -18,3 +18,4 @@ media/
 # Coverage reports
 .coverage
 htmlcov/
+db_backup_before_fix.sqlite3

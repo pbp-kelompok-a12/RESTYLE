@@ -17,10 +17,18 @@ class OutfitForm(forms.ModelForm):
 
     def __init__(self, *args, user, **kwargs):
         super().__init__(*args, **kwargs)
+
         mine = Item.objects.filter(user=user)
+
         for slot in SLOTS:
-            self.fields[slot].queryset = mine.filter(category__in=SLOT_CATEGORIES[slot])
+            self.fields[slot].queryset = mine.filter(
+                category__in=SLOT_CATEGORIES[slot]
+            )
             self.fields[slot].required = False
+
+        self.fields["accessories"].widget = (
+            forms.MultipleHiddenInput()
+        )
 
     def clean_name(self):
         name = self.cleaned_data["name"].strip()
