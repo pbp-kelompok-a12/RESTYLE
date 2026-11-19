@@ -28,4 +28,5 @@ urlpatterns = [
     path("planner/", include("planner.urls")),
     path("closet/", include("closet.urls")),
     path("mixmatch/", include("mixmatch.urls")),
+    path("api/auth/", include("main.api_urls")),
 ]
