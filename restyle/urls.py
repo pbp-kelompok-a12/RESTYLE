@@ -30,4 +30,5 @@ urlpatterns = [
     path("mixmatch/", include("mixmatch.urls")),
     path("api/auth/", include("main.api_urls")),
     path("api/closet/", include("closet.api_urls")),
+    path("api/mixmatch/", include("mixmatch.api_urls")),
 ]
