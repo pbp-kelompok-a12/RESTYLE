@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'planner',
     'closet',
     'mixmatch',
-    'rest_framework',
 ]
 
 CLOUDINARY_STORAGE = {
