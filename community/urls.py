@@ -1,5 +1,5 @@
 from django.urls import path
-
+from community.api_views import post_list_api
 from community.views import (
     create_comment,
     create_post,
@@ -60,5 +60,6 @@ urlpatterns = [
     path("comment/<int:comment_id>/delete/", delete_comment, name="delete_comment"),
     path("comment/<int:comment_id>/like/", toggle_comment_like, name="toggle_comment_like"),
     path("user/<str:username>/follow/", toggle_follow, name="toggle_follow"),
-    path("api/posts/", get_post_json, name="get_post_json")
+    path("api/posts/", get_post_json, name="get_post_json"),
+    path("api/v1/posts/", post_list_api, name="post_list_api"),
 ]
