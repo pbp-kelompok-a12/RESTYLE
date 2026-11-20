@@ -31,4 +31,5 @@ urlpatterns = [
     path("api/auth/", include("main.api_urls")),
     path("api/closet/", include("closet.api_urls")),
     path("api/mixmatch/", include("mixmatch.api_urls")),
+    path("api/planner/", include("planner.api_urls")),
 ]
