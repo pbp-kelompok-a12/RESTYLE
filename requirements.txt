@@ -8,3 +8,4 @@ cloudinary
 django-cloudinary-storage
 djangorestframework>=3.16,<4.0
 django-cors-headers
+
